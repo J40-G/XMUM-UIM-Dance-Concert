@@ -1,0 +1,130 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Arial', sans-serif;
+}
+
+body {
+  background-color: #0d0d0d;
+  color: #ffffff;
+  text-align: center;
+}
+
+.navbar {
+  display: flex;
+  align-items: center;
+  padding: 15px 20px;
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.logo-img {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+}
+
+.hero {
+  padding: 40px 20px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.subtitle {
+  font-size: 0.9rem;
+  letter-spacing: 2px;
+  color: #cccccc;
+  text-transform: uppercase;
+}
+
+.handle {
+  font-size: 0.8rem;
+  color: #888888;
+  margin-bottom: 20px;
+}
+
+.poster-container {
+  margin: 20px 0;
+}
+
+.poster-img {
+  width: 100%;
+  max-width: 450px;
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+}
+
+.event-details {
+  margin: 25px 0;
+}
+
+.date {
+  font-size: 1.2rem;
+  letter-spacing: 1.5px;
+  margin-bottom: 5px;
+}
+
+.venue {
+  font-size: 1rem;
+  color: #dddddd;
+  font-weight: bold;
+}
+
+.time {
+  font-size: 0.9rem;
+  color: #aaaaaa;
+  margin-top: 5px;
+}
+
+.btn-ticket {
+  display: inline-block;
+  background-color: #ffb6c1;
+  color: #000000;
+  padding: 14px 36px;
+  border-radius: 25px;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 1rem;
+  margin-top: 15px;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.btn-ticket:hover {
+  background-color: #ffa0b0;
+  transform: scale(1.05);
+}
+
+.about-section {
+  padding: 60px 20px;
+  border-top: 1px solid #222222;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.about-section h2 {
+  font-size: 1.4rem;
+  letter-spacing: 2px;
+  margin-bottom: 15px;
+  color: #ffb6c1;
+}
+
+.about-text {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #bbbbbb;
+}
+
+footer {
+  padding: 20px;
+  font-size: 0.8rem;
+  color: #555555;
+  border-top: 1px solid #111111;
+}
