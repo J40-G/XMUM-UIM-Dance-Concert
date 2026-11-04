@@ -116,7 +116,7 @@
     .ticket-body p { margin-bottom: 12px; font-size: 0.95rem; color: #ddd; }
     .ticket-body p strong { color: #ffffff; }
     .ticket-qr { text-align: center; margin-top: 25px; padding-top: 20px; border-top: 1px dashed #444; }
-    .ticket-qr img { width: 130px; height: 130px; border-radius: 8px; }
+    .ticket-qr img { width: 150px; height: 150px; border-radius: 8px; background: #fff; padding: 6px; }
 
     /* Doorcrew Scanner Interface */
     #scanner-container { max-width: 500px; margin: 20px auto; padding: 20px; background: #141414; border-radius: 12px; border: 1px solid #333; }
@@ -355,7 +355,7 @@
       </div>
       <div class="ticket-qr">
         <img id="ticket-qr-img" src="" alt="Entry QR Code">
-        <p style="font-size:0.75rem; color:#888; margin-top:8px;">Present this QR code at hall entrance</p>
+        <p style="font-size:0.75rem; color:#888; margin-top:8px;">Present this unique QR code at hall entrance</p>
       </div>
     </div>
 
@@ -400,7 +400,7 @@
       console.warn("Firebase sync offline:", err);
     }
 
-    // 1. EARLY BIRD DEADLINE CHECK (21st Nov 2026 11:59:59 PM Malaysia Time)
+    // Early Bird Check
     const EB_DEADLINE = new Date("2026-11-21T23:59:59+08:00");
     let isEarlyBird = new Date() < EB_DEADLINE;
 
@@ -438,7 +438,7 @@
       return `${seat.zone} - ${seat.rowName} - Seat ${seat.num}`;
     }
 
-    // 2. SEATING GRID CONFIGURATION
+    // Seating Map Setup
     const SEATING_CONFIG = [
       { rowName: "Row 1 (VIP)", seats: Array(34).fill(0).map((_, i) => ({ num: `VIP-${i+1}`, type: "occupied" })) },
       { rowName: "Row 2", seats: Array(35).fill(0).map((_, i) => ({ num: `${1 + i}`, type: "zone-a" })) },
@@ -596,11 +596,14 @@
       document.getElementById("btn-to-page4").disabled = !(tcChecked && selectedPaymentMethod !== "");
     }
 
-    // FORM SUBMISSION WITH DIRECT PAGE SWITCH
+    // GENERATE TOTALLY UNIQUE TICKET ID & QR ENCODED DATA
     function handleFinalSubmit(e) {
       if (e) e.preventDefault();
 
-      const ticketId = "#UIM-2026-" + Math.floor(1000 + Math.random() * 9000);
+      const timestamp = Date.now().toString().slice(-6); // Unique 6-digit timestamp
+      const randomHash = Math.floor(1000 + Math.random() * 9000); // 4-digit random number
+      const ticketId = `#UIM-2026-${timestamp}-${randomHash}`;
+
       const name = document.getElementById("input-name").value;
       const studentId = document.getElementById("input-student-id").value;
       const email = document.getElementById("input-email").value;
@@ -608,18 +611,25 @@
       const seatsText = selectedSeats.map(s => formatSeatLabel(s)).join(", ");
       const totalPaid = selectedSeats.reduce((sum, s) => sum + s.price, 0);
 
-      // 1. Instantly Render E-Ticket
+      // JSON payload encoded inside QR code so Door Crew Scanner receives all unique details
+      const qrDataPayload = JSON.stringify({
+        tId: ticketId,
+        name: name,
+        seats: seatsText
+      });
+
+      // Render E-Ticket Content & Generate QR Code via encoded payload
       document.getElementById("ticket-name").innerText = name;
       document.getElementById("ticket-student-id").innerText = studentId || "N/A";
       document.getElementById("ticket-seats").innerText = seatsText;
       document.getElementById("ticket-price").innerText = totalPaid;
       document.getElementById("ticket-id").innerText = ticketId;
-      document.getElementById("ticket-qr-img").src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${ticketId}`;
+      document.getElementById("ticket-qr-img").src = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(qrDataPayload)}`;
 
-      // 2. Immediately Switch to Page 5 (E-Ticket Page)
+      // Switch to Page 5
       goToPage(5);
 
-      // 3. Perform Sync Tasks in Background
+      // Save Data Background Tasks
       if (db) {
         try {
           const batch = db.batch();
