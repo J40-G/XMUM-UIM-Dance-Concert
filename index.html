@@ -424,71 +424,91 @@
     }
 
     // 2. SEATING GRID CONFIGURATION (CHANGE SEAT NUMBERS / ROWS HERE!)
+ // 2. SEATING GRID CONFIGURATION
     const SEATING_CONFIG = [
-      { rowName: "Row 1", seats: Array(28).fill({ num: "", type: "blank" }) },
-      { rowName: "Row 2", seats: Array(35).fill(0).map((_, i) => ({ num: `${i+1}`, type: "zone-a" })) },
-      { rowName: "Row 11", seats: Array(34).fill(0).map((_, i) => ({ num: `${i+1}`, type: "zone-b" })) },
-      { rowName: "Row 16", seats: Array(35).fill(0).map((_, i) => ({ num: `${i+1}`, type: "zone-c" })) }
+      // ROW 1: VIP (Entirely Occupied - 34 Seats)
+      { 
+        rowName: "Row 1 (VIP)", 
+        seats: Array(34).fill(0).map((_, i) => ({ num: `VIP-${i+1}`, type: "occupied" })) 
+      },
+
+      // ZONE A: ROWS 2 TO 7 (Continuous numbering 1 to 207)
+      { 
+        rowName: "Row 2", 
+        seats: Array(35).fill(0).map((_, i) => ({ num: `${1 + i}`, type: "zone-a" })) 
+      },
+      { 
+        rowName: "Row 3", 
+        seats: Array(34).fill(0).map((_, i) => ({ num: `${36 + i}`, type: "zone-a" })) 
+      },
+      { 
+        rowName: "Row 4", 
+        seats: Array(35).fill(0).map((_, i) => ({ num: `${70 + i}`, type: "zone-a" })) 
+      },
+      { 
+        rowName: "Row 5", 
+        seats: Array(34).fill(0).map((_, i) => ({ num: `${105 + i}`, type: "zone-a" })) 
+      },
+      { 
+        rowName: "Row 6", 
+        seats: Array(35).fill(0).map((_, i) => ({ num: `${139 + i}`, type: "zone-a" })) 
+      },
+      { 
+        rowName: "Row 7", 
+        seats: Array(34).fill(0).map((_, i) => ({ num: `${174 + i}`, type: "zone-a" })) 
+      },
+
+      // ZONE B: ROWS 8 TO 12 (Reset numbering 1 to 173)
+      { 
+        rowName: "Row 8", 
+        seats: Array(35).fill(0).map((_, i) => ({ num: `${1 + i}`, type: "zone-b" })) 
+      },
+      { 
+        rowName: "Row 9", 
+        seats: Array(34).fill(0).map((_, i) => ({ num: `${36 + i}`, type: "zone-b" })) 
+      },
+      { 
+        rowName: "Row 10", 
+        seats: Array(35).fill(0).map((_, i) => ({ num: `${70 + i}`, type: "zone-b" })) 
+      },
+      { 
+        rowName: "Row 11", 
+        seats: Array(34).fill(0).map((_, i) => ({ num: `${105 + i}`, type: "zone-b" })) 
+      },
+      { 
+        rowName: "Row 12", 
+        seats: Array(35).fill(0).map((_, i) => ({ num: `${139 + i}`, type: "zone-b" })) 
+      },
+
+      // ZONE C: ROWS 13 TO 17 (Reset numbering starting from 1)
+      { 
+        rowName: "Row 13", 
+        seats: Array(34).fill(0).map((_, i) => {
+          const seatNum = 1 + i;
+          const isOccupied = [16, 17, 18, 19].includes(seatNum);
+          return { num: `${seatNum}`, type: isOccupied ? "occupied" : "zone-c" };
+        }) 
+      },
+      { 
+        rowName: "Row 14", 
+        seats: Array(35).fill(0).map((_, i) => ({ num: `${35 + i}`, type: "zone-c" })) 
+      },
+      { 
+        rowName: "Row 15", 
+        seats: Array(34).fill(0).map((_, i) => ({ num: `${70 + i}`, type: "occupied" })) 
+      },
+      { 
+        rowName: "Row 16", 
+        seats: Array(35).fill(0).map((_, i) => ({ num: `${104 + i}`, type: "occupied" })) 
+      },
+      { 
+        rowName: "Row 17", 
+        seats: Array(30).fill(0).map((_, i) => ({ num: `${139 + i}`, type: "occupied" })) 
+      }
     ];
 
     let selectedSeats = [];
-    let selectedPaymentMethod = "";
-    let html5QrcodeScanner = null;
 
-    function listenToSeatUpdates() {
-      db.collection("concert_seats").onSnapshot((snapshot) => {
-        snapshot.docChanges().forEach((change) => {
-          const data = change.doc.data();
-          const seatBtn = document.querySelector(`[data-id="${change.doc.id}"]`);
-          if (seatBtn) {
-            seatBtn.classList.remove("holding", "occupied");
-            if (data.status === "occupied") {
-              seatBtn.classList.add("occupied");
-            } else if (data.status === "holding") {
-              if (!selectedSeats.some(s => s.id === change.doc.id)) {
-                seatBtn.classList.add("holding");
-              }
-            }
-          }
-        });
-      });
-    }
-
-    function renderSeatingGrid() {
-      const container = document.getElementById("seat-map");
-      if (!container) return;
-      container.innerHTML = "";
-
-      SEATING_CONFIG.forEach(row => {
-        const rowElem = document.createElement("div");
-        rowElem.className = "seat-row";
-
-        const label = document.createElement("span");
-        label.className = "row-label";
-        label.innerText = row.rowName;
-        rowElem.appendChild(label);
-
-        const seatsDiv = document.createElement("div");
-        seatsDiv.className = "row-seats";
-
-        row.seats.forEach(seat => {
-          const seatBtn = document.createElement("button");
-          const seatId = `${row.rowName}-${seat.num}`;
-          seatBtn.className = `seat ${seat.type}`;
-          seatBtn.innerText = seat.num;
-          seatBtn.dataset.id = seatId;
-
-          if (seat.type === "blank") {
-            seatBtn.disabled = true;
-          } else {
-            seatBtn.onclick = () => toggleSeat(seatBtn, seatId, currentPrices[seat.type]);
-          }
-          seatsDiv.appendChild(seatBtn);
-        });
-
-        rowElem.appendChild(seatsDiv);
-        container.appendChild(rowElem);
-      });
 
       listenToSeatUpdates();
     }
