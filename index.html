@@ -347,4 +347,134 @@
       <div class="ticket-body">
         <p><strong>Name:</strong> <span id="ticket-name">-</span></p>
         <p><strong>Student ID:</strong> <span id="ticket-student-id">N/A</span></p>
-        <p><strong>Selected Seat(s):</strong> <span id="ticket-
+        <p><strong>Selected Seat(s):</strong> <span id="ticket-seats" style="color:#ffb6c1; font-weight:bold;">-</span></p>
+        <p><strong>Total Paid:</strong> RM <span id="ticket-price">0</span></p>
+        <p><strong>Date & Time:</strong> 11th December 2026 | 7:00 PM</p>
+        <p><strong>Venue:</strong> Tan Hua Choon Auditorium, XMUM</p>
+        <p><strong>Ticket ID:</strong> <span id="ticket-id" style="font-family:monospace; color:#87CEEB;">#UIM-2026-XXXX</span></p>
+      </div>
+      <div class="ticket-qr">
+        <img id="ticket-qr-img" src="" alt="Entry QR Code">
+        <p style="font-size:0.75rem; color:#888; margin-top:8px;">Present this QR code at hall entrance</p>
+      </div>
+    </div>
+
+    <br>
+    <button onclick="window.print()" class="btn-pink"><i class="fas fa-print"></i> Save / Print E-Ticket</button>
+  </div>
+
+  <!-- PAGE 6: DOOR CREW SCANNER PAGE (#scanner) -->
+  <div id="page-scanner" class="page-container" style="display: none;">
+    <h2>DOOR CREW SCANNER</h2>
+    <p style="color:#aaa; margin-bottom:20px;">Point camera at attendee's E-Ticket QR Code</p>
+
+    <div id="scanner-container">
+      <div id="reader"></div>
+      <div id="scan-status" class="scan-status-card" style="display:none;"></div>
+    </div>
+    
+    <br>
+    <button onclick="goToPage(1)" class="btn-back">← Exit Scanner</button>
+  </div>
+
+  <script>
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxS_coEaWh7ZTXW2njV3t1-XE0BDHPgiCuZW6vBzuaPnxlBvmGO0knD4foIGuzeBC1g/exec";
+
+    // Firebase Configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyDummyKeyForPublicFirestoreSync123",
+      authDomain: "xmum-uim-dance-concert.firebaseapp.com",
+      projectId: "xmum-uim-dance-concert",
+      storageBucket: "xmum-uim-dance-concert.appspot.com",
+      messagingSenderId: "123456789",
+      appId: "1:123456789:web:123456"
+    };
+
+    let db = null;
+    try {
+      if (typeof firebase !== "undefined" && !firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+        db = firebase.firestore();
+      }
+    } catch (err) {
+      console.warn("Firebase sync offline:", err);
+    }
+
+    // 1. EARLY BIRD DEADLINE CHECK (21st Nov 2026 11:59:59 PM Malaysia Time)
+    const EB_DEADLINE = new Date("2026-11-21T23:59:59+08:00");
+    let isEarlyBird = new Date() < EB_DEADLINE;
+
+    let currentPrices = isEarlyBird 
+      ? { 'zone-a': 30, 'zone-b': 20, 'zone-c': 10 }
+      : { 'zone-a': 35, 'zone-b': 25, 'zone-c': 15 };
+
+    function updatePricingUI() {
+      const notice = document.getElementById("pricing-status-notice");
+      const ebOverlay = document.getElementById("eb-overlay");
+      
+      if (notice) {
+        if (isEarlyBird) {
+          notice.innerText = "⚡ Early Bird Pricing is currently ACTIVE! (Ends 21st November 2026)";
+          if (ebOverlay) ebOverlay.style.display = "none";
+        } else {
+          notice.innerText = "🔒 Early Bird Pricing HAS ENDED. Normal Price applies.";
+          if (ebOverlay) ebOverlay.style.display = "flex";
+        }
+      }
+
+      if (document.getElementById("price-tag-a")) document.getElementById("price-tag-a").innerText = `RM${currentPrices['zone-a']}`;
+      if (document.getElementById("price-tag-b")) document.getElementById("price-tag-b").innerText = `RM${currentPrices['zone-b']}`;
+      if (document.getElementById("price-tag-c")) document.getElementById("price-tag-c").innerText = `RM${currentPrices['zone-c']}`;
+    }
+
+    function getZoneLabel(zoneType) {
+      if (zoneType === 'zone-a') return 'Zone A';
+      if (zoneType === 'zone-b') return 'Zone B';
+      if (zoneType === 'zone-c') return 'Zone C';
+      return '';
+    }
+
+    function formatSeatLabel(seat) {
+      return `${seat.zone} - ${seat.rowName} - Seat ${seat.num}`;
+    }
+
+    // 2. SEATING GRID CONFIGURATION
+    const SEATING_CONFIG = [
+      { rowName: "Row 1 (VIP)", seats: Array(34).fill(0).map((_, i) => ({ num: `VIP-${i+1}`, type: "occupied" })) },
+      { rowName: "Row 2", seats: Array(35).fill(0).map((_, i) => ({ num: `${1 + i}`, type: "zone-a" })) },
+      { rowName: "Row 3", seats: Array(34).fill(0).map((_, i) => ({ num: `${36 + i}`, type: "zone-a" })) },
+      { rowName: "Row 4", seats: Array(35).fill(0).map((_, i) => ({ num: `${70 + i}`, type: "zone-a" })) },
+      { rowName: "Row 5", seats: Array(34).fill(0).map((_, i) => ({ num: `${105 + i}`, type: "zone-a" })) },
+      { rowName: "Row 6", seats: Array(35).fill(0).map((_, i) => ({ num: `${139 + i}`, type: "zone-a" })) },
+      { rowName: "Row 7", seats: Array(34).fill(0).map((_, i) => ({ num: `${174 + i}`, type: "zone-a" })) },
+      { rowName: "Row 8", seats: Array(35).fill(0).map((_, i) => ({ num: `${1 + i}`, type: "zone-b" })) },
+      { rowName: "Row 9", seats: Array(34).fill(0).map((_, i) => ({ num: `${36 + i}`, type: "zone-b" })) },
+      { rowName: "Row 10", seats: Array(35).fill(0).map((_, i) => ({ num: `${70 + i}`, type: "zone-b" })) },
+      { rowName: "Row 11", seats: Array(34).fill(0).map((_, i) => ({ num: `${105 + i}`, type: "zone-b" })) },
+      { rowName: "Row 12", seats: Array(35).fill(0).map((_, i) => ({ num: `${139 + i}`, type: "zone-b" })) },
+      { 
+        rowName: "Row 13", 
+        seats: Array(34).fill(0).map((_, i) => {
+          const seatNum = 1 + i;
+          return { num: `${seatNum}`, type: [16, 17, 18, 19].includes(seatNum) ? "occupied" : "zone-c" };
+        }) 
+      },
+      { rowName: "Row 14", seats: Array(35).fill(0).map((_, i) => ({ num: `${35 + i}`, type: "zone-c" })) },
+      { rowName: "Row 15", seats: Array(34).fill(0).map((_, i) => ({ num: `${70 + i}`, type: "occupied" })) },
+      { rowName: "Row 16", seats: Array(35).fill(0).map((_, i) => ({ num: `${104 + i}`, type: "occupied" })) },
+      { rowName: "Row 17", seats: Array(30).fill(0).map((_, i) => ({ num: `${139 + i}`, type: "occupied" })) }
+    ];
+
+    let selectedSeats = [];
+    let selectedPaymentMethod = "";
+    let html5QrcodeScanner = null;
+
+    function listenToSeatUpdates() {
+      if (!db) return;
+      try {
+        db.collection("concert_seats").onSnapshot((snapshot) => {
+          snapshot.docChanges().forEach((change) => {
+            const data = change.doc.data();
+            const seatBtn = document.querySelector(`[data-id="${change.doc.id}"]`);
+            if (seatBtn) {
+              seatBtn.classList.remove("holding",
