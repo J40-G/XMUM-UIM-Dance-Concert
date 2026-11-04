@@ -67,7 +67,7 @@
     .seat { width: 20px; height: 22px; border-radius: 4px; border: none; font-size: 0.65rem; font-weight: bold; color: #000; cursor: pointer; display: flex; align-items: center; justify-content: center; }
     .seat.blank { background-color: #4a4a4a; color: transparent; cursor: default; }
     
-    /* Updated Zone Colors (Requirements 6) */
+    /* Zone Colors */
     .seat.zone-a { background-color: #d90429; color: #fff; } /* Red */
     .seat.zone-b { background-color: #b8e2f4; color: #000; } /* Soft Blue */
     .seat.zone-c { background-color: #abf7b1; color: #000; } /* Light Green */
@@ -143,7 +143,7 @@
 
     <section id="about" class="hero">
       <div class="hero-image-overlay">
-        <img src="poster.jpg" alt="United in Motion Poster" class="hero-banner-img" onerror="this.src='https://picsum.photos/900/520?dark'">
+        <img src="UIM Logo.jpeg" alt="United in Motion Poster" class="hero-banner-img">
         <div class="hero-text-overlay">
           <p class="subtitle">XMUM DANCE CLUB PRESENTS</p>
           <h1 class="main-title">UNITED IN MOTION</h1>
@@ -156,11 +156,11 @@
 
           <div class="hero-dual-logos">
             <div class="hero-logo-circle" title="Dance Club Logo">
-              <img src="dance-club-logo.png" alt="Dance Club Logo" onerror="this.src='https://via.placeholder.com/65?text=DC'">
+              <img src="DC Logo.jpeg" alt="Dance Club Logo">
             </div>
             <span class="logo-cross">×</span>
             <div class="hero-logo-circle" title="United in Motion Logo">
-              <img src="uim-logo.png" alt="UIM Logo" onerror="this.src='https://via.placeholder.com/65?text=UIM'">
+              <img src="UIM Logo.jpeg" alt="UIM Logo">
             </div>
           </div>
 
@@ -171,19 +171,19 @@
       </div>
     </section>
 
-    <!-- Pricing Section & Early Bird Deadline Logic -->
+    <!-- Pricing Section & Countdown -->
     <section id="pricing" class="section">
       <h2>TICKET PRICING</h2>
       <p id="pricing-status-notice" style="color: #ffb6c1; margin-bottom: 15px; font-weight: bold;"></p>
       
       <div class="pricing-grid">
         <div class="pricing-card-wrapper">
-          <img src="early-bird-pricing.jpg" alt="Early Bird Pricing Poster" class="pricing-card-img" onerror="this.src='https://via.placeholder.com/380x240/1f1f1f/ffb6c1?text=Early+Bird+Poster'">
+          <img src="UIM early bird.png" alt="Early Bird Pricing Poster" class="pricing-card-img">
           <div id="eb-overlay" class="sold-out-overlay" style="display:none;">UNAVAILABLE</div>
         </div>
 
         <div class="pricing-card-wrapper">
-          <img src="normal-pricing.jpg" alt="Normal Pricing Poster" class="pricing-card-img" onerror="this.src='https://via.placeholder.com/380x240/1f1f1f/ffffff?text=Normal+Price+Poster'">
+          <img src="UIM normal.png" alt="Normal Pricing Poster" class="pricing-card-img">
         </div>
       </div>
     </section>
@@ -192,14 +192,14 @@
     <section id="seating-info" class="section">
       <h2>AUDITORIUM SEATING MAP</h2>
       <div class="seating-container">
-        <img src="seating-plan.png" alt="Auditorium Seating Layout" class="seating-img" onerror="this.src='https://via.placeholder.com/600x400/181818/ffffff?text=Upload+Seating+Layout+Diagram'">
+        <img src="UIM Seating Layout.png" alt="Auditorium Seating Layout" class="seating-img" style="max-width:100%; border-radius:12px;">
       </div>
       <br><br>
       <button onclick="goToPage(2)" class="btn-pink">Select Your Seats Now</button>
     </section>
 
     <footer>
-      <p>&copy; 2026 XMUM Dance Club.J40 All Rights Reserved.</p>
+      <p>&copy; 2026 XMUM Dance Club. All Rights Reserved.</p>
     </footer>
   </div>
 
@@ -379,8 +379,7 @@
     <button onclick="goToPage(1)" class="btn-back">← Exit Scanner</button>
   </div>
 
-<script>
-    // PASTE YOUR GOOGLE WEB APP URL HERE:
+  <script>
     const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxS_coEaWh7ZTXW2njV3t1-XE0BDHPgiCuZW6vBzuaPnxlBvmGO0knD4foIGuzeBC1g/exec";
 
     // Firebase Configuration
@@ -423,8 +422,7 @@
       document.getElementById("price-tag-c").innerText = `RM${currentPrices['zone-c']}`;
     }
 
-    // 2. SEATING GRID CONFIGURATION (CHANGE SEAT NUMBERS / ROWS HERE!)
- // 2. SEATING GRID CONFIGURATION
+    // 2. SEATING GRID CONFIGURATION
     const SEATING_CONFIG = [
       // ROW 1: VIP (Entirely Occupied - 34 Seats)
       { 
@@ -508,7 +506,63 @@
     ];
 
     let selectedSeats = [];
+    let selectedPaymentMethod = "";
+    let html5QrcodeScanner = null;
 
+    function listenToSeatUpdates() {
+      db.collection("concert_seats").onSnapshot((snapshot) => {
+        snapshot.docChanges().forEach((change) => {
+          const data = change.doc.data();
+          const seatBtn = document.querySelector(`[data-id="${change.doc.id}"]`);
+          if (seatBtn) {
+            seatBtn.classList.remove("holding", "occupied");
+            if (data.status === "occupied") {
+              seatBtn.classList.add("occupied");
+            } else if (data.status === "holding") {
+              if (!selectedSeats.some(s => s.id === change.doc.id)) {
+                seatBtn.classList.add("holding");
+              }
+            }
+          }
+        });
+      });
+    }
+
+    function renderSeatingGrid() {
+      const container = document.getElementById("seat-map");
+      if (!container) return;
+      container.innerHTML = "";
+
+      SEATING_CONFIG.forEach(row => {
+        const rowElem = document.createElement("div");
+        rowElem.className = "seat-row";
+
+        const label = document.createElement("span");
+        label.className = "row-label";
+        label.innerText = row.rowName;
+        rowElem.appendChild(label);
+
+        const seatsDiv = document.createElement("div");
+        seatsDiv.className = "row-seats";
+
+        row.seats.forEach(seat => {
+          const seatBtn = document.createElement("button");
+          const seatId = `${row.rowName}-${seat.num}`;
+          seatBtn.className = `seat ${seat.type}`;
+          seatBtn.innerText = seat.num;
+          seatBtn.dataset.id = seatId;
+
+          if (seat.type === "blank") {
+            seatBtn.disabled = true;
+          } else {
+            seatBtn.onclick = () => toggleSeat(seatBtn, seatId, currentPrices[seat.type]);
+          }
+          seatsDiv.appendChild(seatBtn);
+        });
+
+        rowElem.appendChild(seatsDiv);
+        container.appendChild(rowElem);
+      });
 
       listenToSeatUpdates();
     }
@@ -682,6 +736,5 @@
     };
     window.onhashchange = initScanner;
   </script>
-  
 </body>
 </html>
