@@ -638,7 +638,7 @@
       { rowName: "Row 10", seats: Array(35).fill(0).map((_, i) => ({ num: `${70 + i}`, type: [166, 167].includes(Number(70+i)) ? "occupied" : "zone-b" })) },
       { rowName: "Row 11", seats: Array(34).fill(0).map((_, i) => ({ num: `${105 + i}`, type: [166, 167].includes(Number(105+i)) ? "occupied" : "zone-b" })) },
       { rowName: "Row 12", seats: Array(35).fill(0).map((_, i) => ({ num: `${139 + i}`, type: [166, 167].includes(Number(139+i)) ? "occupied" : "zone-b" })) },
-      { rowName: "Row 13", seats: Array(34).fill(0).map((_, i) => ({ num: `${1 + i}`, type: ([16, 17, 18, 19].includes(1 + i) || [59, 60, 61].includes(Number(1+i))) ? "occupied" : "zone-c" })) },
+      { rowName: "Row 13", seats: Array(34).fill(0).map((_, i) => ({ num: `${1 + i}`, type: [59, 60, 61].includes(Number(1+i)) ? "occupied" : "zone-c" })) },
       { rowName: "Row 14", seats: Array(35).fill(0).map((_, i) => ({ num: `${35 + i}`, type: [59, 60, 61].includes(Number(35+i)) ? "occupied" : "zone-c" })) },
       { rowName: "Row 15", seats: Array(34).fill(0).map((_, i) => ({ num: `${70 + i}`, type: "occupied" })) },
       { rowName: "Row 16", seats: Array(35).fill(0).map((_, i) => ({ num: `${104 + i}`, type: "occupied" })) },
@@ -656,12 +656,16 @@
             const data = change.doc.data();
             const seatBtn = document.querySelector(`[data-id="${change.doc.id}"]`);
             if (seatBtn) {
-              seatBtn.classList.remove("holding", "occupied");
+              // Preserve permanently occupied seats
+              if (seatBtn.classList.contains("occupied") && !seatBtn.dataset.dynamicOccupied) return;
+
+              seatBtn.classList.remove("holding");
               const now = Date.now();
               const isExpired = data.timestamp && (now - data.timestamp.toMillis() > 600000);
 
               if (data.status === "occupied") {
                 seatBtn.classList.add("occupied");
+                seatBtn.dataset.dynamicOccupied = "true";
               } else if (data.status === "holding" && !isExpired) {
                 if (!selectedSeats.some(s => s.id === change.doc.id)) {
                   seatBtn.classList.add("holding");
@@ -694,10 +698,10 @@
           const seatId = `${row.rowName}-${seat.num}`;
           seatBtn.type = "button";
           seatBtn.className = `seat ${seat.type}`;
-          seatBtn.innerText = seat.num;
+          seatBtn.innerText = seat.type === "occupied" ? "" : seat.num;
           seatBtn.dataset.id = seatId;
 
-          if (seat.type !== "blank") {
+          if (seat.type !== "blank" && seat.type !== "occupied") {
             seatBtn.onclick = () => toggleSeat(seatBtn, seatId, seat.type, row.rowName, seat.num);
           }
           seatsDiv.appendChild(seatBtn);
@@ -834,7 +838,6 @@
           selectedSeats.forEach(s => {
             batch.set(db.collection("concert_seats").doc(s.id), { status: "occupied", bookedBy: name, ticketId: ticketId });
           });
-          // Save ticket record for door crew verification & duplicate checking
           batch.set(db.collection("tickets").doc(ticketId), {
             ticketId: ticketId,
             name: name,
@@ -867,7 +870,6 @@
       }
     }
 
-    // Door Crew Verification Logic (for your standalone scanner app)
     async function verifyTicketAtDoor(ticketIdInput) {
       if (!db) return { status: 'error', message: 'Database unavailable' };
       try {
@@ -889,7 +891,6 @@
             seats: data.seats
           };
         } else {
-          // First scan - mark as scanned
           await docRef.update({
             scanned: true,
             scannedAt: firebase.firestore.FieldValue.serverTimestamp()
