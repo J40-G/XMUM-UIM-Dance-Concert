@@ -51,7 +51,6 @@
     .section { padding: 40px 15px; border-top: 1px solid #1a1a1a; max-width: 900px; margin: 0 auto; }
     .section h2 { font-size: 1.25rem; letter-spacing: 2px; color: #ffb6c1; margin-bottom: 15px; }
     
-    /* 3-Column Pricing Card Design Above Posters */
     .pricing-cards-container { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; margin-bottom: 25px; }
     .price-tier-card { background: #141414; border: 1px solid #2a2a2a; border-radius: 12px; padding: 20px; width: 270px; text-align: left; }
     .price-tier-card h3 { color: #ffb6c1; font-size: 1.1rem; margin-bottom: 12px; border-bottom: 1px dashed #333; padding-bottom: 6px; }
@@ -59,7 +58,6 @@
     .price-val-white { color: #ffffff; font-weight: bold; }
     .price-val-pink { color: #ffb6c1; font-weight: bold; }
 
-    /* Disclaimer Box */
     .pricing-disclaimer { background: #181415; border: 1px solid #331f24; border-radius: 8px; padding: 12px 15px; margin-bottom: 30px; text-align: left; font-size: 0.8rem; color: #d0d0d0; line-height: 1.5; max-width: 850px; margin-left: auto; margin-right: auto; }
     .pricing-disclaimer p strong { color: #ffb6c1; display: block; margin-bottom: 4px; }
     .pricing-disclaimer ol { padding-left: 18px; margin-top: 6px; }
@@ -70,14 +68,12 @@
     .pricing-card-img { width: 100%; border-radius: 12px; border: 1px solid #333; }
     .sold-out-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); color: #ff4d4d; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: bold; letter-spacing: 2px; }
 
-    /* T-Shirt Design Section */
     .tshirt-design-grid { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; margin-top: 20px; }
     .tshirt-poster-slot { width: 100%; max-width: 270px; background: #141414; border: 1px solid #222; border-radius: 12px; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 5px; }
     .tshirt-poster-slot img { width: 100%; height: auto; max-height: 480px; object-fit: contain; border-radius: 8px; display: block; }
 
     .seating-img { max-width: 100% !important; width: 100%; border-radius: 12px; border: 1px solid #333; }
 
-    /* Contact Us Section */
     .contact-section { background: #111; border-top: 1px solid #222; padding: 30px 20px; margin-top: 30px; text-align: center; }
     .contact-section h3 { color: #ffb6c1; font-size: 1.1rem; margin-bottom: 12px; letter-spacing: 1px; }
     .contact-links { display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; font-size: 0.95rem; align-items: center; }
@@ -85,19 +81,16 @@
     .contact-links a:hover { color: #ffb6c1; }
     .contact-links i { font-size: 1.5rem; }
 
-    /* Page Container */
     .page-container { padding: 25px 15px; max-width: 1000px; margin: 0 auto; }
     .page-header { margin-bottom: 20px; position: relative; }
     .btn-back { position: absolute; left: 0; top: 0; background: transparent; border: 1px solid #444; color: #ccc; padding: 6px 12px; border-radius: 20px; cursor: pointer; font-size: 0.85rem; }
 
     .stage-banner { background-color: #87CEEB; color: #000000; padding: 8px; margin: 15px auto 20px auto; max-width: 800px; letter-spacing: 3px; font-weight: bold; font-size: 0.9rem; border-radius: 6px; text-transform: uppercase; }
 
-    /* Ticket Tier Switcher */
     .tier-selector { background: #181818; border: 1px solid #333; padding: 12px; border-radius: 10px; margin-bottom: 20px; display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; align-items: center; }
     .tier-btn { background: #222; border: 1px solid #444; color: #ccc; padding: 8px 16px; border-radius: 20px; cursor: pointer; font-size: 0.85rem; font-weight: bold; }
     .tier-btn.active { background: #f3b0c3; color: #000; border-color: #f3b0c3; }
 
-    /* Seat Grid */
     .seat-map-wrapper { overflow-x: auto; padding-bottom: 15px; -webkit-overflow-scrolling: touch; }
     .seat-map { display: inline-block; min-width: 800px; }
     .seat-row { display: flex; align-items: center; justify-content: center; margin-bottom: 5px; }
@@ -158,7 +151,7 @@
 </head>
 <body>
 
-  <!-- WELCOME POPUP MODAL (Auto fades after 3 seconds) -->
+  <!-- WELCOME POPUP MODAL -->
   <div id="welcome-modal">
     <div class="modal-content">
       <img src="UIM%20Poster_2.png" alt="United In Motion Logo Popup" class="modal-poster">
@@ -189,7 +182,6 @@
             <span><i class="far fa-clock"></i> 7:00 PM - 10:00 PM</span>
           </div>
 
-          <!-- Larger Circular Logos -->
           <div class="hero-dual-logos">
             <div class="hero-logo-circle"><img src="DC%20Logo.png" alt="Dance Club Logo"></div>
             <span class="logo-cross">×</span>
@@ -203,14 +195,12 @@
       </div>
     </section>
 
-    <!-- Pricing Section (Animated) -->
+    <!-- Pricing Section -->
     <section id="pricing" class="section animate-on-scroll">
       <h2>TICKET PRICING & BUNDLE TIERS</h2>
       <p id="pricing-status-notice" style="color: #ffb6c1; margin-bottom: 25px; font-weight: bold; font-size: 0.9rem;"></p>
       
-      <!-- 3-Column Pricing Card Design Above Posters -->
       <div class="pricing-cards-container">
-        <!-- Zone A -->
         <div class="price-tier-card">
           <h3>Zone A</h3>
           <div class="price-row"><span>Early Bird (Standard):</span> <span class="price-val-white">RM40</span></div>
@@ -218,7 +208,6 @@
           <div class="price-row"><span>Normal (Standard):</span> <span class="price-val-white">RM45</span></div>
           <div class="price-row"><span>Normal + T-Shirt:</span> <span class="price-val-pink">RM80</span></div>
         </div>
-        <!-- Zone B -->
         <div class="price-tier-card">
           <h3>Zone B</h3>
           <div class="price-row"><span>Early Bird (Standard):</span> <span class="price-val-white">RM30</span></div>
@@ -226,7 +215,6 @@
           <div class="price-row"><span>Normal (Standard):</span> <span class="price-val-white">RM35</span></div>
           <div class="price-row"><span>Normal + T-Shirt:</span> <span class="price-val-pink">RM70</span></div>
         </div>
-        <!-- Zone C -->
         <div class="price-tier-card">
           <h3>Zone C</h3>
           <div class="price-row"><span>Early Bird (Standard):</span> <span class="price-val-white">RM20</span></div>
@@ -236,7 +224,6 @@
         </div>
       </div>
 
-      <!-- Disclaimers Below Pricing Packages -->
       <div class="pricing-disclaimer">
         <p><strong>⚠️ Important Disclaimer:</strong></p>
         <ol>
@@ -256,19 +243,13 @@
       </div>
     </section>
 
-    <!-- T-Shirt Design Section (3 Clean Poster Slots, Animated) -->
+    <!-- T-Shirt Design Section -->
     <section id="tshirt-design" class="section animate-on-scroll">
       <h2>T-SHIRT DESIGN</h2>
       <div class="tshirt-design-grid">
-        <div class="tshirt-poster-slot">
-          <img src="tshirt-poster-1.png" alt="T-Shirt Design 1" onerror="this.style.display='none'">
-        </div>
-        <div class="tshirt-poster-slot">
-          <img src="tshirt-poster-2.png" alt="T-Shirt Design 2" onerror="this.style.display='none'">
-        </div>
-        <div class="tshirt-poster-slot">
-          <img src="tshirt-poster-3.png" alt="T-Shirt Design 3" onerror="this.style.display='none'">
-        </div>
+        <div class="tshirt-poster-slot"><img src="tshirt-poster-1.png" alt="T-Shirt Design 1" onerror="this.style.display='none'"></div>
+        <div class="tshirt-poster-slot"><img src="tshirt-poster-2.png" alt="T-Shirt Design 2" onerror="this.style.display='none'"></div>
+        <div class="tshirt-poster-slot"><img src="tshirt-poster-3.png" alt="T-Shirt Design 3" onerror="this.style.display='none'"></div>
       </div>
     </section>
 
@@ -303,7 +284,6 @@
       <h2>Select Ticket & Seats</h2>
     </div>
 
-    <!-- Neat Ticket Tier Switcher -->
     <div class="tier-selector">
       <span style="font-size: 0.85rem; color: #aaa; font-weight: bold;">Select Package:</span>
       <button type="button" id="tier-std" class="tier-btn active" onclick="setTicketTier('standard')">Standard Ticket (No T-shirt)</button>
@@ -349,9 +329,9 @@
       <p style="font-size:0.75rem; color:#ff9f1c; margin-top:5px;">⚠️ Seats locked for 10 minutes. Time remaining: <span id="hold-timer" style="font-weight:bold;">10:00</span></p>
     </div>
 
-    <!-- Committee Referral Code Box (Optional) -->
+    <!-- Committee Referral Code Box (Max 2 Seats) -->
     <div class="payment-summary-box" style="border-color: #ffb6c1; background: #1a1416;">
-      <h4 style="color: #ffb6c1; margin-bottom: 8px;"><i class="fas fa-tag"></i> Committee Referral Code <span style="font-weight: normal; color: #aaa; font-size: 0.85rem;">(Optional)</span></h4>
+      <h4 style="color: #ffb6c1; margin-bottom: 8px;"><i class="fas fa-tag"></i> Committee Referral Code <span style="font-weight: normal; color: #aaa; font-size: 0.85rem;">(Max 2 seats)</span></h4>
       <div style="display: flex; gap: 10px;">
         <input type="text" id="promo-code-input" class="form-control" placeholder="Enter code if applicable" style="text-transform: uppercase;">
         <button type="button" onclick="applyCommitteeCode()" class="btn-pink" style="padding: 10px 20px; font-size: 0.85rem;">Apply</button>
@@ -478,7 +458,6 @@
   <script>
     const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwQxDYrkKlnOsNwVSTiNfxplJ-TszuZHeG_hxYUa2a6u-mbv1votVSDWfkxyndPPgQ/exec";
 
-    // Your actual Firebase configuration
     const firebaseConfig = {
       apiKey: "AIzaSyCq-idSaUh0RNSTYGPcfj6Qf5hpro53AZc",
       authDomain: "xmum-uim-dance-concert.firebaseapp.com",
@@ -497,7 +476,6 @@
       }
     } catch (err) {}
 
-    // Auto fade-out welcome modal after 3 seconds
     setTimeout(() => {
       const modal = document.getElementById('welcome-modal');
       if (modal) {
@@ -506,15 +484,13 @@
       }
     }, 3000);
 
-    // Early Bird Deadline: 20th November 2026, 23:59 Malaysia Time
     const EB_DEADLINE = new Date("2026-11-20T23:59:59+08:00");
     let isEarlyBird = new Date() < EB_DEADLINE;
 
-    // Pricing Table: Standard vs Bundles (Early Bird vs Normal)
     const standardPrices = isEarlyBird ? { 'zone-a': 40, 'zone-b': 30, 'zone-c': 20 } : { 'zone-a': 45, 'zone-b': 35, 'zone-c': 25 };
     const bundlePrices = isEarlyBird ? { 'zone-a': 70, 'zone-b': 60, 'zone-c': 50 } : { 'zone-a': 80, 'zone-b': 70, 'zone-c': 60 };
 
-    let selectedTier = "standard"; // "standard" or "bundle"
+    let selectedTier = "standard";
     let appliedReferralCode = "";
     let holdTimerInterval = null;
 
@@ -557,6 +533,15 @@
         return;
       }
 
+      // STRICT CHECK: Maximum 2 seats allowed for committee discount
+      if (selectedSeats.length > 2) {
+        messageElem.style.color = "#ff8585";
+        messageElem.innerText = "❌ Committee code is valid for a maximum of 2 seats only.";
+        appliedReferralCode = "";
+        recalculateSeatPrices();
+        return;
+      }
+
       if (!VALID_COMMITTEE_CODES.includes(codeInput)) {
         messageElem.style.color = "#ff8585";
         messageElem.innerText = "❌ Invalid committee referral code.";
@@ -564,26 +549,31 @@
         return;
       }
 
-      if (selectedSeats.length > 2) {
-        messageElem.style.color = "#ff8585";
-        messageElem.innerText = "❌ Committee code is valid for a maximum of 2 seats only.";
-        return;
-      }
-
       appliedReferralCode = codeInput;
       recalculateSeatPrices();
 
       messageElem.style.color = "#95d5b2";
-      messageElem.innerText = `✅ Committee Code '${codeInput}' applied! Special committee pricing activated (${selectedSeats.length} pax).`;
+      messageElem.innerText = `✅ Committee Code '${codeInput}' applied! Special pricing activated for ${selectedSeats.length} seat(s).`;
     }
 
     function recalculateSeatPrices() {
+      // If user selected more than 2 seats, automatically invalidate referral code discount
+      if (selectedSeats.length > 2 && appliedReferralCode !== "") {
+        appliedReferralCode = "";
+        const messageElem = document.getElementById("promo-message");
+        if (messageElem) {
+          messageElem.style.display = "block";
+          messageElem.style.color = "#ff8585";
+          messageElem.innerText = "❌ Referral code removed (maximum 2 seats allowed per code).";
+        }
+      }
+
       let total = 0;
       selectedSeats.forEach(s => {
         let baseTable = selectedTier === 'bundle' ? bundlePrices : standardPrices;
         let seatPrice = baseTable[s.zoneKey];
 
-        if (appliedReferralCode !== "") {
+        if (appliedReferralCode !== "" && selectedSeats.length <= 2) {
           if (s.zone === "Zone A") seatPrice = selectedTier === 'bundle' ? 55 : 25;
           if (s.zone === "Zone B") seatPrice = selectedTier === 'bundle' ? 45 : 15;
         }
@@ -656,7 +646,6 @@
             const data = change.doc.data();
             const seatBtn = document.querySelector(`[data-id="${change.doc.id}"]`);
             if (seatBtn) {
-              // Preserve permanently occupied seats
               if (seatBtn.classList.contains("occupied") && !seatBtn.dataset.dynamicOccupied) return;
 
               seatBtn.classList.remove("holding");
@@ -719,15 +708,11 @@
         btn.classList.remove("selected");
         selectedSeats = selectedSeats.filter(s => s.id !== seatId);
       } else {
-        if (selectedSeats.length >= 2 && appliedReferralCode !== "") {
-          alert("Committee referral codes are limited to a maximum of 2 seats per transaction.");
-          return;
-        }
         btn.classList.add("selected");
         let baseTable = selectedTier === 'bundle' ? bundlePrices : standardPrices;
         let finalPrice = baseTable[zoneType];
         
-        if (appliedReferralCode !== "") {
+        if (appliedReferralCode !== "" && selectedSeats.length < 2) {
           if (zoneType === 'zone-a') finalPrice = selectedTier === 'bundle' ? 55 : 25;
           if (zoneType === 'zone-b') finalPrice = selectedTier === 'bundle' ? 45 : 15;
         }
@@ -735,8 +720,8 @@
         selectedSeats.push({ id: seatId, price: finalPrice, zone: getZoneLabel(zoneType), zoneKey: zoneType, rowName: rowName, num: num });
       }
 
+      recalculateSeatPrices();
       document.getElementById("selected-seats-text").innerText = selectedSeats.length ? selectedSeats.map(s => formatSeatLabel(s)).join(", ") : "None";
-      document.getElementById("total-price").innerText = selectedSeats.reduce((sum, s) => sum + s.price, 0);
       document.getElementById("btn-to-page3").disabled = selectedSeats.length === 0;
     }
 
@@ -856,7 +841,9 @@
       const file = document.getElementById("receipt-file").files[0];
       const sendData = (fileData, fileName, fileType) => {
         fetch(GOOGLE_SCRIPT_URL, {
-          method: "POST", mode: "no-cors", headers: { "Content-Type": "application/json" },
+          method: "POST", 
+          mode: "no-cors", 
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ ticketId, name, studentId, email, phone, ticketType: ticketTypeStr, seats: seatsText, totalPaid, paymentMethod: selectedPaymentMethod, referralUsed, fileData, fileName, fileType })
         }).catch(() => {});
       };
@@ -867,44 +854,6 @@
         reader.readAsDataURL(file);
       } else {
         sendData("", "", "");
-      }
-    }
-
-    async function verifyTicketAtDoor(ticketIdInput) {
-      if (!db) return { status: 'error', message: 'Database unavailable' };
-      try {
-        const docRef = db.collection("tickets").doc(ticketIdInput);
-        const docSnap = await docRef.get();
-
-        if (!docSnap.exists) {
-          return { status: 'invalid', message: 'Ticket ID not found in system.' };
-        }
-
-        const data = docSnap.data();
-
-        if (data.scanned) {
-          let scannedTime = data.scannedAt ? new Date(data.scannedAt.toMillis()).toLocaleTimeString() : "earlier";
-          return { 
-            status: 'duplicate', 
-            message: `⚠️ DUPLICATE / ALREADY SCANNED at ${scannedTime}!`,
-            name: data.name,
-            seats: data.seats
-          };
-        } else {
-          await docRef.update({
-            scanned: true,
-            scannedAt: firebase.firestore.FieldValue.serverTimestamp()
-          });
-          return { 
-            status: 'valid', 
-            message: '✅ VALID TICKET - ENTRY GRANTED',
-            name: data.name,
-            studentId: data.studentId,
-            seats: data.seats
-          };
-        }
-      } catch (err) {
-        return { status: 'error', message: err.message };
       }
     }
 
