@@ -6,9 +6,6 @@
   <title>United in Motion | XMUM Dance Concert 2026</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
-  <!-- Firebase Compat Libraries -->
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
   <!-- Local QR Code Generator -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
@@ -22,7 +19,7 @@
     .nav-links a:hover { color: #ffb6c1; }
 
     /* Scroll Animation */
-    .animate-on-scroll { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease-out, transform 0.6s ease-out; }
+    .animate-on-scroll { opacity: 0; transform: translateY(20px); transition: opacity 0.8s ease-out, transform 0.8s ease-out; }
     .animate-on-scroll.visible { opacity: 1; transform: translateY(0); }
 
     /* Seamless Welcome Modal Popup */
@@ -53,19 +50,29 @@
     /* Pricing Section */
     .section { padding: 40px 15px; border-top: 1px solid #1a1a1a; max-width: 900px; margin: 0 auto; }
     .section h2 { font-size: 1.25rem; letter-spacing: 2px; color: #ffb6c1; margin-bottom: 15px; }
+    
+    /* 3-Column Pricing Card Design Above Posters */
+    .pricing-cards-container { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; margin-bottom: 25px; }
+    .price-tier-card { background: #141414; border: 1px solid #2a2a2a; border-radius: 12px; padding: 20px; width: 270px; text-align: left; }
+    .price-tier-card h3 { color: #ffb6c1; font-size: 1.1rem; margin-bottom: 12px; border-bottom: 1px dashed #333; padding-bottom: 6px; }
+    .price-row { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 8px; color: #ccc; }
+    .price-val { color: #ffb6c1; font-weight: bold; }
+
+    /* Disclaimer Box */
+    .pricing-disclaimer { background: #181415; border: 1px solid #331f24; border-radius: 8px; padding: 12px 15px; margin-bottom: 30px; text-align: left; font-size: 0.8rem; color: #d0d0d0; line-height: 1.5; max-width: 850px; margin-left: auto; margin-right: auto; }
+    .pricing-disclaimer p strong { color: #ffb6c1; display: block; margin-bottom: 4px; }
+    .pricing-disclaimer ol { padding-left: 18px; }
+
     .pricing-grid { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; margin-top: 15px; }
     .pricing-card-wrapper { position: relative; display: inline-block; width: 100%; max-width: 350px; }
     .pricing-card-img { width: 100%; border-radius: 12px; border: 1px solid #333; }
     .sold-out-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); color: #ff4d4d; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: bold; letter-spacing: 2px; }
 
-    /* Package Details Box on Page 1 */
-    .package-breakdown-box { background: #141414; border: 1px solid #2a2a2a; border-radius: 12px; padding: 20px; margin-top: 25px; text-align: left; }
-    .package-breakdown-box h3 { color: #ffb6c1; font-size: 1rem; margin-bottom: 12px; text-align: center; }
-    .pricing-table-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; font-size: 0.85srem; }
-    @media(max-width: 600px) { .pricing-table-grid { grid-template-columns: 1fr; } }
-    .pricing-col { background: #1a1a1a; padding: 12px; border-radius: 8px; border: 1px solid #333; }
-    .pricing-col h4 { color: #87CEEB; font-size: 0.9rem; margin-bottom: 8px; border-bottom: 1px dashed #444; padding-bottom: 4px; }
-    .pricing-col ul { list-style: none; padding-left: 0; color: #ccc; line-height: 1.6; font-size: 0.82rem; }
+    /* T-Shirt Design Section */
+    .tshirt-design-grid { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-top: 20px; }
+    .tshirt-poster-slot { width: 100%; max-width: 380px; height: 450px; background: #141414; border: 2px dashed #333; border-radius: 12px; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
+    .tshirt-poster-slot img { width: 100%; height: 100%; object-fit: contain; }
+    .tshirt-poster-slot span { color: #666; font-size: 0.9rem; letter-spacing: 1px; }
 
     .seating-img { max-width: 100% !important; width: 100%; border-radius: 12px; border: 1px solid #333; }
 
@@ -164,6 +171,7 @@
       <nav class="nav-links">
         <a href="#about">About</a>
         <a href="#pricing">Pricing</a>
+        <a href="#tshirt-design">T-Shirt Design</a>
         <a href="#seating-info">Seating</a>
       </nav>
     </header>
@@ -196,9 +204,46 @@
 
     <!-- Pricing Section -->
     <section id="pricing" class="section animate-on-scroll">
-      <h2>TICKET PRICING & BUNDLES</h2>
-      <p id="pricing-status-notice" style="color: #ffb6c1; margin-bottom: 15px; font-weight: bold; font-size: 0.9rem;"></p>
+      <h2>TICKET PRICING & BUNDLE TIERS</h2>
+      <p id="pricing-status-notice" style="color: #ffb6c1; margin-bottom: 25px; font-weight: bold; font-size: 0.9rem;"></p>
       
+      <!-- 3-Column Pricing Card Design Above Posters -->
+      <div class="pricing-cards-container">
+        <!-- Zone A -->
+        <div class="price-tier-card">
+          <h3>Zone A</h3>
+          <div class="price-row"><span>Early Bird (Standard):</span> <span class="price-val">RM40</span></div>
+          <div class="price-row"><span>Early Bird + T-Shirt:</span> <span class="price-val">RM70</span></div>
+          <div class="price-row"><span>Normal (Standard):</span> <span class="price-val">RM45</span></div>
+          <div class="price-row"><span>Normal + T-Shirt:</span> <span class="price-val">RM80</span></div>
+        </div>
+        <!-- Zone B -->
+        <div class="price-tier-card">
+          <h3>Zone B</h3>
+          <div class="price-row"><span>Early Bird (Standard):</span> <span class="price-val">RM30</span></div>
+          <div class="price-row"><span>Early Bird + T-Shirt:</span> <span class="price-val">RM60</span></div>
+          <div class="price-row"><span>Normal (Standard):</span> <span class="price-val">RM35</span></div>
+          <div class="price-row"><span>Normal + T-Shirt:</span> <span class="price-val">RM70</span></div>
+        </div>
+        <!-- Zone C -->
+        <div class="price-tier-card">
+          <h3>Zone C</h3>
+          <div class="price-row"><span>Early Bird (Standard):</span> <span class="price-val">RM20</span></div>
+          <div class="price-row"><span>Early Bird + T-Shirt:</span> <span class="price-val">RM50</span></div>
+          <div class="price-row"><span>Normal (Standard):</span> <span class="price-val">RM25</span></div>
+          <div class="price-row"><span>Normal + T-Shirt:</span> <span class="price-val">RM60</span></div>
+        </div>
+      </div>
+
+      <!-- Disclaimers Below Pricing Packages -->
+      <div class="pricing-disclaimer">
+        <p><strong>⚠️ Important Disclaimers:</strong></p>
+        <ol>
+          <li>Design & size of T-shirt received is based on first-come first served on event day.</li>
+          <li>No pre chosen design & size is allowed.</li>
+        </ol>
+      </div>
+
       <div class="pricing-grid">
         <div class="pricing-card-wrapper">
           <img src="UIM%20early%20bird.png" alt="Early Bird Pricing" class="pricing-card-img">
@@ -208,25 +253,19 @@
           <img src="UIM%20normal.png" alt="Normal Pricing" class="pricing-card-img">
         </div>
       </div>
+    </section>
 
-      <!-- Included Package Breakdown Details -->
-      <div class="package-breakdown-box">
-        <h3>📋 Package Price Breakdown Summary</h3>
-        <div class="pricing-table-grid">
-          <div class="pricing-col">
-            <h4>⚡ Early Bird (Until 20 Nov)</h4>
-            <ul>
-              <li><strong>Standard Tickets:</strong> Zone A RM40 | Zone B RM30 | Zone C RM20</li>
-              <li><strong>T-Shirt Bundles (Inc. Tee):</strong> Zone A RM70 | Zone B RM60 | Zone C RM50</li>
-            </ul>
-          </div>
-          <div class="pricing-col">
-            <h4>🎟️ Normal Price</h4>
-            <ul>
-              <li><strong>Standard Tickets:</strong> Zone A RM45 | Zone B RM35 | Zone C RM25</li>
-              <li><strong>T-Shirt Bundles (Inc. Tee):</strong> Zone A RM80 | Zone B RM70 | Zone C RM60</li>
-            </ul>
-          </div>
+    <!-- T-Shirt Design Section -->
+    <section id="tshirt-design" class="section animate-on-scroll">
+      <h2>T-SHIRT DESIGN</h2>
+      <div class="tshirt-design-grid">
+        <div class="tshirt-poster-slot">
+          <img src="tshirt-poster-1.png" alt="T-Shirt Design 1" onerror="this.style.display='none'">
+          <span style="position: absolute;">T-Shirt Design 1</span>
+        </div>
+        <div class="tshirt-poster-slot">
+          <img src="tshirt-poster-2.png" alt="T-Shirt Design 2" onerror="this.style.display='none'">
+          <span style="position: absolute;">T-Shirt Design 2</span>
         </div>
       </div>
     </section>
@@ -241,7 +280,7 @@
       <button type="button" onclick="goToPage(2)" class="btn-pink">Select Your Seats Now</button>
     </section>
 
-    <!-- CONTACT US SECTION (Bottom of Page 1) -->
+    <!-- CONTACT US SECTION -->
     <div class="contact-section">
       <h3>Need Help? Contact us</h3>
       <div class="contact-links">
@@ -379,19 +418,6 @@
           <input type="tel" id="input-phone" class="form-control" required placeholder="0123456789">
         </div>
 
-        <!-- T-Shirt Size (Conditional for Bundles) -->
-        <div class="form-group" id="tshirt-size-group" style="display: none;">
-          <label>T-Shirt Size <span>*</span></label>
-          <select id="input-tshirt-size" class="form-control">
-            <option value="">Select size</option>
-            <option value="S">S</option>
-            <option value="M">M</option>
-            <option value="L">L</option>
-            <option value="XL">XL</option>
-            <option value="2XL">2XL</option>
-          </select>
-        </div>
-
         <div class="form-group">
           <label>Payment Receipt<span>*</span></label>
           <div class="upload-btn-wrapper">
@@ -421,7 +447,6 @@
         <p><strong>Student ID:</strong> <span id="ticket-student-id">N/A</span></p>
         <p><strong>Contact No:</strong> <span id="ticket-phone">-</span></p>
         <p><strong>Package:</strong> <span id="ticket-tier-label" style="color:#ffb6c1; font-weight:bold;">Standard Ticket</span></p>
-        <p id="ticket-size-wrapper" style="display:none;"><strong>T-Shirt Size:</strong> <span id="ticket-size" style="color:#ffb6c1;">-</span></p>
         <p><strong>Seat(s):</strong> <span id="ticket-seats" style="color:#ffb6c1; font-weight:bold;">-</span></p>
         <p><strong>Total Paid:</strong> RM <span id="ticket-price">0</span></p>
         <p><strong>Date & Time:</strong> 11th Dec 2026 | 7:00 PM - 10:00 PM</p>
@@ -438,16 +463,22 @@
     <button type="button" onclick="window.print()" class="btn-pink"><i class="fas fa-print"></i> Print E-Ticket</button>
   </div>
 
+  <!-- Firebase Compat Libraries & App Logic -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
   <script>
     const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwQxDYrkKlnOsNwVSTiNfxplJ-TszuZHeG_hxYUa2a6u-mbv1votVSDWfkxyndPPgQ/exec";
 
+    // Your actual Firebase configuration
     const firebaseConfig = {
-      apiKey: "AIzaSyDummyKeyForPublicFirestoreSync123",
+      apiKey: "AIzaSyCq-idSaUh0RNSTYGPcfj6Qf5hpro53AZc",
       authDomain: "xmum-uim-dance-concert.firebaseapp.com",
       projectId: "xmum-uim-dance-concert",
-      storageBucket: "xmum-uim-dance-concert.appspot.com",
-      messagingSenderId: "123456789",
-      appId: "1:123456789:web:123456"
+      storageBucket: "xmum-uim-dance-concert.firebasestorage.app",
+      messagingSenderId: "5997955641",
+      appId: "1:5997955641:web:b679c10a104f7978741be8",
+      measurementId: "G-297BT3NRB1"
     };
 
     let db = null;
@@ -565,7 +596,7 @@
       const ebOverlay = document.getElementById("eb-overlay");
       if (notice) {
         if (isEarlyBird) {
-          notice.innerText = "⚡ Early Bird Pricing & Bundles ACTIVE! (Ends 20th Nov 2026, 11:59 PM Malaysia Time)";
+          notice.innerText = "⚡ Early Bird Pricing & Bundles ACTIVE! (Ends 20th Nov 2026, 11:59 PM)";
           if (ebOverlay) ebOverlay.style.display = "none";
         } else {
           notice.innerText = "🔒 Early Bird Pricing HAS ENDED. Normal Price & Bundles apply.";
@@ -768,7 +799,6 @@
       const studentId = document.getElementById("input-student-id").value;
       const email = document.getElementById("input-email").value;
       const phone = document.getElementById("input-phone").value;
-      const tshirtSize = selectedTier === 'bundle' ? (document.getElementById("input-tshirt-size").value || "N/A") : "N/A";
       const seatsText = selectedSeats.map(s => formatSeatLabel(s)).join(", ");
       const totalPaid = selectedSeats.reduce((sum, s) => sum + s.price, 0);
       const referralUsed = appliedReferralCode || "None";
@@ -781,13 +811,6 @@
       document.getElementById("ticket-price").innerText = totalPaid;
       document.getElementById("ticket-id").innerText = ticketId;
       document.getElementById("ticket-tier-label").innerText = ticketTypeStr;
-
-      if (selectedTier === 'bundle') {
-        document.getElementById("ticket-size-wrapper").style.display = "block";
-        document.getElementById("ticket-size").innerText = tshirtSize;
-      } else {
-        document.getElementById("ticket-size-wrapper").style.display = "none";
-      }
 
       const qrContainer = document.getElementById("ticket-qr-container");
       qrContainer.innerHTML = "";
@@ -811,7 +834,7 @@
       const sendData = (fileData, fileName, fileType) => {
         fetch(GOOGLE_SCRIPT_URL, {
           method: "POST", mode: "no-cors", headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ ticketId, name, studentId, email, phone, tshirtSize, ticketType: ticketTypeStr, seats: seatsText, totalPaid, paymentMethod: selectedPaymentMethod, referralUsed, fileData, fileName, fileType })
+          body: JSON.stringify({ ticketId, name, studentId, email, phone, ticketType: ticketTypeStr, seats: seatsText, totalPaid, paymentMethod: selectedPaymentMethod, referralUsed, fileData, fileName, fileType })
         }).catch(() => {});
       };
 
@@ -840,11 +863,6 @@
         document.getElementById("payment-tier-summary").innerText = selectedTier === 'bundle' ? '⭐ T-Shirt Bundle (+T-shirt)' : 'Standard Ticket';
         document.getElementById("payment-seats-summary").innerText = selectedSeats.map(s => formatSeatLabel(s)).join(", ");
         recalculateSeatPrices();
-      }
-
-      if (pageNum === 4) {
-        document.getElementById("tshirt-size-group").style.display = selectedTier === 'bundle' ? "block" : "none";
-        document.getElementById("input-tshirt-size").required = (selectedTier === 'bundle');
       }
 
       document.getElementById(`page-${pageNum}`).style.display = "block";
