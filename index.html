@@ -26,11 +26,11 @@
     .animate-on-scroll { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease-out, transform 0.6s ease-out; }
     .animate-on-scroll.visible { opacity: 1; transform: translateY(0); }
 
-    /* Welcome Modal Popup */
-    #welcome-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; z-index: 3000; padding: 15px; }
-    .modal-content { position: relative; max-width: 400px; width: 100%; text-align: center; background: #141414; padding: 20px; border-radius: 16px; border: 1px solid #333; box-shadow: 0 15px 35px rgba(0,0,0,0.9); }
+    /* Welcome Modal Popup with New Logo */
+    #welcome-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: flex; align-items: center; justify-content: center; z-index: 3000; padding: 15px; }
+    .modal-content { position: relative; max-width: 380px; width: 100%; text-align: center; background: #141414; padding: 20px; border-radius: 16px; border: 1px solid #333; box-shadow: 0 15px 35px rgba(0,0,0,0.9); }
     .modal-close { position: absolute; top: 10px; right: 15px; background: transparent; color: #ffb6c1; border: none; font-size: 1.8rem; font-weight: bold; cursor: pointer; }
-    .modal-poster { width: 100%; max-height: 420px; object-fit: contain; border-radius: 10px; border: 1px solid #444; margin-bottom: 15px; }
+    .modal-poster { width: 100%; max-height: 400px; object-fit: contain; border-radius: 10px; background-color: #111; margin-bottom: 15px; }
 
     /* Hero Section */
     .hero { padding: 15px; max-width: 900px; margin: 0 auto; }
@@ -42,9 +42,10 @@
     .event-meta-pills { display: flex; justify-content: center; gap: 8px; margin-bottom: 15px; font-size: 0.75rem; color: #cccccc; flex-wrap: wrap; }
     .event-meta-pills span { background: rgba(255, 255, 255, 0.1); padding: 5px 10px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.15); }
 
+    /* Dual Logos with Transparent Background Effect */
     .hero-dual-logos { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 15px; }
-    .hero-logo-circle { width: 55px; height: 55px; border-radius: 50%; border: 2px solid #ffb6c1; overflow: hidden; background: #1a1a1a; }
-    .hero-logo-circle img { width: 100%; height: 100%; object-fit: cover; }
+    .hero-logo-circle { width: 55px; height: 55px; border-radius: 50%; border: 2px solid #ffb6c1; overflow: hidden; background: #000; display: flex; align-items: center; justify-content: center; }
+    .hero-logo-circle img { width: 100%; height: 100%; object-fit: cover; mix-blend-mode: screen; }
     .logo-cross { color: #ffb6c1; font-weight: bold; font-size: 1.1rem; }
 
     .btn-pink { background-color: #f3b0c3; color: #000000; padding: 12px 30px; border-radius: 30px; text-decoration: none; font-weight: bold; font-size: 0.95rem; border: none; cursor: pointer; transition: transform 0.2s; }
@@ -61,7 +62,7 @@
 
     .seating-img { max-width: 100% !important; width: 100%; border-radius: 12px; border: 1px solid #333; }
 
-    /* Contact Us Footer Section */
+    /* Contact Us Section */
     .contact-section { background: #111; border-top: 1px solid #222; padding: 30px 20px; margin-top: 30px; text-align: center; }
     .contact-section h3 { color: #ffb6c1; font-size: 1.1rem; margin-bottom: 15px; letter-spacing: 1px; }
     .contact-links { display: flex; justify-content: center; gap: 25px; flex-wrap: wrap; font-size: 0.9rem; }
@@ -142,11 +143,11 @@
 </head>
 <body>
 
-  <!-- WELCOME POPUP MODAL WITH ATTACHED POSTER -->
+  <!-- WELCOME POPUP MODAL WITH NEW LOGO (UIM Poster_2.png) -->
   <div id="welcome-modal">
     <div class="modal-content">
       <button type="button" class="modal-close" onclick="closeWelcomeModal()">&times;</button>
-      <img src="UIM%20Poster.png" alt="United In Motion Poster" class="modal-poster">
+      <img src="UIM%20Poster_2.png" alt="United In Motion Logo Popup" class="modal-poster">
       <button type="button" onclick="closeWelcomeModal()" class="btn-pink" style="width:100%;">Enter Website</button>
     </div>
   </div>
@@ -171,9 +172,10 @@
           <div class="event-meta-pills">
             <span><i class="far fa-calendar-alt"></i> 11th Dec 2026</span>
             <span><i class="fas fa-map-marker-alt"></i> Tan Hua Choon Auditorium</span>
-            <span><i class="far fa-clock"></i> 7:00 PM</span>
+            <span><i class="far fa-clock"></i> 7:00 PM - 10:00 PM</span>
           </div>
 
+          <!-- Circular Logos with Transparent Background Effect -->
           <div class="hero-dual-logos">
             <div class="hero-logo-circle"><img src="DC%20Logo.jpeg" alt="Dance Club Logo"></div>
             <span class="logo-cross">×</span>
@@ -361,7 +363,7 @@
         <p><strong>Contact No:</strong> <span id="ticket-phone">-</span></p>
         <p><strong>Seat(s):</strong> <span id="ticket-seats" style="color:#ffb6c1; font-weight:bold;">-</span></p>
         <p><strong>Total Paid:</strong> RM <span id="ticket-price">0</span></p>
-        <p><strong>Date & Time:</strong> 11th Dec 2026 | 7:00 PM</p>
+        <p><strong>Date & Time:</strong> 11th Dec 2026 | 7:00 PM - 10:00 PM</p>
         <p><strong>Venue:</strong> Tan Hua Choon Auditorium, XMUM</p>
         <p><strong>Ticket ID:</strong> <span id="ticket-id" style="font-family:monospace; color:#87CEEB;">#UIM-2026-XXXX</span></p>
       </div>
@@ -373,6 +375,20 @@
 
     <br>
     <button type="button" onclick="window.print()" class="btn-pink"><i class="fas fa-print"></i> Print E-Ticket</button>
+  </div>
+
+  <!-- PAGE 6: DOOR CREW SCANNER PAGE (#scanner) -->
+  <div id="page-scanner" class="page-container" style="display: none;">
+    <h2>DOOR CREW SCANNER</h2>
+    <p style="color:#aaa; margin-bottom:20px;">Point camera at attendee's E-Ticket QR Code</p>
+
+    <div id="scanner-container">
+      <div id="reader"></div>
+      <div id="scan-status" class="scan-status-card" style="display:none;"></div>
+    </div>
+    
+    <br>
+    <button type="button" onclick="goToPage(1)" class="btn-back">← Exit Scanner</button>
   </div>
 
   <script>
@@ -624,11 +640,29 @@
       }
     }
 
+    let html5QrCode = null;
+
     function goToPage(pageNum) {
       for (let i = 1; i <= 5; i++) {
         const p = document.getElementById(`page-${i}`);
         if (p) p.style.display = "none";
       }
+      const scannerPage = document.getElementById('page-scanner');
+      if (scannerPage) scannerPage.style.display = "none";
+
+      if (html5QrCode && html5QrCode.isScanning) {
+        html5QrCode.stop().catch(() => {});
+      }
+
+      if (pageNum === 'scanner') {
+        if (scannerPage) {
+          scannerPage.style.display = "block";
+          startScanner();
+        }
+        window.scrollTo(0, 0);
+        return;
+      }
+
       if (pageNum === 3) {
         lockSeatHolding();
         document.getElementById("payment-seats-summary").innerText = selectedSeats.map(s => formatSeatLabel(s)).join(", ");
@@ -638,13 +672,59 @@
       window.scrollTo(0, 0);
     }
 
+    function startScanner() {
+      const statusCard = document.getElementById("scan-status");
+      if (statusCard) statusCard.style.display = "none";
+
+      if (typeof Html5Qrcode === "undefined") return;
+      if (!html5QrCode) {
+        html5QrCode = new Html5Qrcode("reader");
+      }
+
+      html5QrCode.start(
+        { facingMode: "environment" },
+        { fps: 10, qrbox: { width: 250, height: 250 } },
+        async (decodedText) => {
+          if (statusCard) {
+            statusCard.style.display = "block";
+            statusCard.className = "scan-status-card scan-valid";
+            statusCard.innerHTML = `<i class="fas fa-check-circle"></i> VALID TICKET<br><span style="font-size:0.8rem; font-family:monospace;">${decodedText}</span>`;
+          }
+          if (html5QrCode && html5QrCode.isScanning) {
+            await html5QrCode.stop();
+          }
+          setTimeout(() => startScanner(), 4000);
+        },
+        (errorMessage) => {}
+      ).catch(err => {
+        if (statusCard) {
+          statusCard.style.display = "block";
+          statusCard.className = "scan-status-card scan-invalid";
+          statusCard.innerText = "Camera Access Error or Not Supported";
+        }
+      });
+    }
+
     window.onload = () => {
       updatePricingUI();
       renderSeatingGrid();
+
+      if (window.location.hash === "#scanner") {
+        goToPage('scanner');
+      }
+
       const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add("visible"); });
       }, { threshold: 0.1 });
       document.querySelectorAll('.animate-on-scroll').forEach(section => observer.observe(section));
+    };
+
+    window.onhashchange = () => {
+      if (window.location.hash === "#scanner") {
+        goToPage('scanner');
+      } else if (window.location.hash === "") {
+        goToPage(1);
+      }
     };
   </script>
 </body>
