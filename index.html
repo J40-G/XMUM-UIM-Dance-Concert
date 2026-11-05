@@ -26,10 +26,10 @@
     .animate-on-scroll { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease-out, transform 0.6s ease-out; }
     .animate-on-scroll.visible { opacity: 1; transform: translateY(0); }
 
-    /* Welcome Modal Popup with 3s Auto-Fade */
+    /* Seamless Welcome Modal Popup */
     #welcome-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); display: flex; align-items: center; justify-content: center; z-index: 3000; padding: 15px; transition: opacity 0.8s ease; }
-    .modal-content { position: relative; max-width: 380px; width: 100%; text-align: center; background: transparent; padding: 10px; }
-    .modal-poster { width: 100%; max-height: 450px; object-fit: contain; border-radius: 12px; }
+    .modal-content { position: relative; max-width: 400px; width: 100%; text-align: center; background: #1b1214; padding: 20px; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.9); border: 1px solid #2a1b1e; }
+    .modal-poster { width: 100%; max-height: 420px; object-fit: contain; border-radius: 12px; display: block; margin: 0 auto; background: #1b1214; }
 
     /* Hero Section */
     .hero { padding: 15px; max-width: 900px; margin: 0 auto; }
@@ -41,7 +41,7 @@
     .event-meta-pills { display: flex; justify-content: center; gap: 8px; margin-bottom: 15px; font-size: 0.75rem; color: #cccccc; flex-wrap: wrap; }
     .event-meta-pills span { background: rgba(255, 255, 255, 0.1); padding: 5px 10px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.15); }
 
-    /* Circular Logos with Completely Removed White Background */
+    /* Circular Logos without Boxy Backgrounds */
     .hero-dual-logos { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 15px; }
     .hero-logo-circle { width: 55px; height: 55px; border-radius: 50%; border: 2px solid #ffb6c1; overflow: hidden; background: transparent; display: flex; align-items: center; justify-content: center; }
     .hero-logo-circle img { width: 100%; height: 100%; object-fit: cover; mix-blend-mode: lighten; filter: contrast(120%); }
@@ -172,7 +172,7 @@
             <span><i class="far fa-clock"></i> 7:00 PM - 10:00 PM</span>
           </div>
 
-          <!-- Circular Logos without Boxy White Backgrounds -->
+          <!-- Circular Logos without Boxy Backgrounds -->
           <div class="hero-dual-logos">
             <div class="hero-logo-circle"><img src="DC%20Logo.jpeg" alt="Dance Club Logo"></div>
             <span class="logo-cross">×</span>
@@ -270,6 +270,16 @@
       <p style="font-size:0.75rem; color:#ff9f1c; margin-top:5px;">⚠️ Seats locked for 10 minutes.</p>
     </div>
 
+    <!-- Committee Referral Code Box (Optional) -->
+    <div class="payment-summary-box" style="border-color: #ffb6c1; background: #1a1416;">
+      <h4 style="color: #ffb6c1; margin-bottom: 8px;"><i class="fas fa-tag"></i> Committee Referral Code <span style="font-weight: normal; color: #aaa; font-size: 0.85rem;">(Optional)</span></h4>
+      <div style="display: flex; gap: 10px;">
+        <input type="text" id="promo-code-input" class="form-control" placeholder="Enter code if applicable" style="text-transform: uppercase;">
+        <button type="button" onclick="applyCommitteeCode()" class="btn-pink" style="padding: 10px 20px; font-size: 0.85rem;">Apply</button>
+      </div>
+      <p id="promo-message" style="font-size: 0.8rem; margin-top: 8px; display: none;"></p>
+    </div>
+
     <h3>Select Payment Method</h3>
     <div class="payment-options-grid">
       <div class="payment-card" onclick="selectPaymentMethod('bank')">
@@ -319,7 +329,7 @@
           <input type="text" id="input-name" class="form-control" required placeholder="Enter full name">
         </div>
         <div class="form-group">
-          <label>Student ID</label>
+          <label>Student ID <span>(XMUM students only)</span></label>
           <input type="text" id="input-student-id" class="form-control" placeholder="Enter student ID">
         </div>
         <div class="form-group">
@@ -419,7 +429,81 @@
 
     const EB_DEADLINE = new Date("2026-11-21T23:59:59+08:00");
     let isEarlyBird = new Date() < EB_DEADLINE;
-    let currentPrices = isEarlyBird ? { 'zone-a': 40, 'zone-b': 30, 'zone-c': 20 } : { 'zone-a': 45, 'zone-b': 35, 'zone-c': 25 };
+    let standardPrices = isEarlyBird ? { 'zone-a': 40, 'zone-b': 30, 'zone-c': 20 } : { 'zone-a': 45, 'zone-b': 35, 'zone-c': 25 };
+
+    let appliedReferralCode = "";
+
+    // All valid committee codes pre-loaded (max 2 pax / one-time use per code)
+    const COMMITTEE_CODES = {
+      "ADVISOR": { used: false }, "OC": { used: false },
+      "VOC1": { used: false }, "VOC2": { used: false },
+      "SEC1": { used: false }, "SEC2": { used: false },
+      "TRE1": { used: false }, "TRE2": { used: false },
+      "EP1": { used: false }, "EP2": { used: false }, "EP3": { used: false }, "EP4": { used: false }, "EP5": { used: false },
+      "GA1": { used: false }, "GA2": { used: false }, "GA3": { used: false }, "GA4": { used: false }, "GA5": { used: false }, "GA6": { used: false },
+      "PR1": { used: false }, "PR2": { used: false }, "PR3": { used: false }, "PR4": { used: false }, "PR5": { used: false }, "PR6": { used: false }, "PR7": { used: false }, "PR8": { used: false }, "PR9": { used: false }, "PR10": { used: false },
+      "DG1": { used: false }, "DG2": { used: false }, "DG3": { used: false }, "DG4": { used: false }, "DG5": { used: false },
+      "PGVG1": { used: false }, "PGVG2": { used: false }, "PGVG3": { used: false }, "PGVG4": { used: false }, "PGVG5": { used: false }, "PGVG6": { used: false }, "PGVG7": { used: false },
+      "PT1": { used: false }, "PT2": { used: false }, "PT3": { used: false }, "PT4": { used: false }, "PT5": { used: false }
+    };
+
+    function applyCommitteeCode() {
+      const codeInput = document.getElementById("promo-code-input").value.trim().toUpperCase();
+      const messageElem = document.getElementById("promo-message");
+      messageElem.style.display = "block";
+
+      if (codeInput === "") {
+        appliedReferralCode = "";
+        messageElem.style.color = "#aaa";
+        messageElem.innerText = "No code applied (Standard Pricing).";
+        recalculatePrices();
+        return;
+      }
+
+      if (!COMMITTEE_CODES[codeInput]) {
+        messageElem.style.color = "#ff8585";
+        messageElem.innerText = "❌ Invalid committee referral code. Please check and try again.";
+        return;
+      }
+
+      if (COMMITTEE_CODES[codeInput].used) {
+        messageElem.style.color = "#ff8585";
+        messageElem.innerText = "❌ This committee code has already been fully used (limit 2 pax reached).";
+        return;
+      }
+
+      if (selectedSeats.length > 2) {
+        messageElem.style.color = "#ff8585";
+        messageElem.innerText = "❌ Committee code is valid for a maximum of 2 seats only.";
+        return;
+      }
+
+      // Valid code applied (Zone A = RM25, Zone B = RM15)
+      appliedReferralCode = codeInput;
+      selectedSeats.forEach(s => {
+        if (s.zone === "Zone A") s.price = 25;
+        if (s.zone === "Zone B") s.price = 15;
+      });
+
+      const newTotal = selectedSeats.reduce((sum, s) => sum + s.price, 0);
+      document.getElementById("payment-amount-summary").innerText = newTotal;
+      document.getElementById("total-price").innerText = newTotal;
+
+      messageElem.style.color = "#95d5b2";
+      messageElem.innerText = `✅ Committee Code '${codeInput}' applied successfully! Special pricing activated (${selectedSeats.length} pax).`;
+    }
+
+    function recalculatePrices() {
+      appliedReferralCode = "";
+      selectedSeats.forEach(s => {
+        if (s.zone === "Zone A") s.price = standardPrices['zone-a'];
+        if (s.zone === "Zone B") s.price = standardPrices['zone-b'];
+        if (s.zone === "Zone C") s.price = standardPrices['zone-c'];
+      });
+      const newTotal = selectedSeats.reduce((sum, s) => sum + s.price, 0);
+      document.getElementById("payment-amount-summary").innerText = newTotal;
+      document.getElementById("total-price").innerText = newTotal;
+    }
 
     function updatePricingUI() {
       const notice = document.getElementById("pricing-status-notice");
@@ -433,9 +517,9 @@
           if (ebOverlay) ebOverlay.style.display = "flex";
         }
       }
-      if (document.getElementById("price-tag-a")) document.getElementById("price-tag-a").innerText = `RM${currentPrices['zone-a']}`;
-      if (document.getElementById("price-tag-b")) document.getElementById("price-tag-b").innerText = `RM${currentPrices['zone-b']}`;
-      if (document.getElementById("price-tag-c")) document.getElementById("price-tag-c").innerText = `RM${currentPrices['zone-c']}`;
+      if (document.getElementById("price-tag-a")) document.getElementById("price-tag-a").innerText = `RM${standardPrices['zone-a']}`;
+      if (document.getElementById("price-tag-b")) document.getElementById("price-tag-b").innerText = `RM${standardPrices['zone-b']}`;
+      if (document.getElementById("price-tag-c")) document.getElementById("price-tag-c").innerText = `RM${standardPrices['zone-c']}`;
     }
 
     function getZoneLabel(zoneType) {
@@ -522,7 +606,7 @@
           seatBtn.dataset.id = seatId;
 
           if (seat.type !== "blank") {
-            seatBtn.onclick = () => toggleSeat(seatBtn, seatId, currentPrices[seat.type], seat.type, row.rowName, seat.num);
+            seatBtn.onclick = () => toggleSeat(seatBtn, seatId, standardPrices[seat.type], seat.type, row.rowName, seat.num);
           }
           seatsDiv.appendChild(seatBtn);
         });
@@ -539,8 +623,17 @@
         btn.classList.remove("selected");
         selectedSeats = selectedSeats.filter(s => s.id !== seatId);
       } else {
+        if (selectedSeats.length >= 2 && appliedReferralCode !== "") {
+          alert("Committee referral codes are limited to a maximum of 2 seats per transaction.");
+          return;
+        }
         btn.classList.add("selected");
-        selectedSeats.push({ id: seatId, price: price, zone: getZoneLabel(zoneType), rowName: rowName, num: num });
+        let finalPrice = price;
+        if (appliedReferralCode !== "") {
+          if (zoneType === 'zone-a') finalPrice = 25;
+          if (zoneType === 'zone-b') finalPrice = 15;
+        }
+        selectedSeats.push({ id: seatId, price: finalPrice, zone: getZoneLabel(zoneType), rowName: rowName, num: num });
       }
 
       document.getElementById("selected-seats-text").innerText = selectedSeats.length ? selectedSeats.map(s => formatSeatLabel(s)).join(", ") : "None";
@@ -592,6 +685,19 @@
 
     function handleFinalSubmit(e) {
       if (e) e.preventDefault();
+      
+      // Strict validation: if text was entered in code input but never successfully applied, block submission
+      const codeInputVal = document.getElementById("promo-code-input").value.trim().toUpperCase();
+      if (codeInputVal !== "" && appliedReferralCode === "") {
+        alert("Please click 'Apply' to validate your referral code or clear the field before proceeding.");
+        return;
+      }
+
+      // Mark committee code as used if valid
+      if (appliedReferralCode !== "" && COMMITTEE_CODES[appliedReferralCode]) {
+        COMMITTEE_CODES[appliedReferralCode].used = true;
+      }
+
       const ticketId = `#UIM-2026-${Date.now().toString().slice(-6)}-${Math.floor(1000 + Math.random() * 9000)}`;
       const name = document.getElementById("input-name").value;
       const studentId = document.getElementById("input-student-id").value;
@@ -599,6 +705,7 @@
       const phone = document.getElementById("input-phone").value;
       const seatsText = selectedSeats.map(s => formatSeatLabel(s)).join(", ");
       const totalPaid = selectedSeats.reduce((sum, s) => sum + s.price, 0);
+      const referralUsed = appliedReferralCode || "None";
 
       document.getElementById("ticket-name").innerText = name;
       document.getElementById("ticket-student-id").innerText = studentId || "N/A";
@@ -629,7 +736,7 @@
       const sendData = (fileData, fileName, fileType) => {
         fetch(GOOGLE_SCRIPT_URL, {
           method: "POST", mode: "no-cors", headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ ticketId, name, studentId, email, phone, seats: seatsText, totalPaid, paymentMethod: selectedPaymentMethod, fileData, fileName, fileType })
+          body: JSON.stringify({ ticketId, name, studentId, email, phone, seats: seatsText, totalPaid, paymentMethod: selectedPaymentMethod, referralUsed, fileData, fileName, fileType })
         }).catch(() => {});
       };
 
