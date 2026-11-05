@@ -9,8 +9,7 @@
   <!-- Firebase Compat Libraries -->
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-  <!-- HTML5 QR Code Scanner & Local QR Code Generator -->
-  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+  <!-- Local QR Code Generator -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
   <style>
@@ -76,6 +75,11 @@
 
     .stage-banner { background-color: #87CEEB; color: #000000; padding: 8px; margin: 15px auto 20px auto; max-width: 800px; letter-spacing: 3px; font-weight: bold; font-size: 0.9rem; border-radius: 6px; text-transform: uppercase; }
 
+    /* Ticket Tier Switcher */
+    .tier-selector { background: #181818; border: 1px solid #333; padding: 12px; border-radius: 10px; margin-bottom: 20px; display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; align-items: center; }
+    .tier-btn { background: #222; border: 1px solid #444; color: #ccc; padding: 8px 16px; border-radius: 20px; cursor: pointer; font-size: 0.85rem; font-weight: bold; }
+    .tier-btn.active { background: #f3b0c3; color: #000; border-color: #f3b0c3; }
+
     /* Seat Grid */
     .seat-map-wrapper { overflow-x: auto; padding-bottom: 15px; -webkit-overflow-scrolling: touch; }
     .seat-map { display: inline-block; min-width: 800px; }
@@ -132,12 +136,6 @@
     .ticket-body p strong { color: #ffffff; }
     .ticket-qr { text-align: center; margin-top: 20px; padding-top: 15px; border-top: 1px dashed #444; }
 
-    #scanner-container { max-width: 100%; width: 400px; margin: 15px auto; padding: 15px; background: #141414; border-radius: 12px; border: 1px solid #333; }
-    .scan-status-card { margin-top: 15px; padding: 15px; border-radius: 8px; font-weight: bold; font-size: 0.9rem; }
-    .scan-valid { background: #1b4332; color: #95d5b2; border: 1px solid #2d6a4f; }
-    .scan-invalid { background: #5c1d1d; color: #ff8585; border: 1px solid #a71d2a; }
-    .scan-duplicate { background: #5c401d; color: #ffd166; border: 1px solid #f39c12; }
-
     footer { padding: 20px; font-size: 0.8rem; color: #777; border-top: 1px solid #141414; }
   </style>
 </head>
@@ -189,13 +187,13 @@
 
     <!-- Pricing Section -->
     <section id="pricing" class="section animate-on-scroll">
-      <h2>TICKET PRICING</h2>
+      <h2>TICKET PRICING & BUNDLES</h2>
       <p id="pricing-status-notice" style="color: #ffb6c1; margin-bottom: 15px; font-weight: bold; font-size: 0.9rem;"></p>
       
       <div class="pricing-grid">
         <div class="pricing-card-wrapper">
           <img src="UIM%20early%20bird.png" alt="Early Bird Pricing" class="pricing-card-img">
-          <div id="eb-overlay" class="sold-out-overlay" style="display:none;">UNAVAILABLE</div>
+          <div id="eb-overlay" class="sold-out-overlay" style="display:none;">EARLY BIRD ENDED</div>
         </div>
         <div class="pricing-card-wrapper">
           <img src="UIM%20normal.png" alt="Normal Pricing" class="pricing-card-img">
@@ -231,7 +229,14 @@
   <div id="page-2" class="page-container" style="display: none;">
     <div class="page-header">
       <button type="button" onclick="goToPage(1)" class="btn-back">← Back</button>
-      <h2>Select Seats</h2>
+      <h2>Select Ticket & Seats</h2>
+    </div>
+
+    <!-- Neat Ticket Tier Switcher -->
+    <div class="tier-selector">
+      <span style="font-size: 0.85rem; color: #aaa; font-weight: bold;">Select Package:</span>
+      <button type="button" id="tier-std" class="tier-btn active" onclick="setTicketTier('standard')">Standard Ticket (No T-shirt)</button>
+      <button type="button" id="tier-bundle" class="tier-btn" onclick="setTicketTier('bundle')">⭐ T-Shirt Bundle (+T-shirt)</button>
     </div>
 
     <div class="stage-banner">STAGE</div>
@@ -251,6 +256,7 @@
 
     <div class="checkout-bar">
       <div class="selection-summary">
+        <p><strong>Package:</strong> <span id="selected-tier-text" style="color:#ffb6c1;">Standard Ticket</span></p>
         <p><strong>Selection:</strong> <span id="selected-seats-text">None</span></p>
         <p><strong>Total:</strong> RM <span id="total-price">0</span></p>
       </div>
@@ -266,9 +272,10 @@
     </div>
 
     <div class="payment-summary-box">
+      <p><strong>Selected Package:</strong> <span id="payment-tier-summary" style="color:#ffb6c1;">Standard Ticket</span></p>
       <p><strong>Selected Seats:</strong> <span id="payment-seats-summary">-</span></p>
       <p><strong>Total Amount Due:</strong> <span style="color: #ffb6c1; font-weight: bold;">RM <span id="payment-amount-summary">0</span></span></p>
-      <p style="font-size:0.75rem; color:#ff9f1c; margin-top:5px;">⚠️ Seats locked for 10 minutes.</p>
+      <p style="font-size:0.75rem; color:#ff9f1c; margin-top:5px;">⚠️ Seats locked for 10 minutes. Time remaining: <span id="hold-timer" style="font-weight:bold;">10:00</span></p>
     </div>
 
     <!-- Committee Referral Code Box (Optional) -->
@@ -289,7 +296,7 @@
           <label for="pay-bank">Bank Transfer</label>
         </div>
         <div class="qr-placeholder"><img src="bank-qr.png" alt="Bank QR" onerror="this.src='https://via.placeholder.com/150?text=Bank+QR'"></div>
-        <div class="account-info"><p><strong>Bank:</strong> Public Bank</p><p><strong>Holder:</strong> XMUM Dance Club</p><p><strong>Acc No:</strong> 1234567890</p></div>
+        <div class="account-info"><p><strong>Bank:</strong> Maybank</p><p><strong>Holder:</strong> Elvina Jong Qian Rui</p><p><strong>Acc No:</strong> 161033355138</p></div>
       </div>
 
       <div class="payment-card" onclick="selectPaymentMethod('tng')">
@@ -298,7 +305,7 @@
           <label for="pay-tng">Touch 'n Go eWallet</label>
         </div>
         <div class="qr-placeholder"><img src="tng-qr.png" alt="TNG QR" onerror="this.src='https://via.placeholder.com/150?text=TNG+QR'"></div>
-        <div class="account-info"><p><strong>Recipient:</strong> XMUM Dance Club</p><p>Scan via TnG App</p></div>
+        <div class="account-info"><p><strong>Recipient:</strong> Lee Jia En</p><p>Scan via TnG App</p></div>
       </div>
     </div>
 
@@ -341,6 +348,20 @@
           <label>Contact No.<span>*</span></label>
           <input type="tel" id="input-phone" class="form-control" required placeholder="0123456789">
         </div>
+
+        <!-- T-Shirt Size (Conditional for Bundles) -->
+        <div class="form-group" id="tshirt-size-group" style="display: none;">
+          <label>T-Shirt Size <span>*</span></label>
+          <select id="input-tshirt-size" class="form-control">
+            <option value="">Select size</option>
+            <option value="S">S</option>
+            <option value="M">M</option>
+            <option value="L">L</option>
+            <option value="XL">XL</option>
+            <option value="2XL">2XL</option>
+          </select>
+        </div>
+
         <div class="form-group">
           <label>Payment Receipt<span>*</span></label>
           <div class="upload-btn-wrapper">
@@ -369,6 +390,8 @@
         <p><strong>Name:</strong> <span id="ticket-name">-</span></p>
         <p><strong>Student ID:</strong> <span id="ticket-student-id">N/A</span></p>
         <p><strong>Contact No:</strong> <span id="ticket-phone">-</span></p>
+        <p><strong>Package:</strong> <span id="ticket-tier-label" style="color:#ffb6c1; font-weight:bold;">Standard Ticket</span></p>
+        <p id="ticket-size-wrapper" style="display:none;"><strong>T-Shirt Size:</strong> <span id="ticket-size" style="color:#ffb6c1;">-</span></p>
         <p><strong>Seat(s):</strong> <span id="ticket-seats" style="color:#ffb6c1; font-weight:bold;">-</span></p>
         <p><strong>Total Paid:</strong> RM <span id="ticket-price">0</span></p>
         <p><strong>Date & Time:</strong> 11th Dec 2026 | 7:00 PM - 10:00 PM</p>
@@ -383,20 +406,6 @@
 
     <br>
     <button type="button" onclick="window.print()" class="btn-pink"><i class="fas fa-print"></i> Print E-Ticket</button>
-  </div>
-
-  <!-- PAGE 6: DOOR CREW SCANNER PAGE (#scanner) -->
-  <div id="page-scanner" class="page-container" style="display: none;">
-    <h2>DOOR CREW SCANNER</h2>
-    <p style="color:#aaa; margin-bottom:20px;">Point camera at attendee's E-Ticket QR Code</p>
-
-    <div id="scanner-container">
-      <div id="reader"></div>
-      <div id="scan-status" class="scan-status-card" style="display:none;"></div>
-    </div>
-    
-    <br>
-    <button type="button" onclick="goToPage(1)" class="btn-back">← Exit Scanner</button>
   </div>
 
   <script>
@@ -428,11 +437,17 @@
       }
     }, 3000);
 
-    const EB_DEADLINE = new Date("2026-11-21T23:59:59+08:00");
+    // Updated Early Bird Deadline: 20th November 2026, 23:59 Malaysia Time
+    const EB_DEADLINE = new Date("2026-11-20T23:59:59+08:00");
     let isEarlyBird = new Date() < EB_DEADLINE;
-    let standardPrices = isEarlyBird ? { 'zone-a': 40, 'zone-b': 30, 'zone-c': 20 } : { 'zone-a': 45, 'zone-b': 35, 'zone-c': 25 };
 
+    // Pricing Table: Standard vs Bundles (Early Bird vs Normal)
+    const standardPrices = isEarlyBird ? { 'zone-a': 40, 'zone-b': 30, 'zone-c': 20 } : { 'zone-a': 45, 'zone-b': 35, 'zone-c': 25 };
+    const bundlePrices = isEarlyBird ? { 'zone-a': 70, 'zone-b': 60, 'zone-c': 50 } : { 'zone-a': 80, 'zone-b': 70, 'zone-c': 60 };
+
+    let selectedTier = "standard"; // "standard" or "bundle"
     let appliedReferralCode = "";
+    let holdTimerInterval = null;
 
     const VALID_COMMITTEE_CODES = [
       "ADVISOR", "OC", "VOC1", "VOC2", "SEC1", "SEC2", "TRE1", "TRE2",
@@ -444,6 +459,22 @@
       "PT1", "PT2", "PT3", "PT4", "PT5"
     ];
 
+    function setTicketTier(tier) {
+      selectedTier = tier;
+      document.getElementById("tier-std").className = `tier-btn ${tier === 'standard' ? 'active' : ''}`;
+      document.getElementById("tier-bundle").className = `tier-btn ${tier === 'bundle' ? 'active' : ''}`;
+      
+      const tierName = tier === 'bundle' ? '⭐ T-Shirt Bundle (+T-shirt)' : 'Standard Ticket';
+      document.getElementById("selected-tier-text").innerText = tierName;
+
+      const currentActivePrices = tier === 'bundle' ? bundlePrices : standardPrices;
+      document.getElementById("price-tag-a").innerText = `RM${currentActivePrices['zone-a']}`;
+      document.getElementById("price-tag-b").innerText = `RM${currentActivePrices['zone-b']}`;
+      document.getElementById("price-tag-c").innerText = `RM${currentActivePrices['zone-c']}`;
+
+      recalculateSeatPrices();
+    }
+
     function applyCommitteeCode() {
       const codeInput = document.getElementById("promo-code-input").value.trim().toUpperCase();
       const messageElem = document.getElementById("promo-message");
@@ -453,7 +484,7 @@
         appliedReferralCode = "";
         messageElem.style.color = "#aaa";
         messageElem.innerText = "No code applied (Standard Pricing).";
-        recalculatePrices();
+        recalculateSeatPrices();
         return;
       }
 
@@ -471,29 +502,32 @@
       }
 
       appliedReferralCode = codeInput;
-      selectedSeats.forEach(s => {
-        if (s.zone === "Zone A") s.price = 25;
-        if (s.zone === "Zone B") s.price = 15;
-      });
-
-      const newTotal = selectedSeats.reduce((sum, s) => sum + s.price, 0);
-      document.getElementById("payment-amount-summary").innerText = newTotal;
-      document.getElementById("total-price").innerText = newTotal;
+      recalculateSeatPrices();
 
       messageElem.style.color = "#95d5b2";
-      messageElem.innerText = `✅ Committee Code '${codeInput}' applied! Special pricing activated (${selectedSeats.length} pax).`;
+      messageElem.innerText = `✅ Committee Code '${codeInput}' applied! Special committee pricing activated (${selectedSeats.length} pax).`;
     }
 
-    function recalculatePrices() {
-      appliedReferralCode = "";
+    function recalculateSeatPrices() {
+      let total = 0;
       selectedSeats.forEach(s => {
-        if (s.zone === "Zone A") s.price = standardPrices['zone-a'];
-        if (s.zone === "Zone B") s.price = standardPrices['zone-b'];
-        if (s.zone === "Zone C") s.price = standardPrices['zone-c'];
+        let baseTable = selectedTier === 'bundle' ? bundlePrices : standardPrices;
+        let seatPrice = baseTable[s.zoneKey];
+
+        if (appliedReferralCode !== "") {
+          if (s.zone === "Zone A") seatPrice = selectedTier === 'bundle' ? 55 : 25;
+          if (s.zone === "Zone B") seatPrice = selectedTier === 'bundle' ? 45 : 15;
+        }
+        s.price = seatPrice;
+        total += seatPrice;
       });
-      const newTotal = selectedSeats.reduce((sum, s) => sum + s.price, 0);
-      document.getElementById("payment-amount-summary").innerText = newTotal;
-      document.getElementById("total-price").innerText = newTotal;
+
+      if (document.getElementById("payment-amount-summary")) {
+        document.getElementById("payment-amount-summary").innerText = total;
+      }
+      if (document.getElementById("total-price")) {
+        document.getElementById("total-price").innerText = total;
+      }
     }
 
     function updatePricingUI() {
@@ -501,16 +535,14 @@
       const ebOverlay = document.getElementById("eb-overlay");
       if (notice) {
         if (isEarlyBird) {
-          notice.innerText = "⚡ Early Bird Pricing ACTIVE! (Ends 21st Nov 2026, 11:59 PM Malaysia Time)";
+          notice.innerText = "⚡ Early Bird Pricing & Bundles ACTIVE! (Ends 20th Nov 2026, 11:59 PM Malaysia Time)";
           if (ebOverlay) ebOverlay.style.display = "none";
         } else {
-          notice.innerText = "🔒 Early Bird Pricing HAS ENDED. Normal Price applies.";
+          notice.innerText = "🔒 Early Bird Pricing HAS ENDED. Normal Price & Bundles apply.";
           if (ebOverlay) ebOverlay.style.display = "flex";
         }
       }
-      if (document.getElementById("price-tag-a")) document.getElementById("price-tag-a").innerText = `RM${standardPrices['zone-a']}`;
-      if (document.getElementById("price-tag-b")) document.getElementById("price-tag-b").innerText = `RM${standardPrices['zone-b']}`;
-      if (document.getElementById("price-tag-c")) document.getElementById("price-tag-c").innerText = `RM${standardPrices['zone-c']}`;
+      setTicketTier('standard');
     }
 
     function getZoneLabel(zoneType) {
@@ -597,7 +629,7 @@
           seatBtn.dataset.id = seatId;
 
           if (seat.type !== "blank") {
-            seatBtn.onclick = () => toggleSeat(seatBtn, seatId, standardPrices[seat.type], seat.type, row.rowName, seat.num);
+            seatBtn.onclick = () => toggleSeat(seatBtn, seatId, seat.type, row.rowName, seat.num);
           }
           seatsDiv.appendChild(seatBtn);
         });
@@ -607,7 +639,7 @@
       listenToSeatUpdates();
     }
 
-    function toggleSeat(btn, seatId, price, zoneType, rowName, num) {
+    function toggleSeat(btn, seatId, zoneType, rowName, num) {
       if (btn.classList.contains("occupied") || btn.classList.contains("holding")) return;
 
       if (btn.classList.contains("selected")) {
@@ -619,12 +651,15 @@
           return;
         }
         btn.classList.add("selected");
-        let finalPrice = price;
+        let baseTable = selectedTier === 'bundle' ? bundlePrices : standardPrices;
+        let finalPrice = baseTable[zoneType];
+        
         if (appliedReferralCode !== "") {
-          if (zoneType === 'zone-a') finalPrice = 25;
-          if (zoneType === 'zone-b') finalPrice = 15;
+          if (zoneType === 'zone-a') finalPrice = selectedTier === 'bundle' ? 55 : 25;
+          if (zoneType === 'zone-b') finalPrice = selectedTier === 'bundle' ? 45 : 15;
         }
-        selectedSeats.push({ id: seatId, price: finalPrice, zone: getZoneLabel(zoneType), rowName: rowName, num: num });
+
+        selectedSeats.push({ id: seatId, price: finalPrice, zone: getZoneLabel(zoneType), zoneKey: zoneType, rowName: rowName, num: num });
       }
 
       document.getElementById("selected-seats-text").innerText = selectedSeats.length ? selectedSeats.map(s => formatSeatLabel(s)).join(", ") : "None";
@@ -656,6 +691,26 @@
       } catch (err) {}
     }
 
+    function startHoldTimer() {
+      if (holdTimerInterval) clearInterval(holdTimerInterval);
+      let timeLeft = 600;
+
+      holdTimerInterval = setInterval(() => {
+        let minutes = Math.floor(timeLeft / 60);
+        let seconds = timeLeft % 60;
+        document.getElementById("hold-timer").innerText = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+        
+        if (timeLeft <= 0) {
+          clearInterval(holdTimerInterval);
+          alert("Your 10-minute seat hold has expired. Returning to seat selection.");
+          releaseSeatHolding();
+          selectedSeats = [];
+          goToPage(2);
+        }
+        timeLeft--;
+      }, 1000);
+    }
+
     function selectPaymentMethod(type) {
       document.querySelectorAll('.payment-card').forEach(c => c.classList.remove('active'));
       if (type === 'bank') {
@@ -676,21 +731,18 @@
 
     function handleFinalSubmit(e) {
       if (e) e.preventDefault();
-      
-      const codeInputVal = document.getElementById("promo-code-input").value.trim().toUpperCase();
-      if (codeInputVal !== "" && appliedReferralCode === "") {
-        alert("Please click 'Apply' to validate your referral code or clear the field before proceeding.");
-        return;
-      }
+      if (holdTimerInterval) clearInterval(holdTimerInterval);
 
       const ticketId = `#UIM-2026-${Date.now().toString().slice(-6)}-${Math.floor(1000 + Math.random() * 9000)}`;
       const name = document.getElementById("input-name").value;
       const studentId = document.getElementById("input-student-id").value;
       const email = document.getElementById("input-email").value;
       const phone = document.getElementById("input-phone").value;
+      const tshirtSize = selectedTier === 'bundle' ? (document.getElementById("input-tshirt-size").value || "N/A") : "N/A";
       const seatsText = selectedSeats.map(s => formatSeatLabel(s)).join(", ");
       const totalPaid = selectedSeats.reduce((sum, s) => sum + s.price, 0);
       const referralUsed = appliedReferralCode || "None";
+      const ticketTypeStr = selectedTier === 'bundle' ? "Bundle + T-Shirt" : "Standard Ticket";
 
       document.getElementById("ticket-name").innerText = name;
       document.getElementById("ticket-student-id").innerText = studentId || "N/A";
@@ -698,6 +750,14 @@
       document.getElementById("ticket-seats").innerText = seatsText;
       document.getElementById("ticket-price").innerText = totalPaid;
       document.getElementById("ticket-id").innerText = ticketId;
+      document.getElementById("ticket-tier-label").innerText = ticketTypeStr;
+
+      if (selectedTier === 'bundle') {
+        document.getElementById("ticket-size-wrapper").style.display = "block";
+        document.getElementById("ticket-size").innerText = tshirtSize;
+      } else {
+        document.getElementById("ticket-size-wrapper").style.display = "none";
+      }
 
       const qrContainer = document.getElementById("ticket-qr-container");
       qrContainer.innerHTML = "";
@@ -721,7 +781,7 @@
       const sendData = (fileData, fileName, fileType) => {
         fetch(GOOGLE_SCRIPT_URL, {
           method: "POST", mode: "no-cors", headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ ticketId, name, studentId, email, phone, seats: seatsText, totalPaid, paymentMethod: selectedPaymentMethod, referralUsed, fileData, fileName, fileType })
+          body: JSON.stringify({ ticketId, name, studentId, email, phone, tshirtSize, ticketType: ticketTypeStr, seats: seatsText, totalPaid, paymentMethod: selectedPaymentMethod, referralUsed, fileData, fileName, fileType })
         }).catch(() => {});
       };
 
@@ -734,119 +794,41 @@
       }
     }
 
-    let html5QrCode = null;
-
     function goToPage(pageNum) {
+      if (pageNum !== 3 && holdTimerInterval) {
+        clearInterval(holdTimerInterval);
+      }
+
       for (let i = 1; i <= 5; i++) {
         const p = document.getElementById(`page-${i}`);
         if (p) p.style.display = "none";
       }
-      const scannerPage = document.getElementById('page-scanner');
-      if (scannerPage) scannerPage.style.display = "none";
-
-      if (html5QrCode && html5QrCode.isScanning) {
-        html5QrCode.stop().catch(() => {});
-      }
-
-      if (pageNum === 'scanner') {
-        if (scannerPage) {
-          scannerPage.style.display = "block";
-          startScanner();
-        }
-        window.scrollTo(0, 0);
-        return;
-      }
 
       if (pageNum === 3) {
         lockSeatHolding();
+        startHoldTimer();
+        document.getElementById("payment-tier-summary").innerText = selectedTier === 'bundle' ? '⭐ T-Shirt Bundle (+T-shirt)' : 'Standard Ticket';
         document.getElementById("payment-seats-summary").innerText = selectedSeats.map(s => formatSeatLabel(s)).join(", ");
-        document.getElementById("payment-amount-summary").innerText = selectedSeats.reduce((sum, s) => sum + s.price, 0);
+        recalculateSeatPrices();
       }
+
+      if (pageNum === 4) {
+        document.getElementById("tshirt-size-group").style.display = selectedTier === 'bundle' ? "block" : "none";
+        document.getElementById("input-tshirt-size").required = (selectedTier === 'bundle');
+      }
+
       document.getElementById(`page-${pageNum}`).style.display = "block";
       window.scrollTo(0, 0);
-    }
-
-    function startScanner() {
-      const statusCard = document.getElementById("scan-status");
-      if (statusCard) statusCard.style.display = "none";
-
-      if (typeof Html5Qrcode === "undefined") return;
-      if (!html5QrCode) {
-        html5QrCode = new Html5Qrcode("reader");
-      }
-
-      html5QrCode.start(
-        { facingMode: "environment" },
-        { fps: 10, qrbox: { width: 250, height: 250 } },
-        async (decodedText) => {
-          if (html5QrCode && html5QrCode.isScanning) {
-            await html5QrCode.stop();
-          }
-
-          if (statusCard) {
-            statusCard.style.display = "block";
-            statusCard.className = "scan-status-card";
-            statusCard.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Verifying ticket...`;
-          }
-
-          // Verify ticket against Google Sheet / backend
-          fetch(`${GOOGLE_SCRIPT_URL}?action=verify&ticketId=${encodeURIComponent(decodedText)}`)
-            .then(res => res.json())
-            .then(data => {
-              if (statusCard) {
-                statusCard.style.display = "block";
-                if (data.status === "VALID") {
-                  statusCard.className = "scan-status-card scan-valid";
-                  statusCard.innerHTML = `<i class="fas fa-check-circle"></i> VALID TICKET<br><strong>${data.name}</strong><br>Seats: ${data.seats}<br><span style="font-size:0.8rem; font-family:monospace;">${decodedText}</span>`;
-                } else if (data.status === "DUPLICATE") {
-                  statusCard.className = "scan-status-card scan-duplicate";
-                  statusCard.innerHTML = `<i class="fas fa-exclamation-triangle"></i> DUPLICATE / ALREADY CHECKED IN!<br>Checked in at: ${data.checkInTime || 'Earlier'}<br><span style="font-size:0.8rem; font-family:monospace;">${decodedText}</span>`;
-                } else {
-                  statusCard.className = "scan-status-card scan-invalid";
-                  statusCard.innerHTML = `<i class="fas fa-times-circle"></i> INVALID TICKET ID NOT FOUND<br><span style="font-size:0.8rem; font-family:monospace;">${decodedText}</span>`;
-                }
-              }
-              setTimeout(() => startScanner(), 4500);
-            })
-            .catch(() => {
-              if (statusCard) {
-                statusCard.style.display = "block";
-                statusCard.className = "scan-status-card scan-invalid";
-                statusCard.innerText = "Network Error verifying ticket.";
-              }
-              setTimeout(() => startScanner(), 4000);
-            });
-        },
-        (errorMessage) => {}
-      ).catch(err => {
-        if (statusCard) {
-          statusCard.style.display = "block";
-          statusCard.className = "scan-status-card scan-invalid";
-          statusCard.innerText = "Camera Access Error or Not Supported";
-        }
-      });
     }
 
     window.onload = () => {
       updatePricingUI();
       renderSeatingGrid();
 
-      if (window.location.hash === "#scanner") {
-        goToPage('scanner');
-      }
-
       const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add("visible"); });
       }, { threshold: 0.1 });
       document.querySelectorAll('.animate-on-scroll').forEach(section => observer.observe(section));
-    };
-
-    window.onhashchange = () => {
-      if (window.location.hash === "#scanner") {
-        goToPage('scanner');
-      } else if (window.location.hash === "") {
-        goToPage(1);
-      }
     };
   </script>
 </body>
