@@ -56,7 +56,8 @@
     .price-tier-card { background: #141414; border: 1px solid #2a2a2a; border-radius: 12px; padding: 20px; width: 270px; text-align: left; }
     .price-tier-card h3 { color: #ffb6c1; font-size: 1.1rem; margin-bottom: 12px; border-bottom: 1px dashed #333; padding-bottom: 6px; }
     .price-row { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 8px; color: #ccc; }
-    .price-val { color: #ffb6c1; font-weight: bold; }
+    .price-val-white { color: #ffffff; font-weight: bold; }
+    .price-val-pink { color: #ffb6c1; font-weight: bold; }
 
     /* Disclaimer Box */
     .pricing-disclaimer { background: #181415; border: 1px solid #331f24; border-radius: 8px; padding: 12px 15px; margin-bottom: 30px; text-align: left; font-size: 0.8rem; color: #d0d0d0; line-height: 1.5; max-width: 850px; margin-left: auto; margin-right: auto; }
@@ -68,11 +69,11 @@
     .pricing-card-img { width: 100%; border-radius: 12px; border: 1px solid #333; }
     .sold-out-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); color: #ff4d4d; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: bold; letter-spacing: 2px; }
 
-    /* T-Shirt Design Section */
-    .tshirt-design-grid { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-top: 20px; }
-    .tshirt-poster-slot { width: 100%; max-width: 380px; height: 450px; background: #141414; border: 2px dashed #333; border-radius: 12px; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
+    /* T-Shirt Design Section - 3 Spaces */
+    .tshirt-design-grid { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; margin-top: 20px; }
+    .tshirt-poster-slot { width: 100%; max-width: 270px; height: 380px; background: #141414; border: 2px dashed #333; border-radius: 12px; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
     .tshirt-poster-slot img { width: 100%; height: 100%; object-fit: contain; }
-    .tshirt-poster-slot span { color: #666; font-size: 0.9rem; letter-spacing: 1px; }
+    .tshirt-poster-slot span { color: #666; font-size: 0.85rem; letter-spacing: 1px; }
 
     .seating-img { max-width: 100% !important; width: 100%; border-radius: 12px; border: 1px solid #333; }
 
@@ -202,7 +203,7 @@
       </div>
     </section>
 
-    <!-- Pricing Section -->
+    <!-- Pricing Section (Animated) -->
     <section id="pricing" class="section animate-on-scroll">
       <h2>TICKET PRICING & BUNDLE TIERS</h2>
       <p id="pricing-status-notice" style="color: #ffb6c1; margin-bottom: 25px; font-weight: bold; font-size: 0.9rem;"></p>
@@ -212,26 +213,26 @@
         <!-- Zone A -->
         <div class="price-tier-card">
           <h3>Zone A</h3>
-          <div class="price-row"><span>Early Bird (Standard):</span> <span class="price-val">RM40</span></div>
-          <div class="price-row"><span>Early Bird + T-Shirt:</span> <span class="price-val">RM70</span></div>
-          <div class="price-row"><span>Normal (Standard):</span> <span class="price-val">RM45</span></div>
-          <div class="price-row"><span>Normal + T-Shirt:</span> <span class="price-val">RM80</span></div>
+          <div class="price-row"><span>Early Bird (Standard):</span> <span class="price-val-white">RM40</span></div>
+          <div class="price-row"><span>Early Bird + T-Shirt:</span> <span class="price-val-pink">RM70</span></div>
+          <div class="price-row"><span>Normal (Standard):</span> <span class="price-val-white">RM45</span></div>
+          <div class="price-row"><span>Normal + T-Shirt:</span> <span class="price-val-pink">RM80</span></div>
         </div>
         <!-- Zone B -->
         <div class="price-tier-card">
           <h3>Zone B</h3>
-          <div class="price-row"><span>Early Bird (Standard):</span> <span class="price-val">RM30</span></div>
-          <div class="price-row"><span>Early Bird + T-Shirt:</span> <span class="price-val">RM60</span></div>
-          <div class="price-row"><span>Normal (Standard):</span> <span class="price-val">RM35</span></div>
-          <div class="price-row"><span>Normal + T-Shirt:</span> <span class="price-val">RM70</span></div>
+          <div class="price-row"><span>Early Bird (Standard):</span> <span class="price-val-white">RM30</span></div>
+          <div class="price-row"><span>Early Bird + T-Shirt:</span> <span class="price-val-pink">RM60</span></div>
+          <div class="price-row"><span>Normal (Standard):</span> <span class="price-val-white">RM35</span></div>
+          <div class="price-row"><span>Normal + T-Shirt:</span> <span class="price-val-pink">RM70</span></div>
         </div>
         <!-- Zone C -->
         <div class="price-tier-card">
           <h3>Zone C</h3>
-          <div class="price-row"><span>Early Bird (Standard):</span> <span class="price-val">RM20</span></div>
-          <div class="price-row"><span>Early Bird + T-Shirt:</span> <span class="price-val">RM50</span></div>
-          <div class="price-row"><span>Normal (Standard):</span> <span class="price-val">RM25</span></div>
-          <div class="price-row"><span>Normal + T-Shirt:</span> <span class="price-val">RM60</span></div>
+          <div class="price-row"><span>Early Bird (Standard):</span> <span class="price-val-white">RM20</span></div>
+          <div class="price-row"><span>Early Bird + T-Shirt:</span> <span class="price-val-pink">RM50</span></div>
+          <div class="price-row"><span>Normal (Standard):</span> <span class="price-val-white">RM25</span></div>
+          <div class="price-row"><span>Normal + T-Shirt:</span> <span class="price-val-pink">RM60</span></div>
         </div>
       </div>
 
@@ -255,7 +256,7 @@
       </div>
     </section>
 
-    <!-- T-Shirt Design Section -->
+    <!-- T-Shirt Design Section (3 Spaces / Slots, Animated) -->
     <section id="tshirt-design" class="section animate-on-scroll">
       <h2>T-SHIRT DESIGN</h2>
       <div class="tshirt-design-grid">
@@ -266,6 +267,10 @@
         <div class="tshirt-poster-slot">
           <img src="tshirt-poster-2.png" alt="T-Shirt Design 2" onerror="this.style.display='none'">
           <span style="position: absolute;">T-Shirt Design 2</span>
+        </div>
+        <div class="tshirt-poster-slot">
+          <img src="tshirt-poster-3.png" alt="T-Shirt Design 3" onerror="this.style.display='none'">
+          <span style="position: absolute;">T-Shirt Design 3</span>
         </div>
       </div>
     </section>
@@ -619,19 +624,19 @@
 
     const SEATING_CONFIG = [
       { rowName: "Row 1 (VIP)", seats: Array(34).fill(0).map((_, i) => ({ num: `VIP-${i+1}`, type: "occupied" })) },
-      { rowName: "Row 2", seats: Array(35).fill(0).map((_, i) => ({ num: `${1 + i}`, type: "zone-a" })) },
-      { rowName: "Row 3", seats: Array(34).fill(0).map((_, i) => ({ num: `${36 + i}`, type: "zone-a" })) },
-      { rowName: "Row 4", seats: Array(35).fill(0).map((_, i) => ({ num: `${70 + i}`, type: "zone-a" })) },
-      { rowName: "Row 5", seats: Array(34).fill(0).map((_, i) => ({ num: `${105 + i}`, type: "zone-a" })) },
-      { rowName: "Row 6", seats: Array(35).fill(0).map((_, i) => ({ num: `${139 + i}`, type: "zone-a" })) },
-      { rowName: "Row 7", seats: Array(34).fill(0).map((_, i) => ({ num: `${174 + i}`, type: "zone-a" })) },
-      { rowName: "Row 8", seats: Array(35).fill(0).map((_, i) => ({ num: `${1 + i}`, type: "zone-b" })) },
-      { rowName: "Row 9", seats: Array(34).fill(0).map((_, i) => ({ num: `${36 + i}`, type: "zone-b" })) },
-      { rowName: "Row 10", seats: Array(35).fill(0).map((_, i) => ({ num: `${70 + i}`, type: "zone-b" })) },
-      { rowName: "Row 11", seats: Array(34).fill(0).map((_, i) => ({ num: `${105 + i}`, type: "zone-b" })) },
-      { rowName: "Row 12", seats: Array(35).fill(0).map((_, i) => ({ num: `${139 + i}`, type: "zone-b" })) },
-      { rowName: "Row 13", seats: Array(34).fill(0).map((_, i) => ({ num: `${1 + i}`, type: [16, 17, 18, 19].includes(1 + i) ? "occupied" : "zone-c" })) },
-      { rowName: "Row 14", seats: Array(35).fill(0).map((_, i) => ({ num: `${35 + i}`, type: "zone-c" })) },
+      { rowName: "Row 2", seats: Array(35).fill(0).map((_, i) => ({ num: `${1 + i}`, type: Number(1+i) === 200 ? "occupied" : "zone-a" })) },
+      { rowName: "Row 3", seats: Array(34).fill(0).map((_, i) => ({ num: `${36 + i}`, type: Number(36+i) === 200 ? "occupied" : "zone-a" })) },
+      { rowName: "Row 4", seats: Array(35).fill(0).map((_, i) => ({ num: `${70 + i}`, type: Number(70+i) === 200 ? "occupied" : "zone-a" })) },
+      { rowName: "Row 5", seats: Array(34).fill(0).map((_, i) => ({ num: `${105 + i}`, type: Number(105+i) === 200 ? "occupied" : "zone-a" })) },
+      { rowName: "Row 6", seats: Array(35).fill(0).map((_, i) => ({ num: `${139 + i}`, type: Number(139+i) === 200 ? "occupied" : "zone-a" })) },
+      { rowName: "Row 7", seats: Array(34).fill(0).map((_, i) => ({ num: `${174 + i}`, type: Number(174+i) === 200 ? "occupied" : "zone-a" })) },
+      { rowName: "Row 8", seats: Array(35).fill(0).map((_, i) => ({ num: `${1 + i}`, type: [166, 167].includes(Number(1+i)) ? "occupied" : "zone-b" })) },
+      { rowName: "Row 9", seats: Array(34).fill(0).map((_, i) => ({ num: `${36 + i}`, type: [166, 167].includes(Number(36+i)) ? "occupied" : "zone-b" })) },
+      { rowName: "Row 10", seats: Array(35).fill(0).map((_, i) => ({ num: `${70 + i}`, type: [166, 167].includes(Number(70+i)) ? "occupied" : "zone-b" })) },
+      { rowName: "Row 11", seats: Array(34).fill(0).map((_, i) => ({ num: `${105 + i}`, type: [166, 167].includes(Number(105+i)) ? "occupied" : "zone-b" })) },
+      { rowName: "Row 12", seats: Array(35).fill(0).map((_, i) => ({ num: `${139 + i}`, type: [166, 167].includes(Number(139+i)) ? "occupied" : "zone-b" })) },
+      { rowName: "Row 13", seats: Array(34).fill(0).map((_, i) => ({ num: `${1 + i}`, type: ([16, 17, 18, 19].includes(1 + i) || [59, 60, 61].includes(Number(1+i))) ? "occupied" : "zone-c" })) },
+      { rowName: "Row 14", seats: Array(35).fill(0).map((_, i) => ({ num: `${35 + i}`, type: [59, 60, 61].includes(Number(35+i)) ? "occupied" : "zone-c" })) },
       { rowName: "Row 15", seats: Array(34).fill(0).map((_, i) => ({ num: `${70 + i}`, type: "occupied" })) },
       { rowName: "Row 16", seats: Array(35).fill(0).map((_, i) => ({ num: `${104 + i}`, type: "occupied" })) },
       { rowName: "Row 17", seats: Array(30).fill(0).map((_, i) => ({ num: `${139 + i}`, type: "occupied" })) }
