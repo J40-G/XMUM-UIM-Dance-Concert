@@ -60,3 +60,794 @@
     .sold-out-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); color: #ff4d4d; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: bold; letter-spacing: 2px; }
 
     .seating-img { max-width: 100% !important; width: 100%; border-radius: 12px; border: 1px solid #333; }
+
+    /* Contact Us Section */
+    .contact-section { background: #111; border-top: 1px solid #222; padding: 30px 20px; margin-top: 30px; text-align: center; }
+    .contact-section h3 { color: #ffb6c1; font-size: 1.1rem; margin-bottom: 12px; letter-spacing: 1px; }
+    .contact-links { display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; font-size: 0.95rem; align-items: center; }
+    .contact-links a { color: #ddd; text-decoration: none; display: flex; align-items: center; gap: 8px; transition: color 0.2s; }
+    .contact-links a:hover { color: #ffb6c1; }
+    .contact-links i { font-size: 1.5rem; }
+
+    /* Page Container */
+    .page-container { padding: 25px 15px; max-width: 1000px; margin: 0 auto; }
+    .page-header { margin-bottom: 20px; position: relative; }
+    .btn-back { position: absolute; left: 0; top: 0; background: transparent; border: 1px solid #444; color: #ccc; padding: 6px 12px; border-radius: 20px; cursor: pointer; font-size: 0.85rem; }
+
+    .stage-banner { background-color: #87CEEB; color: #000000; padding: 8px; margin: 15px auto 20px auto; max-width: 800px; letter-spacing: 3px; font-weight: bold; font-size: 0.9rem; border-radius: 6px; text-transform: uppercase; }
+
+    /* Seat Grid */
+    .seat-map-wrapper { overflow-x: auto; padding-bottom: 15px; -webkit-overflow-scrolling: touch; }
+    .seat-map { display: inline-block; min-width: 800px; }
+    .seat-row { display: flex; align-items: center; justify-content: center; margin-bottom: 5px; }
+    .row-label { width: 75px; text-align: right; padding-right: 10px; font-size: 0.7rem; color: #888; }
+    .row-seats { display: flex; gap: 3px; }
+    .seat { width: 19px; height: 21px; border-radius: 4px; border: none; font-size: 0.6rem; font-weight: bold; color: #000; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .seat.blank { background-color: #4a4a4a; color: transparent; cursor: default; }
+    
+    .seat.zone-a { background-color: #d90429; color: #fff; }
+    .seat.zone-b { background-color: #b8e2f4; color: #000; }
+    .seat.zone-c { background-color: #abf7b1; color: #000; }
+    .seat.selected { background-color: #ffea00 !important; color: #000 !important; }
+    .seat.holding { background-color: #ff9f1c !important; color: #000 !important; cursor: not-allowed; }
+    .seat.occupied { background-color: #4a4a4a !important; color: transparent !important; cursor: not-allowed; }
+
+    .legend { display: flex; justify-content: center; gap: 15px; margin: 20px 0; font-size: 0.75rem; flex-wrap: wrap; }
+    .legend-item { display: flex; align-items: center; gap: 6px; }
+    .color-box { width: 14px; height: 14px; border-radius: 3px; }
+    .color-box.zone-a { background-color: #d90429; }
+    .color-box.zone-b { background-color: #b8e2f4; }
+    .color-box.zone-c { background-color: #abf7b1; }
+    .color-box.selected { background-color: #ffea00; }
+    .color-box.holding { background-color: #ff9f1c; }
+    .color-box.occupied { background-color: #4a4a4a; }
+
+    .checkout-bar { margin-top: 20px; background: #141414; padding: 15px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; max-width: 800px; margin: 0 auto; border: 1px solid #222; flex-wrap: wrap; gap: 10px; }
+    .selection-summary { text-align: left; font-size: 0.85rem; line-height: 1.5; }
+
+    .payment-summary-box { background: #181818; border: 1px solid #2a2a2a; border-radius: 10px; padding: 15px; max-width: 600px; margin: 0 auto 20px auto; text-align: left; font-size: 0.9rem; }
+    .payment-options-grid { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; margin: 20px 0; }
+    .payment-card { background: #141414; border: 1px solid #282828; border-radius: 10px; padding: 15px; width: 260px; text-align: center; cursor: pointer; }
+    .payment-card.active { border-color: #ffb6c1; background: #1f1418; }
+    .payment-checkbox { margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; font-weight: bold; font-size: 0.9rem; }
+    .qr-placeholder { width: 140px; height: 140px; background: #fff; margin: 10px auto; border-radius: 8px; overflow: hidden; }
+    .qr-placeholder img { width: 100%; height: 100%; object-fit: contain; }
+    .account-info { font-size: 0.8rem; color: #ccc; line-height: 1.4; margin-top: 8px; }
+    .payment-remark-notice { color: #d0d0d0; font-size: 0.85rem; margin: 15px 0; font-weight: 500; }
+    .tc-container { background: #141414; border: 1px solid #222; border-radius: 8px; padding: 15px; max-width: 600px; margin: 15px auto; text-align: left; font-size: 0.8rem; color: #aaa; line-height: 1.5; }
+
+    .form-container { max-width: 700px; margin: 0 auto; text-align: left; }
+    .form-group { margin-bottom: 20px; }
+    .form-group label { display: block; font-size: 0.9rem; margin-bottom: 6px; color: #eee; }
+    .form-group label span { color: #ffb6c1; }
+    .form-control { width: 100%; padding: 12px 15px; background-color: #1f1f1f; border: 1px solid #333; border-radius: 25px; color: #fff; font-size: 0.9rem; outline: none; }
+    .upload-btn-wrapper { position: relative; overflow: hidden; display: inline-block; }
+    .btn-upload { border: 1px solid #fff; color: #000; background-color: #fff; padding: 8px 16px; border-radius: 6px; font-size: 0.8rem; font-weight: 600; cursor: pointer; }
+    .upload-btn-wrapper input[type=file] { position: absolute; left: 0; top: 0; opacity: 0; cursor: pointer; height: 100%; width: 100%; }
+
+    .ticket-card { background: linear-gradient(135deg, #1f1f1f 0%, #111111 100%); border: 2px solid #ffb6c1; border-radius: 16px; max-width: 500px; margin: 15px auto; padding: 25px; text-align: left; box-shadow: 0 15px 35px rgba(255, 182, 193, 0.2); }
+    .ticket-header { border-bottom: 1px dashed #444; padding-bottom: 12px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+    .ticket-title { font-size: 1.3rem; color: #ffb6c1; font-weight: bold; letter-spacing: 1px; }
+    .ticket-body p { margin-bottom: 10px; font-size: 0.9rem; color: #ddd; }
+    .ticket-body p strong { color: #ffffff; }
+    .ticket-qr { text-align: center; margin-top: 20px; padding-top: 15px; border-top: 1px dashed #444; }
+
+    #scanner-container { max-width: 100%; width: 400px; margin: 15px auto; padding: 15px; background: #141414; border-radius: 12px; border: 1px solid #333; }
+    .scan-status-card { margin-top: 15px; padding: 15px; border-radius: 8px; font-weight: bold; font-size: 0.9rem; }
+    .scan-valid { background: #1b4332; color: #95d5b2; border: 1px solid #2d6a4f; }
+    .scan-invalid { background: #5c1d1d; color: #ff8585; border: 1px solid #a71d2a; }
+    .scan-duplicate { background: #5c401d; color: #ffd166; border: 1px solid #f39c12; }
+
+    footer { padding: 20px; font-size: 0.8rem; color: #777; border-top: 1px solid #141414; }
+  </style>
+</head>
+<body>
+
+  <!-- WELCOME POPUP MODAL (Auto fades after 3 seconds) -->
+  <div id="welcome-modal">
+    <div class="modal-content">
+      <img src="UIM%20Poster_2.png" alt="United In Motion Logo Popup" class="modal-poster">
+    </div>
+  </div>
+
+  <!-- PAGE 1: MAIN LANDING PAGE -->
+  <div id="page-1">
+    <header class="navbar">
+      <div class="nav-brand">XMUM DANCE CLUB</div>
+      <nav class="nav-links">
+        <a href="#about">About</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#seating-info">Seating</a>
+      </nav>
+    </header>
+
+    <section id="about" class="hero animate-on-scroll">
+      <div class="hero-image-overlay">
+        <div class="hero-text-overlay">
+          <p class="subtitle">XMUM DANCE CLUB PRESENTS</p>
+          <h1 class="main-title">UNITED IN MOTION</h1>
+          
+          <div class="event-meta-pills">
+            <span><i class="far fa-calendar-alt"></i> 11th Dec 2026</span>
+            <span><i class="fas fa-map-marker-alt"></i> Tan Hua Choon Auditorium</span>
+            <span><i class="far fa-clock"></i> 7:00 PM - 10:00 PM</span>
+          </div>
+
+          <!-- Larger Circular Logos -->
+          <div class="hero-dual-logos">
+            <div class="hero-logo-circle"><img src="DC%20Logo.jpeg" alt="Dance Club Logo"></div>
+            <span class="logo-cross">×</span>
+            <div class="hero-logo-circle"><img src="UIM%20Logo.jpeg" alt="UIM Logo"></div>
+          </div>
+
+          <button type="button" onclick="goToPage(2)" class="btn-pink">
+            <i class="fas fa-ticket-alt"></i> Buy Ticket / Select Seats
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="section animate-on-scroll">
+      <h2>TICKET PRICING</h2>
+      <p id="pricing-status-notice" style="color: #ffb6c1; margin-bottom: 15px; font-weight: bold; font-size: 0.9rem;"></p>
+      
+      <div class="pricing-grid">
+        <div class="pricing-card-wrapper">
+          <img src="UIM%20early%20bird.png" alt="Early Bird Pricing" class="pricing-card-img">
+          <div id="eb-overlay" class="sold-out-overlay" style="display:none;">UNAVAILABLE</div>
+        </div>
+        <div class="pricing-card-wrapper">
+          <img src="UIM%20normal.png" alt="Normal Pricing" class="pricing-card-img">
+        </div>
+      </div>
+    </section>
+
+    <!-- Seating Overview -->
+    <section id="seating-info" class="section animate-on-scroll">
+      <h2>AUDITORIUM SEATING MAP</h2>
+      <div class="seating-container">
+        <img src="UIM%20Seating%20Layout.png" alt="Auditorium Seating Layout" class="seating-img">
+      </div>
+      <br>
+      <button type="button" onclick="goToPage(2)" class="btn-pink">Select Your Seats Now</button>
+    </section>
+
+    <!-- CONTACT US SECTION (Bottom of Page 1) -->
+    <div class="contact-section">
+      <h3>Need Help? Contact us</h3>
+      <div class="contact-links">
+        <a href="https://wa.me/601110809358" target="_blank"><i class="fab fa-whatsapp" style="color: #25D366;"></i> WhatsApp</a>
+        <a href="https://instagram.com/xmum_danceconcert" target="_blank"><i class="fab fa-instagram" style="color: #E1306C;"></i> @xmum_danceconcert</a>
+      </div>
+    </div>
+
+    <footer>
+      <p>&copy; 2026 XMUM Dance Club. All Rights Reserved.</p>
+    </footer>
+  </div>
+
+  <!-- PAGE 2: SEAT SELECTION -->
+  <div id="page-2" class="page-container" style="display: none;">
+    <div class="page-header">
+      <button type="button" onclick="goToPage(1)" class="btn-back">← Back</button>
+      <h2>Select Seats</h2>
+    </div>
+
+    <div class="stage-banner">STAGE</div>
+
+    <div class="seat-map-wrapper">
+      <div id="seat-map" class="seat-map"></div>
+    </div>
+
+    <div class="legend">
+      <div class="legend-item"><span class="color-box zone-a"></span> Zone A [<span id="price-tag-a">RM40</span>]</div>
+      <div class="legend-item"><span class="color-box zone-b"></span> Zone B [<span id="price-tag-b">RM30</span>]</div>
+      <div class="legend-item"><span class="color-box zone-c"></span> Zone C [<span id="price-tag-c">RM20</span>]</div>
+      <div class="legend-item"><span class="color-box selected"></span> Selected</div>
+      <div class="legend-item"><span class="color-box holding"></span> Holding</div>
+      <div class="legend-item"><span class="color-box occupied"></span> Occupied</div>
+    </div>
+
+    <div class="checkout-bar">
+      <div class="selection-summary">
+        <p><strong>Selection:</strong> <span id="selected-seats-text">None</span></p>
+        <p><strong>Total:</strong> RM <span id="total-price">0</span></p>
+      </div>
+      <button type="button" id="btn-to-page3" onclick="goToPage(3)" class="btn-pink" disabled>Next →</button>
+    </div>
+  </div>
+
+  <!-- PAGE 3: PAYMENT -->
+  <div id="page-3" class="page-container" style="display: none;">
+    <div class="page-header">
+      <button type="button" onclick="releaseSeatHolding(); goToPage(2);" class="btn-back">← Back</button>
+      <h2>Payment</h2>
+    </div>
+
+    <div class="payment-summary-box">
+      <p><strong>Selected Seats:</strong> <span id="payment-seats-summary">-</span></p>
+      <p><strong>Total Amount Due:</strong> <span style="color: #ffb6c1; font-weight: bold;">RM <span id="payment-amount-summary">0</span></span></p>
+      <p style="font-size:0.75rem; color:#ff9f1c; margin-top:5px;">⚠️ Seats locked for 10 minutes.</p>
+    </div>
+
+    <!-- Committee Referral Code Box (Optional) -->
+    <div class="payment-summary-box" style="border-color: #ffb6c1; background: #1a1416;">
+      <h4 style="color: #ffb6c1; margin-bottom: 8px;"><i class="fas fa-tag"></i> Committee Referral Code <span style="font-weight: normal; color: #aaa; font-size: 0.85rem;">(Optional)</span></h4>
+      <div style="display: flex; gap: 10px;">
+        <input type="text" id="promo-code-input" class="form-control" placeholder="Enter code if applicable" style="text-transform: uppercase;">
+        <button type="button" onclick="applyCommitteeCode()" class="btn-pink" style="padding: 10px 20px; font-size: 0.85rem;">Apply</button>
+      </div>
+      <p id="promo-message" style="font-size: 0.8rem; margin-top: 8px; display: none;"></p>
+    </div>
+
+    <h3>Select Payment Method</h3>
+    <div class="payment-options-grid">
+      <div class="payment-card" onclick="selectPaymentMethod('bank')">
+        <div class="payment-checkbox">
+          <input type="radio" name="payment_method" id="pay-bank" value="Bank Transfer">
+          <label for="pay-bank">Bank Transfer</label>
+        </div>
+        <div class="qr-placeholder"><img src="bank-qr.png" alt="Bank QR" onerror="this.src='https://via.placeholder.com/150?text=Bank+QR'"></div>
+        <div class="account-info"><p><strong>Bank:</strong> Public Bank</p><p><strong>Holder:</strong> XMUM Dance Club</p><p><strong>Acc No:</strong> 1234567890</p></div>
+      </div>
+
+      <div class="payment-card" onclick="selectPaymentMethod('tng')">
+        <div class="payment-checkbox">
+          <input type="radio" name="payment_method" id="pay-tng" value="Touch 'n Go eWallet">
+          <label for="pay-tng">Touch 'n Go eWallet</label>
+        </div>
+        <div class="qr-placeholder"><img src="tng-qr.png" alt="TNG QR" onerror="this.src='https://via.placeholder.com/150?text=TNG+QR'"></div>
+        <div class="account-info"><p><strong>Recipient:</strong> XMUM Dance Club</p><p>Scan via TnG App</p></div>
+      </div>
+    </div>
+
+    <p class="payment-remark-notice">*Please remark reference as "XMUM Dance Concert"</p>
+
+    <div class="tc-container">
+      <h4 style="color: #fff; margin-bottom: 6px;">Terms & Conditions</h4>
+      <p>1. Tickets non-refundable.</p>
+      <label style="display:flex; align-items:center; gap:8px; margin-top:10px; color:#fff; cursor:pointer;">
+        <input type="checkbox" id="tc-checkbox" onchange="validatePage3()"> I understand and agree to the T&Cs.
+      </label>
+    </div>
+
+    <br>
+    <button type="button" id="btn-to-page4" onclick="goToPage(4)" class="btn-pink" disabled>Next →</button>
+  </div>
+
+  <!-- PAGE 4: ATTENDEE FORM -->
+  <div id="page-4" class="page-container" style="display: none;">
+    <div class="page-header">
+      <button type="button" onclick="goToPage(3)" class="btn-back">← Back</button>
+      <h2>Attendee Details</h2>
+    </div>
+
+    <div class="form-container">
+      <form id="checkout-form" onsubmit="handleFinalSubmit(event)">
+        <div class="form-group">
+          <label>Name (as Per NRIC)<span>*</span></label>
+          <input type="text" id="input-name" class="form-control" required placeholder="Enter full name">
+        </div>
+        <div class="form-group">
+          <label>Student ID <span>(XMUM students only)</span></label>
+          <input type="text" id="input-student-id" class="form-control" placeholder="Enter student ID">
+        </div>
+        <div class="form-group">
+          <label>Email<span>*</span></label>
+          <input type="email" id="input-email" class="form-control" required placeholder="Enter email">
+        </div>
+        <div class="form-group">
+          <label>Contact No.<span>*</span></label>
+          <input type="tel" id="input-phone" class="form-control" required placeholder="0123456789">
+        </div>
+        <div class="form-group">
+          <label>Payment Receipt<span>*</span></label>
+          <div class="upload-btn-wrapper">
+            <button type="button" class="btn-upload">📁 Upload Receipt</button>
+            <input type="file" id="receipt-file" required onchange="document.getElementById('file-name').innerText = this.files[0].name">
+          </div>
+          <span id="file-name" style="font-size:0.75rem; color:#888; display:block; margin-top:5px;">No file chosen</span>
+        </div>
+        <br>
+        <button type="submit" class="btn-pink" style="width:100%;">Confirm & Generate E-Ticket</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- PAGE 5: DIGITAL E-TICKET -->
+  <div id="page-5" class="page-container" style="display: none;">
+    <h2>CONGRATULATIONS!</h2>
+    <p style="color:#aaa; margin-bottom:15px;">Your ticket has been reserved successfully.</p>
+
+    <div class="ticket-card">
+      <div class="ticket-header">
+        <span class="ticket-title">UNITED IN MOTION</span>
+        <span style="font-size:0.7rem; background:#ffb6c1; color:#000; padding:3px 8px; border-radius:10px; font-weight:bold;">OFFICIAL TICKET</span>
+      </div>
+      <div class="ticket-body">
+        <p><strong>Name:</strong> <span id="ticket-name">-</span></p>
+        <p><strong>Student ID:</strong> <span id="ticket-student-id">N/A</span></p>
+        <p><strong>Contact No:</strong> <span id="ticket-phone">-</span></p>
+        <p><strong>Seat(s):</strong> <span id="ticket-seats" style="color:#ffb6c1; font-weight:bold;">-</span></p>
+        <p><strong>Total Paid:</strong> RM <span id="ticket-price">0</span></p>
+        <p><strong>Date & Time:</strong> 11th Dec 2026 | 7:00 PM - 10:00 PM</p>
+        <p><strong>Venue:</strong> Tan Hua Choon Auditorium, XMUM</p>
+        <p><strong>Ticket ID:</strong> <span id="ticket-id" style="font-family:monospace; color:#87CEEB;">#UIM-2026-XXXX</span></p>
+      </div>
+      <div class="ticket-qr">
+        <div id="ticket-qr-container" style="display: flex; justify-content: center; margin-bottom: 6px;"></div>
+        <p style="font-size:0.7rem; color:#888;">Present this unique QR code at hall entrance</p>
+      </div>
+    </div>
+
+    <br>
+    <button type="button" onclick="window.print()" class="btn-pink"><i class="fas fa-print"></i> Print E-Ticket</button>
+  </div>
+
+  <!-- PAGE 6: DOOR CREW SCANNER PAGE (#scanner) -->
+  <div id="page-scanner" class="page-container" style="display: none;">
+    <h2>DOOR CREW SCANNER</h2>
+    <p style="color:#aaa; margin-bottom:20px;">Point camera at attendee's E-Ticket QR Code</p>
+
+    <div id="scanner-container">
+      <div id="reader"></div>
+      <div id="scan-status" class="scan-status-card" style="display:none;"></div>
+    </div>
+    
+    <br>
+    <button type="button" onclick="goToPage(1)" class="btn-back">← Exit Scanner</button>
+  </div>
+
+  <script>
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwQxDYrkKlnOsNwVSTiNfxplJ-TszuZHeG_hxYUa2a6u-mbv1votVSDWfkxyndPPgQ/exec";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDummyKeyForPublicFirestoreSync123",
+      authDomain: "xmum-uim-dance-concert.firebaseapp.com",
+      projectId: "xmum-uim-dance-concert",
+      storageBucket: "xmum-uim-dance-concert.appspot.com",
+      messagingSenderId: "123456789",
+      appId: "1:123456789:web:123456"
+    };
+
+    let db = null;
+    try {
+      if (typeof firebase !== "undefined" && !firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+        db = firebase.firestore();
+      }
+    } catch (err) {}
+
+    // Auto fade-out welcome modal after 3 seconds
+    setTimeout(() => {
+      const modal = document.getElementById('welcome-modal');
+      if (modal) {
+        modal.style.opacity = '0';
+        setTimeout(() => modal.style.display = 'none', 800);
+      }
+    }, 3000);
+
+    const EB_DEADLINE = new Date("2026-11-21T23:59:59+08:00");
+    let isEarlyBird = new Date() < EB_DEADLINE;
+    let standardPrices = isEarlyBird ? { 'zone-a': 40, 'zone-b': 30, 'zone-c': 20 } : { 'zone-a': 45, 'zone-b': 35, 'zone-c': 25 };
+
+    let appliedReferralCode = "";
+
+    const VALID_COMMITTEE_CODES = [
+      "ADVISOR", "OC", "VOC1", "VOC2", "SEC1", "SEC2", "TRE1", "TRE2",
+      "EP1", "EP2", "EP3", "EP4", "EP5",
+      "GA1", "GA2", "GA3", "GA4", "GA5", "GA6",
+      "PR1", "PR2", "PR3", "PR4", "PR5", "PR6", "PR7", "PR8", "PR9", "PR10",
+      "DG1", "DG2", "DG3", "DG4", "DG5",
+      "PGVG1", "PGVG2", "PGVG3", "PGVG4", "PGVG5", "PGVG6", "PGVG7",
+      "PT1", "PT2", "PT3", "PT4", "PT5"
+    ];
+
+    function applyCommitteeCode() {
+      const codeInput = document.getElementById("promo-code-input").value.trim().toUpperCase();
+      const messageElem = document.getElementById("promo-message");
+      messageElem.style.display = "block";
+
+      if (codeInput === "") {
+        appliedReferralCode = "";
+        messageElem.style.color = "#aaa";
+        messageElem.innerText = "No code applied (Standard Pricing).";
+        recalculatePrices();
+        return;
+      }
+
+      if (!VALID_COMMITTEE_CODES.includes(codeInput)) {
+        messageElem.style.color = "#ff8585";
+        messageElem.innerText = "❌ Invalid committee referral code.";
+        appliedReferralCode = "";
+        return;
+      }
+
+      if (selectedSeats.length > 2) {
+        messageElem.style.color = "#ff8585";
+        messageElem.innerText = "❌ Committee code is valid for a maximum of 2 seats only.";
+        return;
+      }
+
+      appliedReferralCode = codeInput;
+      selectedSeats.forEach(s => {
+        if (s.zone === "Zone A") s.price = 25;
+        if (s.zone === "Zone B") s.price = 15;
+      });
+
+      const newTotal = selectedSeats.reduce((sum, s) => sum + s.price, 0);
+      document.getElementById("payment-amount-summary").innerText = newTotal;
+      document.getElementById("total-price").innerText = newTotal;
+
+      messageElem.style.color = "#95d5b2";
+      messageElem.innerText = `✅ Committee Code '${codeInput}' applied! Special pricing activated (${selectedSeats.length} pax).`;
+    }
+
+    function recalculatePrices() {
+      appliedReferralCode = "";
+      selectedSeats.forEach(s => {
+        if (s.zone === "Zone A") s.price = standardPrices['zone-a'];
+        if (s.zone === "Zone B") s.price = standardPrices['zone-b'];
+        if (s.zone === "Zone C") s.price = standardPrices['zone-c'];
+      });
+      const newTotal = selectedSeats.reduce((sum, s) => sum + s.price, 0);
+      document.getElementById("payment-amount-summary").innerText = newTotal;
+      document.getElementById("total-price").innerText = newTotal;
+    }
+
+    function updatePricingUI() {
+      const notice = document.getElementById("pricing-status-notice");
+      const ebOverlay = document.getElementById("eb-overlay");
+      if (notice) {
+        if (isEarlyBird) {
+          notice.innerText = "⚡ Early Bird Pricing ACTIVE! (Ends 21st Nov 2026, 11:59 PM Malaysia Time)";
+          if (ebOverlay) ebOverlay.style.display = "none";
+        } else {
+          notice.innerText = "🔒 Early Bird Pricing HAS ENDED. Normal Price applies.";
+          if (ebOverlay) ebOverlay.style.display = "flex";
+        }
+      }
+      if (document.getElementById("price-tag-a")) document.getElementById("price-tag-a").innerText = `RM${standardPrices['zone-a']}`;
+      if (document.getElementById("price-tag-b")) document.getElementById("price-tag-b").innerText = `RM${standardPrices['zone-b']}`;
+      if (document.getElementById("price-tag-c")) document.getElementById("price-tag-c").innerText = `RM${standardPrices['zone-c']}`;
+    }
+
+    function getZoneLabel(zoneType) {
+      if (zoneType === 'zone-a') return 'Zone A';
+      if (zoneType === 'zone-b') return 'Zone B';
+      if (zoneType === 'zone-c') return 'Zone C';
+      return '';
+    }
+
+    function formatSeatLabel(seat) {
+      return `${seat.zone} - ${seat.rowName} - Seat ${seat.num}`;
+    }
+
+    const SEATING_CONFIG = [
+      { rowName: "Row 1 (VIP)", seats: Array(34).fill(0).map((_, i) => ({ num: `VIP-${i+1}`, type: "occupied" })) },
+      { rowName: "Row 2", seats: Array(35).fill(0).map((_, i) => ({ num: `${1 + i}`, type: "zone-a" })) },
+      { rowName: "Row 3", seats: Array(34).fill(0).map((_, i) => ({ num: `${36 + i}`, type: "zone-a" })) },
+      { rowName: "Row 4", seats: Array(35).fill(0).map((_, i) => ({ num: `${70 + i}`, type: "zone-a" })) },
+      { rowName: "Row 5", seats: Array(34).fill(0).map((_, i) => ({ num: `${105 + i}`, type: "zone-a" })) },
+      { rowName: "Row 6", seats: Array(35).fill(0).map((_, i) => ({ num: `${139 + i}`, type: "zone-a" })) },
+      { rowName: "Row 7", seats: Array(34).fill(0).map((_, i) => ({ num: `${174 + i}`, type: "zone-a" })) },
+      { rowName: "Row 8", seats: Array(35).fill(0).map((_, i) => ({ num: `${1 + i}`, type: "zone-b" })) },
+      { rowName: "Row 9", seats: Array(34).fill(0).map((_, i) => ({ num: `${36 + i}`, type: "zone-b" })) },
+      { rowName: "Row 10", seats: Array(35).fill(0).map((_, i) => ({ num: `${70 + i}`, type: "zone-b" })) },
+      { rowName: "Row 11", seats: Array(34).fill(0).map((_, i) => ({ num: `${105 + i}`, type: "zone-b" })) },
+      { rowName: "Row 12", seats: Array(35).fill(0).map((_, i) => ({ num: `${139 + i}`, type: "zone-b" })) },
+      { rowName: "Row 13", seats: Array(34).fill(0).map((_, i) => ({ num: `${1 + i}`, type: [16, 17, 18, 19].includes(1 + i) ? "occupied" : "zone-c" })) },
+      { rowName: "Row 14", seats: Array(35).fill(0).map((_, i) => ({ num: `${35 + i}`, type: "zone-c" })) },
+      { rowName: "Row 15", seats: Array(34).fill(0).map((_, i) => ({ num: `${70 + i}`, type: "occupied" })) },
+      { rowName: "Row 16", seats: Array(35).fill(0).map((_, i) => ({ num: `${104 + i}`, type: "occupied" })) },
+      { rowName: "Row 17", seats: Array(30).fill(0).map((_, i) => ({ num: `${139 + i}`, type: "occupied" })) }
+    ];
+
+    let selectedSeats = [];
+    let selectedPaymentMethod = "";
+
+    function listenToSeatUpdates() {
+      if (!db) return;
+      try {
+        db.collection("concert_seats").onSnapshot((snapshot) => {
+          snapshot.docChanges().forEach((change) => {
+            const data = change.doc.data();
+            const seatBtn = document.querySelector(`[data-id="${change.doc.id}"]`);
+            if (seatBtn) {
+              seatBtn.classList.remove("holding", "occupied");
+              const now = Date.now();
+              const isExpired = data.timestamp && (now - data.timestamp.toMillis() > 600000);
+
+              if (data.status === "occupied") {
+                seatBtn.classList.add("occupied");
+              } else if (data.status === "holding" && !isExpired) {
+                if (!selectedSeats.some(s => s.id === change.doc.id)) {
+                  seatBtn.classList.add("holding");
+                }
+              }
+            }
+          });
+        });
+      } catch (err) {}
+    }
+
+    function renderSeatingGrid() {
+      const container = document.getElementById("seat-map");
+      if (!container) return;
+      container.innerHTML = "";
+
+      SEATING_CONFIG.forEach(row => {
+        const rowElem = document.createElement("div");
+        rowElem.className = "seat-row";
+        const label = document.createElement("span");
+        label.className = "row-label";
+        label.innerText = row.rowName;
+        rowElem.appendChild(label);
+
+        const seatsDiv = document.createElement("div");
+        seatsDiv.className = "row-seats";
+
+        row.seats.forEach(seat => {
+          const seatBtn = document.createElement("button");
+          const seatId = `${row.rowName}-${seat.num}`;
+          seatBtn.type = "button";
+          seatBtn.className = `seat ${seat.type}`;
+          seatBtn.innerText = seat.num;
+          seatBtn.dataset.id = seatId;
+
+          if (seat.type !== "blank") {
+            seatBtn.onclick = () => toggleSeat(seatBtn, seatId, standardPrices[seat.type], seat.type, row.rowName, seat.num);
+          }
+          seatsDiv.appendChild(seatBtn);
+        });
+        rowElem.appendChild(seatsDiv);
+        container.appendChild(rowElem);
+      });
+      listenToSeatUpdates();
+    }
+
+    function toggleSeat(btn, seatId, price, zoneType, rowName, num) {
+      if (btn.classList.contains("occupied") || btn.classList.contains("holding")) return;
+
+      if (btn.classList.contains("selected")) {
+        btn.classList.remove("selected");
+        selectedSeats = selectedSeats.filter(s => s.id !== seatId);
+      } else {
+        if (selectedSeats.length >= 2 && appliedReferralCode !== "") {
+          alert("Committee referral codes are limited to a maximum of 2 seats per transaction.");
+          return;
+        }
+        btn.classList.add("selected");
+        let finalPrice = price;
+        if (appliedReferralCode !== "") {
+          if (zoneType === 'zone-a') finalPrice = 25;
+          if (zoneType === 'zone-b') finalPrice = 15;
+        }
+        selectedSeats.push({ id: seatId, price: finalPrice, zone: getZoneLabel(zoneType), rowName: rowName, num: num });
+      }
+
+      document.getElementById("selected-seats-text").innerText = selectedSeats.length ? selectedSeats.map(s => formatSeatLabel(s)).join(", ") : "None";
+      document.getElementById("total-price").innerText = selectedSeats.reduce((sum, s) => sum + s.price, 0);
+      document.getElementById("btn-to-page3").disabled = selectedSeats.length === 0;
+    }
+
+    async function lockSeatHolding() {
+      if (!db) return;
+      try {
+        const batch = db.batch();
+        selectedSeats.forEach(s => {
+          const ref = db.collection("concert_seats").doc(s.id);
+          batch.set(ref, { status: "holding", timestamp: firebase.firestore.FieldValue.serverTimestamp() }, { merge: true });
+        });
+        await batch.commit();
+      } catch (err) {}
+    }
+
+    async function releaseSeatHolding() {
+      if (!db) return;
+      try {
+        const batch = db.batch();
+        selectedSeats.forEach(s => {
+          const ref = db.collection("concert_seats").doc(s.id);
+          batch.delete(ref);
+        });
+        await batch.commit();
+      } catch (err) {}
+    }
+
+    function selectPaymentMethod(type) {
+      document.querySelectorAll('.payment-card').forEach(c => c.classList.remove('active'));
+      if (type === 'bank') {
+        document.getElementById('pay-bank').checked = true;
+        document.getElementById('pay-bank').closest('.payment-card').classList.add('active');
+        selectedPaymentMethod = "Bank Transfer";
+      } else {
+        document.getElementById('pay-tng').checked = true;
+        document.getElementById('pay-tng').closest('.payment-card').classList.add('active');
+        selectedPaymentMethod = "Touch 'n Go eWallet";
+      }
+      validatePage3();
+    }
+
+    function validatePage3() {
+      document.getElementById("btn-to-page4").disabled = !(document.getElementById("tc-checkbox").checked && selectedPaymentMethod !== "");
+    }
+
+    function handleFinalSubmit(e) {
+      if (e) e.preventDefault();
+      
+      const codeInputVal = document.getElementById("promo-code-input").value.trim().toUpperCase();
+      if (codeInputVal !== "" && appliedReferralCode === "") {
+        alert("Please click 'Apply' to validate your referral code or clear the field before proceeding.");
+        return;
+      }
+
+      const ticketId = `#UIM-2026-${Date.now().toString().slice(-6)}-${Math.floor(1000 + Math.random() * 9000)}`;
+      const name = document.getElementById("input-name").value;
+      const studentId = document.getElementById("input-student-id").value;
+      const email = document.getElementById("input-email").value;
+      const phone = document.getElementById("input-phone").value;
+      const seatsText = selectedSeats.map(s => formatSeatLabel(s)).join(", ");
+      const totalPaid = selectedSeats.reduce((sum, s) => sum + s.price, 0);
+      const referralUsed = appliedReferralCode || "None";
+
+      document.getElementById("ticket-name").innerText = name;
+      document.getElementById("ticket-student-id").innerText = studentId || "N/A";
+      document.getElementById("ticket-phone").innerText = phone || "-";
+      document.getElementById("ticket-seats").innerText = seatsText;
+      document.getElementById("ticket-price").innerText = totalPaid;
+      document.getElementById("ticket-id").innerText = ticketId;
+
+      const qrContainer = document.getElementById("ticket-qr-container");
+      qrContainer.innerHTML = "";
+      if (typeof QRCode !== "undefined") {
+        new QRCode(qrContainer, { text: ticketId, width: 130, height: 130, colorDark: "#000000", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.H });
+      }
+
+      goToPage(5);
+
+      if (db) {
+        try {
+          const batch = db.batch();
+          selectedSeats.forEach(s => {
+            batch.set(db.collection("concert_seats").doc(s.id), { status: "occupied", bookedBy: name, ticketId: ticketId });
+          });
+          batch.commit().catch(() => {});
+        } catch (err) {}
+      }
+
+      const file = document.getElementById("receipt-file").files[0];
+      const sendData = (fileData, fileName, fileType) => {
+        fetch(GOOGLE_SCRIPT_URL, {
+          method: "POST", mode: "no-cors", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ticketId, name, studentId, email, phone, seats: seatsText, totalPaid, paymentMethod: selectedPaymentMethod, referralUsed, fileData, fileName, fileType })
+        }).catch(() => {});
+      };
+
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = e => sendData(e.target.result, file.name, file.type);
+        reader.readAsDataURL(file);
+      } else {
+        sendData("", "", "");
+      }
+    }
+
+    let html5QrCode = null;
+
+    function goToPage(pageNum) {
+      for (let i = 1; i <= 5; i++) {
+        const p = document.getElementById(`page-${i}`);
+        if (p) p.style.display = "none";
+      }
+      const scannerPage = document.getElementById('page-scanner');
+      if (scannerPage) scannerPage.style.display = "none";
+
+      if (html5QrCode && html5QrCode.isScanning) {
+        html5QrCode.stop().catch(() => {});
+      }
+
+      if (pageNum === 'scanner') {
+        if (scannerPage) {
+          scannerPage.style.display = "block";
+          startScanner();
+        }
+        window.scrollTo(0, 0);
+        return;
+      }
+
+      if (pageNum === 3) {
+        lockSeatHolding();
+        document.getElementById("payment-seats-summary").innerText = selectedSeats.map(s => formatSeatLabel(s)).join(", ");
+        document.getElementById("payment-amount-summary").innerText = selectedSeats.reduce((sum, s) => sum + s.price, 0);
+      }
+      document.getElementById(`page-${pageNum}`).style.display = "block";
+      window.scrollTo(0, 0);
+    }
+
+    function startScanner() {
+      const statusCard = document.getElementById("scan-status");
+      if (statusCard) statusCard.style.display = "none";
+
+      if (typeof Html5Qrcode === "undefined") return;
+      if (!html5QrCode) {
+        html5QrCode = new Html5Qrcode("reader");
+      }
+
+      html5QrCode.start(
+        { facingMode: "environment" },
+        { fps: 10, qrbox: { width: 250, height: 250 } },
+        async (decodedText) => {
+          if (html5QrCode && html5QrCode.isScanning) {
+            await html5QrCode.stop();
+          }
+
+          if (statusCard) {
+            statusCard.style.display = "block";
+            statusCard.className = "scan-status-card";
+            statusCard.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Verifying ticket...`;
+          }
+
+          // Verify ticket against Google Sheet / backend
+          fetch(`${GOOGLE_SCRIPT_URL}?action=verify&ticketId=${encodeURIComponent(decodedText)}`)
+            .then(res => res.json())
+            .then(data => {
+              if (statusCard) {
+                statusCard.style.display = "block";
+                if (data.status === "VALID") {
+                  statusCard.className = "scan-status-card scan-valid";
+                  statusCard.innerHTML = `<i class="fas fa-check-circle"></i> VALID TICKET<br><strong>${data.name}</strong><br>Seats: ${data.seats}<br><span style="font-size:0.8rem; font-family:monospace;">${decodedText}</span>`;
+                } else if (data.status === "DUPLICATE") {
+                  statusCard.className = "scan-status-card scan-duplicate";
+                  statusCard.innerHTML = `<i class="fas fa-exclamation-triangle"></i> DUPLICATE / ALREADY CHECKED IN!<br>Checked in at: ${data.checkInTime || 'Earlier'}<br><span style="font-size:0.8rem; font-family:monospace;">${decodedText}</span>`;
+                } else {
+                  statusCard.className = "scan-status-card scan-invalid";
+                  statusCard.innerHTML = `<i class="fas fa-times-circle"></i> INVALID TICKET ID NOT FOUND<br><span style="font-size:0.8rem; font-family:monospace;">${decodedText}</span>`;
+                }
+              }
+              setTimeout(() => startScanner(), 4500);
+            })
+            .catch(() => {
+              if (statusCard) {
+                statusCard.style.display = "block";
+                statusCard.className = "scan-status-card scan-invalid";
+                statusCard.innerText = "Network Error verifying ticket.";
+              }
+              setTimeout(() => startScanner(), 4000);
+            });
+        },
+        (errorMessage) => {}
+      ).catch(err => {
+        if (statusCard) {
+          statusCard.style.display = "block";
+          statusCard.className = "scan-status-card scan-invalid";
+          statusCard.innerText = "Camera Access Error or Not Supported";
+        }
+      });
+    }
+
+    window.onload = () => {
+      updatePricingUI();
+      renderSeatingGrid();
+
+      if (window.location.hash === "#scanner") {
+        goToPage('scanner');
+      }
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add("visible"); });
+      }, { threshold: 0.1 });
+      document.querySelectorAll('.animate-on-scroll').forEach(section => observer.observe(section));
+    };
+
+    window.onhashchange = () => {
+      if (window.location.hash === "#scanner") {
+        goToPage('scanner');
+      } else if (window.location.hash === "") {
+        goToPage(1);
+      }
+    };
+  </script>
+</body>
+</html>
