@@ -713,16 +713,8 @@
         btn.classList.remove("selected");
         selectedSeats = selectedSeats.filter(s => s.id !== seatId);
       } else {
+        selectedSeats.push({ id: seatId, price: 0, zone: getZoneLabel(zoneType), zoneKey: zoneType, rowName: rowName, num: num });
         btn.classList.add("selected");
-        let baseTable = selectedTier === 'bundle' ? bundlePrices : standardPrices;
-        let finalPrice = baseTable[zoneType];
-        
-        if (appliedReferralCode !== "" && selectedSeats.length <= 2) {
-          if (zoneType === 'zone-a') finalPrice = selectedTier === 'bundle' ? 55 : 25;
-          if (zoneType === 'zone-b') finalPrice = selectedTier === 'bundle' ? 45 : 15;
-        }
-
-        selectedSeats.push({ id: seatId, price: finalPrice, zone: getZoneLabel(zoneType), zoneKey: zoneType, rowName: rowName, num: num });
       }
 
       recalculateSeatPrices();
