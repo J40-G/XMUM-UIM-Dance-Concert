@@ -1,4 +1,461 @@
-<script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>United in Motion | XMUM Dance Concert 2026</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Local QR Code Generator -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background-color: #0d0d0d; color: #ffffff; text-align: center; min-height: 100vh; scroll-behavior: smooth; }
+
+    .navbar { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background-color: rgba(0, 0, 0, 0.9); position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid #1f1f1f; }
+    .nav-brand { font-weight: bold; letter-spacing: 1px; color: #ffb6c1; font-size: 0.9rem; }
+    .nav-links a { color: #cccccc; text-decoration: none; margin-left: 15px; font-size: 0.85rem; }
+    .nav-links a:hover { color: #ffb6c1; }
+
+    /* Scroll Animation */
+    .animate-on-scroll { opacity: 0; transform: translateY(20px); transition: opacity 0.8s ease-out, transform 0.8s ease-out; }
+    .animate-on-scroll.visible { opacity: 1; transform: translateY(0); }
+
+    /* Seamless Welcome Modal Popup */
+    #welcome-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); display: flex; align-items: center; justify-content: center; z-index: 3000; padding: 15px; transition: opacity 0.8s ease; }
+    .modal-content { position: relative; max-width: 400px; width: 100%; text-align: center; background: #1b1214; padding: 20px; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.9); border: 1px solid #2a1b1e; }
+    .modal-poster { width: 100%; max-height: 420px; object-fit: contain; border-radius: 12px; display: block; margin: 0 auto; background: #1b1214; }
+
+    /* Hero Section */
+    .hero { padding: 15px; max-width: 900px; margin: 0 auto; }
+    .hero-image-overlay { position: relative; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8); background: linear-gradient(135deg, #1f1418 0%, #0d0d0d 100%); min-height: 440px; display: flex; align-items: center; justify-content: center; border: 1px solid #222; }
+    .hero-text-overlay { width: 95%; padding: 30px 15px; }
+    .subtitle { font-size: 0.75rem; letter-spacing: 2px; color: #ffb6c1; }
+    .main-title { font-size: 2.1rem; letter-spacing: 2px; margin: 10px 0; font-weight: 800; }
+    
+    .event-meta-pills { display: flex; justify-content: center; gap: 8px; margin-bottom: 15px; font-size: 0.75rem; color: #cccccc; flex-wrap: wrap; }
+    .event-meta-pills span { background: rgba(255, 255, 255, 0.1); padding: 5px 10px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.15); }
+
+    /* Larger Circular Logos */
+    .hero-dual-logos { display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 15px; }
+    .hero-logo-circle { width: 68px; height: 68px; border-radius: 50%; border: 2px solid #ffb6c1; overflow: hidden; background: #000; display: flex; align-items: center; justify-content: center; }
+    .hero-logo-circle img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.15); mix-blend-mode: lighten; filter: contrast(120%); }
+    .logo-cross { color: #ffb6c1; font-weight: bold; font-size: 1.2rem; }
+
+    .btn-pink { background-color: #f3b0c3; color: #000000; padding: 12px 30px; border-radius: 30px; text-decoration: none; font-weight: bold; font-size: 0.95rem; border: none; cursor: pointer; transition: transform 0.2s; }
+    .btn-pink:hover { background-color: #f7c5d3; transform: scale(1.03); }
+    .btn-pink:disabled { background-color: #555; color: #888; cursor: not-allowed; transform: none; }
+
+    /* Pricing Section */
+    .section { padding: 40px 15px; border-top: 1px solid #1a1a1a; max-width: 900px; margin: 0 auto; }
+    .section h2 { font-size: 1.25rem; letter-spacing: 2px; color: #ffb6c1; margin-bottom: 15px; }
+    
+    .pricing-cards-container { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; margin-bottom: 25px; }
+    .price-tier-card { background: #141414; border: 1px solid #2a2a2a; border-radius: 12px; padding: 20px; width: 270px; text-align: left; }
+    .price-tier-card h3 { color: #ffb6c1; font-size: 1.1rem; margin-bottom: 12px; border-bottom: 1px dashed #333; padding-bottom: 6px; }
+    .price-row { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 8px; color: #ccc; }
+    .price-val-white { color: #ffffff; font-weight: bold; }
+    .price-val-pink { color: #ffb6c1; font-weight: bold; }
+
+    .pricing-disclaimer { background: #181415; border: 1px solid #331f24; border-radius: 8px; padding: 12px 15px; margin-bottom: 30px; text-align: left; font-size: 0.8rem; color: #d0d0d0; line-height: 1.5; max-width: 850px; margin-left: auto; margin-right: auto; }
+    .pricing-disclaimer p strong { color: #ffb6c1; display: block; margin-bottom: 4px; }
+    .pricing-disclaimer ol { padding-left: 18px; margin-top: 6px; }
+    .pricing-disclaimer ol li { margin-bottom: 4px; }
+
+    .pricing-grid { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; margin-top: 15px; }
+    .pricing-card-wrapper { position: relative; display: inline-block; width: 100%; max-width: 350px; }
+    .pricing-card-img { width: 100%; border-radius: 12px; border: 1px solid #333; }
+    .sold-out-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); color: #ff4d4d; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: bold; letter-spacing: 2px; }
+
+    .tshirt-design-grid { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; margin-top: 20px; }
+    .tshirt-poster-slot { width: 100%; max-width: 270px; background: #141414; border: 1px solid #222; border-radius: 12px; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 5px; }
+    .tshirt-poster-slot img { width: 100%; height: auto; max-height: 480px; object-fit: contain; border-radius: 8px; display: block; }
+
+    .seating-img { max-width: 100% !important; width: 100%; border-radius: 12px; border: 1px solid #333; }
+
+    .contact-section { background: #111; border-top: 1px solid #222; padding: 30px 20px; margin-top: 30px; text-align: center; }
+    .contact-section h3 { color: #ffb6c1; font-size: 1.1rem; margin-bottom: 12px; letter-spacing: 1px; }
+    .contact-links { display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; font-size: 0.95rem; align-items: center; }
+    .contact-links a { color: #ddd; text-decoration: none; display: flex; align-items: center; gap: 8px; transition: color 0.2s; }
+    .contact-links a:hover { color: #ffb6c1; }
+    .contact-links i { font-size: 1.5rem; }
+
+    .page-container { padding: 25px 15px; max-width: 1000px; margin: 0 auto; }
+    .page-header { margin-bottom: 20px; position: relative; }
+    .btn-back { position: absolute; left: 0; top: 0; background: transparent; border: 1px solid #444; color: #ccc; padding: 6px 12px; border-radius: 20px; cursor: pointer; font-size: 0.85rem; }
+
+    .stage-banner { background-color: #87CEEB; color: #000000; padding: 8px; margin: 15px auto 20px auto; max-width: 800px; letter-spacing: 3px; font-weight: bold; font-size: 0.9rem; border-radius: 6px; text-transform: uppercase; }
+
+    .tier-selector { background: #181818; border: 1px solid #333; padding: 12px; border-radius: 10px; margin-bottom: 20px; display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; align-items: center; }
+    .tier-btn { background: #222; border: 1px solid #444; color: #ccc; padding: 8px 16px; border-radius: 20px; cursor: pointer; font-size: 0.85rem; font-weight: bold; }
+    .tier-btn.active { background: #f3b0c3; color: #000; border-color: #f3b0c3; }
+
+    .seat-map-wrapper { overflow-x: auto; padding-bottom: 15px; -webkit-overflow-scrolling: touch; }
+    .seat-map { display: inline-block; min-width: 800px; }
+    .seat-row { display: flex; align-items: center; justify-content: center; margin-bottom: 5px; }
+    .row-label { width: 75px; text-align: right; padding-right: 10px; font-size: 0.7rem; color: #888; }
+    .row-seats { display: flex; gap: 3px; }
+    .seat { width: 19px; height: 21px; border-radius: 4px; border: none; font-size: 0.6rem; font-weight: bold; color: #000; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .seat.blank { background-color: #4a4a4a; color: transparent; cursor: default; }
+    
+    .seat.zone-a { background-color: #d90429; color: #fff; }
+    .seat.zone-b { background-color: #b8e2f4; color: #000; }
+    .seat.zone-c { background-color: #abf7b1; color: #000; }
+    .seat.selected { background-color: #ffea00 !important; color: #000 !important; }
+    .seat.holding { background-color: #ff9f1c !important; color: #000 !important; cursor: not-allowed; }
+    .seat.occupied { background-color: #4a4a4a !important; color: transparent !important; cursor: not-allowed; }
+
+    .legend { display: flex; justify-content: center; gap: 15px; margin: 20px 0; font-size: 0.75rem; flex-wrap: wrap; }
+    .legend-item { display: flex; align-items: center; gap: 6px; }
+    .color-box { width: 14px; height: 14px; border-radius: 3px; }
+    .color-box.zone-a { background-color: #d90429; }
+    .color-box.zone-b { background-color: #b8e2f4; }
+    .color-box.zone-c { background-color: #abf7b1; }
+    .color-box.selected { background-color: #ffea00; }
+    .color-box.holding { background-color: #ff9f1c; }
+    .color-box.occupied { background-color: #4a4a4a; }
+
+    .checkout-bar { margin-top: 20px; background: #141414; padding: 15px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; max-width: 800px; margin: 0 auto; border: 1px solid #222; flex-wrap: wrap; gap: 10px; }
+    .selection-summary { text-align: left; font-size: 0.85rem; line-height: 1.5; }
+
+    .payment-summary-box { background: #181818; border: 1px solid #2a2a2a; border-radius: 10px; padding: 15px; max-width: 600px; margin: 0 auto 20px auto; text-align: left; font-size: 0.9rem; }
+    .payment-options-grid { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; margin: 20px 0; }
+    .payment-card { background: #141414; border: 1px solid #282828; border-radius: 10px; padding: 15px; width: 260px; text-align: center; cursor: pointer; }
+    .payment-card.active { border-color: #ffb6c1; background: #1f1418; }
+    .payment-checkbox { margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; font-weight: bold; font-size: 0.9rem; }
+    .qr-placeholder { width: 140px; height: 140px; background: #fff; margin: 10px auto; border-radius: 8px; overflow: hidden; }
+    .qr-placeholder img { width: 100%; height: 100%; object-fit: contain; }
+    .account-info { font-size: 0.8rem; color: #ccc; line-height: 1.4; margin-top: 8px; }
+    .payment-remark-notice { color: #d0d0d0; font-size: 0.85rem; margin: 15px 0; font-weight: 500; }
+    .tc-container { background: #141414; border: 1px solid #222; border-radius: 8px; padding: 15px; max-width: 600px; margin: 15px auto; text-align: left; font-size: 0.8rem; color: #aaa; line-height: 1.5; }
+
+    .form-container { max-width: 700px; margin: 0 auto; text-align: left; }
+    .form-group { margin-bottom: 20px; }
+    .form-group label { display: block; font-size: 0.9rem; margin-bottom: 6px; color: #eee; }
+    .form-group label span { color: #ffb6c1; }
+    .form-control { width: 100%; padding: 12px 15px; background-color: #1f1f1f; border: 1px solid #333; border-radius: 25px; color: #fff; font-size: 0.9rem; outline: none; }
+    .upload-btn-wrapper { position: relative; overflow: hidden; display: inline-block; }
+    .btn-upload { border: 1px solid #fff; color: #000; background-color: #fff; padding: 8px 16px; border-radius: 6px; font-size: 0.8rem; font-weight: 600; cursor: pointer; }
+    .upload-btn-wrapper input[type=file] { position: absolute; left: 0; top: 0; opacity: 0; cursor: pointer; height: 100%; width: 100%; }
+
+    .ticket-card { background: linear-gradient(135deg, #1f1f1f 0%, #111111 100%); border: 2px solid #ffb6c1; border-radius: 16px; max-width: 500px; margin: 15px auto; padding: 25px; text-align: left; box-shadow: 0 15px 35px rgba(255, 182, 193, 0.2); }
+    .ticket-header { border-bottom: 1px dashed #444; padding-bottom: 12px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+    .ticket-title { font-size: 1.3rem; color: #ffb6c1; font-weight: bold; letter-spacing: 1px; }
+    .ticket-body p { margin-bottom: 10px; font-size: 0.9rem; color: #ddd; }
+    .ticket-body p strong { color: #ffffff; }
+    .ticket-qr { text-align: center; margin-top: 20px; padding-top: 15px; border-top: 1px dashed #444; }
+
+    footer { padding: 20px; font-size: 0.8rem; color: #777; border-top: 1px solid #141414; }
+  </style>
+</head>
+<body>
+
+  <!-- WELCOME POPUP MODAL -->
+  <div id="welcome-modal">
+    <div class="modal-content">
+      <img src="UIM%20Poster_2.png" alt="United In Motion Logo Popup" class="modal-poster">
+    </div>
+  </div>
+
+  <!-- PAGE 1: MAIN LANDING PAGE -->
+  <div id="page-1">
+    <header class="navbar">
+      <div class="nav-brand">XMUM DANCE CLUB</div>
+      <nav class="nav-links">
+        <a href="#about">About</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#tshirt-design">T-Shirt Design</a>
+        <a href="#seating-info">Seating</a>
+      </nav>
+    </header>
+
+    <section id="about" class="hero animate-on-scroll">
+      <div class="hero-image-overlay">
+        <div class="hero-text-overlay">
+          <p class="subtitle">XMUM DANCE CLUB PRESENTS</p>
+          <h1 class="main-title">UNITED IN MOTION</h1>
+          
+          <div class="event-meta-pills">
+            <span><i class="far fa-calendar-alt"></i> 11th Dec 2026</span>
+            <span><i class="fas fa-map-marker-alt"></i> Tan Hua Choon Auditorium</span>
+            <span><i class="far fa-clock"></i> 7:00 PM - 10:00 PM</span>
+          </div>
+
+          <div class="hero-dual-logos">
+            <div class="hero-logo-circle"><img src="DC%20Logo.png" alt="Dance Club Logo"></div>
+            <span class="logo-cross">×</span>
+            <div class="hero-logo-circle"><img src="UIM%20Logo.png" alt="UIM Logo"></div>
+          </div>
+
+          <button type="button" onclick="goToPage(2)" class="btn-pink">
+            <i class="fas fa-ticket-alt"></i> Buy Ticket / Select Seats
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="section animate-on-scroll">
+      <h2>TICKET PRICING & BUNDLE TIERS</h2>
+      <p id="pricing-status-notice" style="color: #ffb6c1; margin-bottom: 25px; font-weight: bold; font-size: 0.9rem;"></p>
+      
+      <div class="pricing-cards-container">
+        <div class="price-tier-card">
+          <h3>Zone A</h3>
+          <div class="price-row"><span>Early Bird (Standard):</span> <span class="price-val-white">RM40</span></div>
+          <div class="price-row"><span>Early Bird + T-Shirt:</span> <span class="price-val-pink">RM70</span></div>
+          <div class="price-row"><span>Normal (Standard):</span> <span class="price-val-white">RM45</span></div>
+          <div class="price-row"><span>Normal + T-Shirt:</span> <span class="price-val-pink">RM80</span></div>
+        </div>
+        <div class="price-tier-card">
+          <h3>Zone B</h3>
+          <div class="price-row"><span>Early Bird (Standard):</span> <span class="price-val-white">RM30</span></div>
+          <div class="price-row"><span>Early Bird + T-Shirt:</span> <span class="price-val-pink">RM60</span></div>
+          <div class="price-row"><span>Normal (Standard):</span> <span class="price-val-white">RM35</span></div>
+          <div class="price-row"><span>Normal + T-Shirt:</span> <span class="price-val-pink">RM70</span></div>
+        </div>
+        <div class="price-tier-card">
+          <h3>Zone C</h3>
+          <div class="price-row"><span>Early Bird (Standard):</span> <span class="price-val-white">RM20</span></div>
+          <div class="price-row"><span>Early Bird + T-Shirt:</span> <span class="price-val-pink">RM50</span></div>
+          <div class="price-row"><span>Normal (Standard):</span> <span class="price-val-white">RM25</span></div>
+          <div class="price-row"><span>Normal + T-Shirt:</span> <span class="price-val-pink">RM60</span></div>
+        </div>
+      </div>
+
+      <div class="pricing-disclaimer">
+        <p><strong>⚠️ Important Disclaimer:</strong></p>
+        <ol>
+          <li>T-shirt designs and sizes will be distributed on a first-come, first-served basis on the event day, subject to availability.</li>
+          <li>Pre-selection of T-shirt designs and sizes is not allowed.</li>
+        </ol>
+      </div>
+
+      <div class="pricing-grid">
+        <div class="pricing-card-wrapper">
+          <img src="UIM%20early%20bird.png" alt="Early Bird Pricing" class="pricing-card-img">
+          <div id="eb-overlay" class="sold-out-overlay" style="display:none;">EARLY BIRD ENDED</div>
+        </div>
+        <div class="pricing-card-wrapper">
+          <img src="UIM%20normal.png" alt="Normal Pricing" class="pricing-card-img">
+        </div>
+      </div>
+    </section>
+
+    <!-- T-Shirt Design Section -->
+    <section id="tshirt-design" class="section animate-on-scroll">
+      <h2>T-SHIRT DESIGN</h2>
+      <div class="tshirt-design-grid">
+        <div class="tshirt-poster-slot"><img src="tshirt-poster-1.png" alt="T-Shirt Design 1" onerror="this.style.display='none'"></div>
+        <div class="tshirt-poster-slot"><img src="tshirt-poster-2.png" alt="T-Shirt Design 2" onerror="this.style.display='none'"></div>
+        <div class="tshirt-poster-slot"><img src="tshirt-poster-3.png" alt="T-Shirt Design 3" onerror="this.style.display='none'"></div>
+      </div>
+    </section>
+
+    <!-- Seating Overview -->
+    <section id="seating-info" class="section animate-on-scroll">
+      <h2>AUDITORIUM SEATING MAP</h2>
+      <div class="seating-container">
+        <img src="UIM%20Seating%20Layout.png" alt="Auditorium Seating Layout" class="seating-img">
+      </div>
+      <br>
+      <button type="button" onclick="goToPage(2)" class="btn-pink">Select Your Seats Now</button>
+    </section>
+
+    <!-- CONTACT US SECTION -->
+    <div class="contact-section animate-on-scroll">
+      <h3>Need Help? Contact us</h3>
+      <div class="contact-links">
+        <a href="https://wa.me/601110809358" target="_blank"><i class="fab fa-whatsapp" style="color: #25D366;"></i> WhatsApp</a>
+        <a href="https://instagram.com/xmum_danceconcert" target="_blank"><i class="fab fa-instagram" style="color: #E1306C;"></i> @xmum_danceconcert</a>
+      </div>
+    </div>
+
+    <footer>
+      <p>&copy; 2026 XMUM Dance Club. J40 All Rights Reserved.</p>
+    </footer>
+  </div>
+
+  <!-- PAGE 2: SEAT SELECTION -->
+  <div id="page-2" class="page-container" style="display: none;">
+    <div class="page-header">
+      <button type="button" onclick="goToPage(1)" class="btn-back">← Back</button>
+      <h2>Select Ticket & Seats</h2>
+    </div>
+
+    <div class="tier-selector">
+      <span style="font-size: 0.85rem; color: #aaa; font-weight: bold;">Select Package:</span>
+      <button type="button" id="tier-std" class="tier-btn active" onclick="setTicketTier('standard')">Standard Ticket (No T-shirt)</button>
+      <button type="button" id="tier-bundle" class="tier-btn" onclick="setTicketTier('bundle')">⭐ T-Shirt Bundle (+T-shirt)</button>
+    </div>
+
+    <div class="stage-banner">STAGE</div>
+
+    <div class="seat-map-wrapper">
+      <div id="seat-map" class="seat-map"></div>
+    </div>
+
+    <div class="legend">
+      <div class="legend-item"><span class="color-box zone-a"></span> Zone A [<span id="price-tag-a">RM40</span>]</div>
+      <div class="legend-item"><span class="color-box zone-b"></span> Zone B [<span id="price-tag-b">RM30</span>]</div>
+      <div class="legend-item"><span class="color-box zone-c"></span> Zone C [<span id="price-tag-c">RM20</span>]</div>
+      <div class="legend-item"><span class="color-box selected"></span> Selected</div>
+      <div class="legend-item"><span class="color-box holding"></span> Holding</div>
+      <div class="legend-item"><span class="color-box occupied"></span> Occupied</div>
+    </div>
+
+    <div class="checkout-bar">
+      <div class="selection-summary">
+        <p><strong>Package:</strong> <span id="selected-tier-text" style="color:#ffb6c1;">Standard Ticket</span></p>
+        <p><strong>Selection:</strong> <span id="selected-seats-text">None</span></p>
+        <p><strong>Total:</strong> RM <span id="total-price">0</span></p>
+      </div>
+      <button type="button" id="btn-to-page3" onclick="goToPage(3)" class="btn-pink" disabled>Next →</button>
+    </div>
+  </div>
+
+  <!-- PAGE 3: PAYMENT -->
+  <div id="page-3" class="page-container" style="display: none;">
+    <div class="page-header">
+      <button type="button" onclick="releaseSeatHolding(); goToPage(2);" class="btn-back">← Back</button>
+      <h2>Payment</h2>
+    </div>
+
+    <div class="payment-summary-box">
+      <p><strong>Selected Package:</strong> <span id="payment-tier-summary" style="color:#ffb6c1;">Standard Ticket</span></p>
+      <p><strong>Selected Seats:</strong> <span id="payment-seats-summary">-</span></p>
+      <p><strong>Total Amount Due:</strong> <span style="color: #ffb6c1; font-weight: bold;">RM <span id="payment-amount-summary">0</span></span></p>
+      <p style="font-size:0.75rem; color:#ff9f1c; margin-top:5px;">⚠️ Seats locked for 10 minutes. Time remaining: <span id="hold-timer" style="font-weight:bold;">10:00</span></p>
+    </div>
+
+    <!-- Committee Referral Code Box (Strictly Max 2 Seats) -->
+    <div class="payment-summary-box" style="border-color: #ffb6c1; background: #1a1416;">
+      <h4 style="color: #ffb6c1; margin-bottom: 8px;"><i class="fas fa-tag"></i> Committee Referral Code <span style="font-weight: normal; color: #aaa; font-size: 0.85rem;">(Max 2 seats)</span></h4>
+      <div style="display: flex; gap: 10px;">
+        <input type="text" id="promo-code-input" class="form-control" placeholder="Enter code if applicable" style="text-transform: uppercase;">
+        <button type="button" onclick="applyCommitteeCode()" class="btn-pink" style="padding: 10px 20px; font-size: 0.85rem;">Apply</button>
+      </div>
+      <p id="promo-message" style="font-size: 0.8rem; margin-top: 8px; display: none;"></p>
+    </div>
+
+    <h3>Select Payment Method</h3>
+    <div class="payment-options-grid">
+      <div class="payment-card" onclick="selectPaymentMethod('bank')">
+        <div class="payment-checkbox">
+          <input type="radio" name="payment_method" id="pay-bank" value="Bank Transfer">
+          <label for="pay-bank">Bank Transfer</label>
+        </div>
+        <div class="qr-placeholder"><img src="bank-qr.jpeg" alt="Bank QR" onerror="this.src='https://via.placeholder.com/150?text=Bank+QR'"></div>
+        <div class="account-info"><p><strong>Bank:</strong> Maybank</p><p><strong>Holder:</strong> Elvina Jong Qian Rui</p><p><strong>Acc No:</strong> 161033355138</p></div>
+      </div>
+
+      <div class="payment-card" onclick="selectPaymentMethod('tng')">
+        <div class="payment-checkbox">
+          <input type="radio" name="payment_method" id="pay-tng" value="Touch 'n Go eWallet">
+          <label for="pay-tng">Touch 'n Go eWallet</label>
+        </div>
+        <div class="qr-placeholder"><img src="tng-qr.jpeg" alt="TNG QR" onerror="this.src='https://via.placeholder.com/150?text=TNG+QR'"></div>
+        <div class="account-info"><p><strong>Recipient:</strong> Lee Jia En</p><p>Scan via TnG App</p></div>
+      </div>
+    </div>
+
+    <p class="payment-remark-notice">*Please remark reference as "XMUM Dance Concert"</p>
+
+    <div class="tc-container">
+      <h4 style="color: #fff; margin-bottom: 6px;">Terms & Conditions</h4>
+      <p>1. Tickets non-refundable.</p>
+      <p>2. Ensure the payment amount matches the total displayed after seat selection. Any incorrect transfers will not be refunded.</p>
+      <p>3. Present your QR code at the ticket redemption booth to collect your wristband.</p>
+      <p>4. A valid ticket is required for entry to the venue.</p>
+      <p>5. Attendees are required to behave respectfully and adhere to all venue rules and regulations. We reserve the right to refuse entry or remove anyone in violation of these policies, without refund. XMUM Dance Club reserves the right to amend the Terms and Conditions at any time.</p>
+      <p>6. For inquiries, please contact Jeslyn (+60 1110809358).</p>
+      
+      <label style="display:flex; align-items:center; gap:8px; margin-top:10px; color:#fff; cursor:pointer;">
+        <input type="checkbox" id="tc-checkbox" onchange="validatePage3()"> I understand and agree to the T&Cs.
+      </label>
+    </div>
+
+    <br>
+    <button type="button" id="btn-to-page4" onclick="goToPage(4)" class="btn-pink" disabled>Next →</button>
+  </div>
+
+  <!-- PAGE 4: ATTENDEE FORM -->
+  <div id="page-4" class="page-container" style="display: none;">
+    <div class="page-header">
+      <button type="button" onclick="goToPage(3)" class="btn-back">← Back</button>
+      <h2>Attendee Details</h2>
+    </div>
+
+    <div class="form-container">
+      <form id="checkout-form" onsubmit="handleFinalSubmit(event)">
+        <div class="form-group">
+          <label>Name (as Per NRIC)<span>*</span></label>
+          <input type="text" id="input-name" class="form-control" required placeholder="Enter full name">
+        </div>
+        <div class="form-group">
+          <label>Student ID <span>(XMUM students only)</span></label>
+          <input type="text" id="input-student-id" class="form-control" placeholder="Enter student ID">
+        </div>
+        <div class="form-group">
+          <label>Email<span>*</span></label>
+          <input type="email" id="input-email" class="form-control" required placeholder="Enter email">
+        </div>
+        <div class="form-group">
+          <label>Contact No.<span>*</span></label>
+          <input type="tel" id="input-phone" class="form-control" required placeholder="0123456789">
+        </div>
+
+        <div class="form-group">
+          <label>Payment Receipt<span>*</span></label>
+          <div class="upload-btn-wrapper">
+            <button type="button" class="btn-upload">📁 Upload Receipt</button>
+            <input type="file" id="receipt-file" required onchange="document.getElementById('file-name').innerText = this.files[0].name">
+          </div>
+          <span id="file-name" style="font-size:0.75rem; color:#888; display:block; margin-top:5px;">No file chosen</span>
+        </div>
+        <br>
+        <button type="submit" class="btn-pink" style="width:100%;">Confirm & Generate E-Ticket</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- PAGE 5: DIGITAL E-TICKET -->
+  <div id="page-5" class="page-container" style="display: none;">
+    <h2>CONGRATULATIONS!</h2>
+    <p style="color:#aaa; margin-bottom:15px;">Your ticket has been reserved successfully.</p>
+
+    <div class="ticket-card">
+      <div class="ticket-header">
+        <span class="ticket-title">UNITED IN MOTION</span>
+        <span style="font-size:0.7rem; background:#ffb6c1; color:#000; padding:3px 8px; border-radius:10px; font-weight:bold;">OFFICIAL TICKET</span>
+      </div>
+      <div class="ticket-body">
+        <p><strong>Name:</strong> <span id="ticket-name">-</span></p>
+        <p><strong>Student ID:</strong> <span id="ticket-student-id">N/A</span></p>
+        <p><strong>Contact No:</strong> <span id="ticket-phone">-</span></p>
+        <p><strong>Package:</strong> <span id="ticket-tier-label" style="color:#ffb6c1; font-weight:bold;">Standard Ticket</span></p>
+        <p><strong>Seat(s):</strong> <span id="ticket-seats" style="color:#ffb6c1; font-weight:bold;">-</span></p>
+        <p><strong>Total Paid:</strong> RM <span id="ticket-price">0</span></p>
+        <p><strong>Date & Time:</strong> 11th Dec 2026 | 7:00 PM - 10:00 PM</p>
+        <p><strong>Venue:</strong> Tan Hua Choon Auditorium, XMUM</p>
+        <p><strong>Ticket ID:</strong> <span id="ticket-id" style="font-family:monospace; color:#87CEEB;">#UIM-2026-XXXX</span></p>
+      </div>
+      <div class="ticket-qr">
+        <div id="ticket-qr-container" style="display: flex; justify-content: center; margin-bottom: 6px;"></div>
+        <p style="font-size:0.7rem; color:#888;">Present this unique QR code at hall entrance</p>
+      </div>
+    </div>
+
+    <br>
+    <button type="button" onclick="window.print()" class="btn-pink"><i class="fas fa-print"></i> Print E-Ticket</button>
+  </div>
+
+  <!-- Firebase Compat Libraries & App Logic -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+  <script>
     const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwQxDYrkKlnOsNwVSTiNfxplJ-TszuZHeG_hxYUa2a6u-mbv1votVSDWfkxyndPPgQ/exec";
 
     const firebaseConfig = {
@@ -437,3 +894,5 @@
       document.querySelectorAll('.animate-on-scroll').forEach(section => observer.observe(section));
     };
   </script>
+</body>
+</html>
