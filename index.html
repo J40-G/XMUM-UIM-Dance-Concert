@@ -62,18 +62,18 @@
     /* Disclaimer Box */
     .pricing-disclaimer { background: #181415; border: 1px solid #331f24; border-radius: 8px; padding: 12px 15px; margin-bottom: 30px; text-align: left; font-size: 0.8rem; color: #d0d0d0; line-height: 1.5; max-width: 850px; margin-left: auto; margin-right: auto; }
     .pricing-disclaimer p strong { color: #ffb6c1; display: block; margin-bottom: 4px; }
-    .pricing-disclaimer ol { padding-left: 18px; }
+    .pricing-disclaimer ol { padding-left: 18px; margin-top: 6px; }
+    .pricing-disclaimer ol li { margin-bottom: 4px; }
 
     .pricing-grid { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; margin-top: 15px; }
     .pricing-card-wrapper { position: relative; display: inline-block; width: 100%; max-width: 350px; }
     .pricing-card-img { width: 100%; border-radius: 12px; border: 1px solid #333; }
     .sold-out-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); color: #ff4d4d; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: bold; letter-spacing: 2px; }
 
-    /* T-Shirt Design Section - 3 Spaces */
+    /* T-Shirt Design Section - Responsive slots that fit poster dimensions */
     .tshirt-design-grid { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; margin-top: 20px; }
-    .tshirt-poster-slot { width: 100%; max-width: 270px; height: 380px; background: #141414; border: 2px dashed #333; border-radius: 12px; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
-    .tshirt-poster-slot img { width: 100%; height: 100%; object-fit: contain; }
-    .tshirt-poster-slot span { color: #666; font-size: 0.85rem; letter-spacing: 1px; }
+    .tshirt-poster-slot { width: 100%; max-width: 270px; background: #141414; border: 1px solid #222; border-radius: 12px; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 5px; }
+    .tshirt-poster-slot img { width: 100%; height: auto; max-height: 480px; object-fit: contain; border-radius: 8px; display: block; }
 
     .seating-img { max-width: 100% !important; width: 100%; border-radius: 12px; border: 1px solid #333; }
 
@@ -238,10 +238,10 @@
 
       <!-- Disclaimers Below Pricing Packages -->
       <div class="pricing-disclaimer">
-        <p><strong>⚠️ Important Disclaimers:</strong></p>
+        <p><strong>⚠️ Important Disclaimer:</strong></p>
         <ol>
-          <li>Design & size of T-shirt received is based on first-come first served on event day.</li>
-          <li>No pre chosen design & size is allowed.</li>
+          <li>T-shirt designs and sizes will be distributed on a first-come, first-served basis on the event day, subject to availability.</li>
+          <li>Pre-selection of T-shirt designs and sizes is not allowed.</li>
         </ol>
       </div>
 
@@ -256,21 +256,18 @@
       </div>
     </section>
 
-    <!-- T-Shirt Design Section (3 Spaces / Slots, Animated) -->
+    <!-- T-Shirt Design Section (3 Clean Poster Slots, Animated) -->
     <section id="tshirt-design" class="section animate-on-scroll">
       <h2>T-SHIRT DESIGN</h2>
       <div class="tshirt-design-grid">
         <div class="tshirt-poster-slot">
           <img src="tshirt-poster-1.png" alt="T-Shirt Design 1" onerror="this.style.display='none'">
-          <span style="position: absolute;">T-Shirt Design 1</span>
         </div>
         <div class="tshirt-poster-slot">
           <img src="tshirt-poster-2.png" alt="T-Shirt Design 2" onerror="this.style.display='none'">
-          <span style="position: absolute;">T-Shirt Design 2</span>
         </div>
         <div class="tshirt-poster-slot">
           <img src="tshirt-poster-3.png" alt="T-Shirt Design 3" onerror="this.style.display='none'">
-          <span style="position: absolute;">T-Shirt Design 3</span>
         </div>
       </div>
     </section>
@@ -286,7 +283,7 @@
     </section>
 
     <!-- CONTACT US SECTION -->
-    <div class="contact-section">
+    <div class="contact-section animate-on-scroll">
       <h3>Need Help? Contact us</h3>
       <div class="contact-links">
         <a href="https://wa.me/601110809358" target="_blank"><i class="fab fa-whatsapp" style="color: #25D366;"></i> WhatsApp</a>
@@ -601,7 +598,7 @@
       const ebOverlay = document.getElementById("eb-overlay");
       if (notice) {
         if (isEarlyBird) {
-          notice.innerText = "⚡ Early Bird Pricing & Bundles ACTIVE! (Ends 20th Nov 2026, 11:59 PM)";
+          notice.innerText = "⚡ Early Bird Pricing & Bundles ACTIVE! (Ends 20th Nov 2026, 11:59 PM Malaysia Time)";
           if (ebOverlay) ebOverlay.style.display = "none";
         } else {
           notice.innerText = "🔒 Early Bird Pricing HAS ENDED. Normal Price & Bundles apply.";
