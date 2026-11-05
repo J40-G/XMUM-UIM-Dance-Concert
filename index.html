@@ -26,11 +26,10 @@
     .animate-on-scroll { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease-out, transform 0.6s ease-out; }
     .animate-on-scroll.visible { opacity: 1; transform: translateY(0); }
 
-    /* Welcome Modal Popup with New Logo */
-    #welcome-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: flex; align-items: center; justify-content: center; z-index: 3000; padding: 15px; }
-    .modal-content { position: relative; max-width: 380px; width: 100%; text-align: center; background: #141414; padding: 20px; border-radius: 16px; border: 1px solid #333; box-shadow: 0 15px 35px rgba(0,0,0,0.9); }
-    .modal-close { position: absolute; top: 10px; right: 15px; background: transparent; color: #ffb6c1; border: none; font-size: 1.8rem; font-weight: bold; cursor: pointer; }
-    .modal-poster { width: 100%; max-height: 400px; object-fit: contain; border-radius: 10px; background-color: #111; margin-bottom: 15px; }
+    /* Welcome Modal Popup with 3s Auto-Fade */
+    #welcome-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); display: flex; align-items: center; justify-content: center; z-index: 3000; padding: 15px; transition: opacity 0.8s ease; }
+    .modal-content { position: relative; max-width: 380px; width: 100%; text-align: center; background: transparent; padding: 10px; }
+    .modal-poster { width: 100%; max-height: 450px; object-fit: contain; border-radius: 12px; }
 
     /* Hero Section */
     .hero { padding: 15px; max-width: 900px; margin: 0 auto; }
@@ -42,10 +41,10 @@
     .event-meta-pills { display: flex; justify-content: center; gap: 8px; margin-bottom: 15px; font-size: 0.75rem; color: #cccccc; flex-wrap: wrap; }
     .event-meta-pills span { background: rgba(255, 255, 255, 0.1); padding: 5px 10px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.15); }
 
-    /* Dual Logos with Transparent Background Effect */
+    /* Circular Logos with Completely Removed White Background */
     .hero-dual-logos { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 15px; }
-    .hero-logo-circle { width: 55px; height: 55px; border-radius: 50%; border: 2px solid #ffb6c1; overflow: hidden; background: #000; display: flex; align-items: center; justify-content: center; }
-    .hero-logo-circle img { width: 100%; height: 100%; object-fit: cover; mix-blend-mode: screen; }
+    .hero-logo-circle { width: 55px; height: 55px; border-radius: 50%; border: 2px solid #ffb6c1; overflow: hidden; background: transparent; display: flex; align-items: center; justify-content: center; }
+    .hero-logo-circle img { width: 100%; height: 100%; object-fit: cover; mix-blend-mode: lighten; filter: contrast(120%); }
     .logo-cross { color: #ffb6c1; font-weight: bold; font-size: 1.1rem; }
 
     .btn-pink { background-color: #f3b0c3; color: #000000; padding: 12px 30px; border-radius: 30px; text-decoration: none; font-weight: bold; font-size: 0.95rem; border: none; cursor: pointer; transition: transform 0.2s; }
@@ -64,11 +63,11 @@
 
     /* Contact Us Section */
     .contact-section { background: #111; border-top: 1px solid #222; padding: 30px 20px; margin-top: 30px; text-align: center; }
-    .contact-section h3 { color: #ffb6c1; font-size: 1.1rem; margin-bottom: 15px; letter-spacing: 1px; }
-    .contact-links { display: flex; justify-content: center; gap: 25px; flex-wrap: wrap; font-size: 0.9rem; }
+    .contact-section h3 { color: #ffb6c1; font-size: 1.1rem; margin-bottom: 12px; letter-spacing: 1px; }
+    .contact-links { display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; font-size: 0.95rem; align-items: center; }
     .contact-links a { color: #ddd; text-decoration: none; display: flex; align-items: center; gap: 8px; transition: color 0.2s; }
     .contact-links a:hover { color: #ffb6c1; }
-    .contact-links i { font-size: 1.2rem; }
+    .contact-links i { font-size: 1.5rem; }
 
     /* Page Container */
     .page-container { padding: 25px 15px; max-width: 1000px; margin: 0 auto; }
@@ -143,12 +142,10 @@
 </head>
 <body>
 
-  <!-- WELCOME POPUP MODAL WITH NEW LOGO (UIM Poster_2.png) -->
+  <!-- WELCOME POPUP MODAL (Auto fades after 3 seconds) -->
   <div id="welcome-modal">
     <div class="modal-content">
-      <button type="button" class="modal-close" onclick="closeWelcomeModal()">&times;</button>
       <img src="UIM%20Poster_2.png" alt="United In Motion Logo Popup" class="modal-poster">
-      <button type="button" onclick="closeWelcomeModal()" class="btn-pink" style="width:100%;">Enter Website</button>
     </div>
   </div>
 
@@ -175,7 +172,7 @@
             <span><i class="far fa-clock"></i> 7:00 PM - 10:00 PM</span>
           </div>
 
-          <!-- Circular Logos with Transparent Background Effect -->
+          <!-- Circular Logos without Boxy White Backgrounds -->
           <div class="hero-dual-logos">
             <div class="hero-logo-circle"><img src="DC%20Logo.jpeg" alt="Dance Club Logo"></div>
             <span class="logo-cross">×</span>
@@ -217,9 +214,9 @@
 
     <!-- CONTACT US SECTION (Bottom of Page 1) -->
     <div class="contact-section">
-      <h3>CONTACT US</h3>
+      <h3>Need Help? Contact us</h3>
       <div class="contact-links">
-        <a href="https://wa.me/601110809358" target="_blank"><i class="fab fa-whatsapp" style="color: #25D366;"></i> 011-1080 9358</a>
+        <a href="https://wa.me/601110809358" target="_blank"><i class="fab fa-whatsapp" style="color: #25D366;"></i> WhatsApp</a>
         <a href="https://instagram.com/xmum_danceconcert" target="_blank"><i class="fab fa-instagram" style="color: #E1306C;"></i> @xmum_danceconcert</a>
       </div>
     </div>
@@ -411,9 +408,14 @@
       }
     } catch (err) {}
 
-    function closeWelcomeModal() {
-      document.getElementById('welcome-modal').style.display = 'none';
-    }
+    // Auto fade-out welcome modal after 3 seconds
+    setTimeout(() => {
+      const modal = document.getElementById('welcome-modal');
+      if (modal) {
+        modal.style.opacity = '0';
+        setTimeout(() => modal.style.display = 'none', 800);
+      }
+    }, 3000);
 
     const EB_DEADLINE = new Date("2026-11-21T23:59:59+08:00");
     let isEarlyBird = new Date() < EB_DEADLINE;
