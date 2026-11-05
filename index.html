@@ -158,7 +158,7 @@
 </head>
 <body>
 
-  <!-- WELCOME POPUP MODAL -->
+  <!-- WELCOME POPUP MODAL (Auto fades after 3 seconds) -->
   <div id="welcome-modal">
     <div class="modal-content">
       <img src="UIM%20Poster_2.png" alt="United In Motion Logo Popup" class="modal-poster">
@@ -189,6 +189,7 @@
             <span><i class="far fa-clock"></i> 7:00 PM - 10:00 PM</span>
           </div>
 
+          <!-- Larger Circular Logos -->
           <div class="hero-dual-logos">
             <div class="hero-logo-circle"><img src="DC%20Logo.png" alt="Dance Club Logo"></div>
             <span class="logo-cross">×</span>
@@ -202,12 +203,14 @@
       </div>
     </section>
 
-    <!-- Pricing Section -->
+    <!-- Pricing Section (Animated) -->
     <section id="pricing" class="section animate-on-scroll">
       <h2>TICKET PRICING & BUNDLE TIERS</h2>
       <p id="pricing-status-notice" style="color: #ffb6c1; margin-bottom: 25px; font-weight: bold; font-size: 0.9rem;"></p>
       
+      <!-- 3-Column Pricing Card Design Above Posters -->
       <div class="pricing-cards-container">
+        <!-- Zone A -->
         <div class="price-tier-card">
           <h3>Zone A</h3>
           <div class="price-row"><span>Early Bird (Standard):</span> <span class="price-val-white">RM40</span></div>
@@ -215,6 +218,7 @@
           <div class="price-row"><span>Normal (Standard):</span> <span class="price-val-white">RM45</span></div>
           <div class="price-row"><span>Normal + T-Shirt:</span> <span class="price-val-pink">RM80</span></div>
         </div>
+        <!-- Zone B -->
         <div class="price-tier-card">
           <h3>Zone B</h3>
           <div class="price-row"><span>Early Bird (Standard):</span> <span class="price-val-white">RM30</span></div>
@@ -222,6 +226,7 @@
           <div class="price-row"><span>Normal (Standard):</span> <span class="price-val-white">RM35</span></div>
           <div class="price-row"><span>Normal + T-Shirt:</span> <span class="price-val-pink">RM70</span></div>
         </div>
+        <!-- Zone C -->
         <div class="price-tier-card">
           <h3>Zone C</h3>
           <div class="price-row"><span>Early Bird (Standard):</span> <span class="price-val-white">RM20</span></div>
@@ -231,6 +236,7 @@
         </div>
       </div>
 
+      <!-- Disclaimers Below Pricing Packages -->
       <div class="pricing-disclaimer">
         <p><strong>⚠️ Important Disclaimer:</strong></p>
         <ol>
@@ -250,13 +256,19 @@
       </div>
     </section>
 
-    <!-- T-Shirt Design Section -->
+    <!-- T-Shirt Design Section (3 Clean Poster Slots, Animated) -->
     <section id="tshirt-design" class="section animate-on-scroll">
       <h2>T-SHIRT DESIGN</h2>
       <div class="tshirt-design-grid">
-        <div class="tshirt-poster-slot"><img src="tshirt-poster-1.png" alt="T-Shirt Design 1" onerror="this.style.display='none'"></div>
-        <div class="tshirt-poster-slot"><img src="tshirt-poster-2.png" alt="T-Shirt Design 2" onerror="this.style.display='none'"></div>
-        <div class="tshirt-poster-slot"><img src="tshirt-poster-3.png" alt="T-Shirt Design 3" onerror="this.style.display='none'"></div>
+        <div class="tshirt-poster-slot">
+          <img src="tshirt-poster-1.png" alt="T-Shirt Design 1" onerror="this.style.display='none'">
+        </div>
+        <div class="tshirt-poster-slot">
+          <img src="tshirt-poster-2.png" alt="T-Shirt Design 2" onerror="this.style.display='none'">
+        </div>
+        <div class="tshirt-poster-slot">
+          <img src="tshirt-poster-3.png" alt="T-Shirt Design 3" onerror="this.style.display='none'">
+        </div>
       </div>
     </section>
 
@@ -281,7 +293,6 @@
 
     <footer>
       <p>&copy; 2026 XMUM Dance Club. J40 All Rights Reserved.</p>
-      <p style="margin-top: 8px;"><a href="javascript:goToPage(6)" style="color: #444; text-decoration: none; font-size: 0.75rem;">Staff / Door Crew Scanner</a></p>
     </footer>
   </div>
 
@@ -292,6 +303,7 @@
       <h2>Select Ticket & Seats</h2>
     </div>
 
+    <!-- Neat Ticket Tier Switcher -->
     <div class="tier-selector">
       <span style="font-size: 0.85rem; color: #aaa; font-weight: bold;">Select Package:</span>
       <button type="button" id="tier-std" class="tier-btn active" onclick="setTicketTier('standard')">Standard Ticket (No T-shirt)</button>
@@ -337,6 +349,7 @@
       <p style="font-size:0.75rem; color:#ff9f1c; margin-top:5px;">⚠️ Seats locked for 10 minutes. Time remaining: <span id="hold-timer" style="font-weight:bold;">10:00</span></p>
     </div>
 
+    <!-- Committee Referral Code Box (Optional) -->
     <div class="payment-summary-box" style="border-color: #ffb6c1; background: #1a1416;">
       <h4 style="color: #ffb6c1; margin-bottom: 8px;"><i class="fas fa-tag"></i> Committee Referral Code <span style="font-weight: normal; color: #aaa; font-size: 0.85rem;">(Optional)</span></h4>
       <div style="display: flex; gap: 10px;">
@@ -458,26 +471,6 @@
     <button type="button" onclick="window.print()" class="btn-pink"><i class="fas fa-print"></i> Print E-Ticket</button>
   </div>
 
-  <!-- PAGE 6: DOOR CREW SCANNER & VERIFICATION -->
-  <div id="page-6" class="page-container" style="display: none;">
-    <div class="page-header">
-      <button type="button" onclick="goToPage(1)" class="btn-back">← Home</button>
-      <h2>Door Crew Ticket Verification</h2>
-    </div>
-
-    <div class="form-container" style="max-width: 500px; background: #141414; padding: 25px; border-radius: 12px; border: 1px solid #2a2a2a;">
-      <p style="font-size: 0.85rem; color: #aaa; margin-bottom: 15px;">Scan or type the Ticket ID to verify entry and catch duplicates.</p>
-      
-      <div class="form-group">
-        <input type="text" id="scan-ticket-id" class="form-control" placeholder="#UIM-2026-XXXXXX" style="text-align: center; font-family: monospace; font-size: 1.1rem; text-transform: uppercase;">
-      </div>
-      
-      <button type="button" onclick="verifyScannedTicket()" class="btn-pink" style="width: 100%;">Verify Ticket</button>
-
-      <div id="scan-result-box" style="margin-top: 20px; padding: 15px; border-radius: 8px; display: none; text-align: left; font-size: 0.9rem;"></div>
-    </div>
-  </div>
-
   <!-- Firebase Compat Libraries & App Logic -->
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
@@ -521,7 +514,7 @@
     const standardPrices = isEarlyBird ? { 'zone-a': 40, 'zone-b': 30, 'zone-c': 20 } : { 'zone-a': 45, 'zone-b': 35, 'zone-c': 25 };
     const bundlePrices = isEarlyBird ? { 'zone-a': 70, 'zone-b': 60, 'zone-c': 50 } : { 'zone-a': 80, 'zone-b': 70, 'zone-c': 60 };
 
-    let selectedTier = "standard";
+    let selectedTier = "standard"; // "standard" or "bundle"
     let appliedReferralCode = "";
     let holdTimerInterval = null;
 
@@ -634,19 +627,19 @@
 
     const SEATING_CONFIG = [
       { rowName: "Row 1 (VIP)", seats: Array(34).fill(0).map((_, i) => ({ num: `VIP-${i+1}`, type: "occupied" })) },
-      { rowName: "Row 2", seats: Array(35).fill(0).map((_, i) => ({ num: `${1 + i}`, type: ([200].includes(Number(1+i))) ? "occupied" : "zone-a" })) },
-      { rowName: "Row 3", seats: Array(34).fill(0).map((_, i) => ({ num: `${36 + i}`, type: ([200].includes(Number(36+i))) ? "occupied" : "zone-a" })) },
-      { rowName: "Row 4", seats: Array(35).fill(0).map((_, i) => ({ num: `${70 + i}`, type: ([200].includes(Number(70+i))) ? "occupied" : "zone-a" })) },
-      { rowName: "Row 5", seats: Array(34).fill(0).map((_, i) => ({ num: `${105 + i}`, type: ([105].includes(Number(105+i)) || [200].includes(Number(105+i))) ? "occupied" : "zone-a" })) },
-      { rowName: "Row 6", seats: Array(35).fill(0).map((_, i) => ({ num: `${139 + i}`, type: ([200].includes(Number(139+i))) ? "occupied" : "zone-a" })) },
-      { rowName: "Row 7", seats: Array(34).fill(0).map((_, i) => ({ num: `${174 + i}`, type: ([200].includes(Number(174+i)) || Number(174+i) === 200) ? "occupied" : "zone-a" })) },
+      { rowName: "Row 2", seats: Array(35).fill(0).map((_, i) => ({ num: `${1 + i}`, type: Number(1+i) === 200 ? "occupied" : "zone-a" })) },
+      { rowName: "Row 3", seats: Array(34).fill(0).map((_, i) => ({ num: `${36 + i}`, type: Number(36+i) === 200 ? "occupied" : "zone-a" })) },
+      { rowName: "Row 4", seats: Array(35).fill(0).map((_, i) => ({ num: `${70 + i}`, type: Number(70+i) === 200 ? "occupied" : "zone-a" })) },
+      { rowName: "Row 5", seats: Array(34).fill(0).map((_, i) => ({ num: `${105 + i}`, type: Number(105+i) === 200 ? "occupied" : "zone-a" })) },
+      { rowName: "Row 6", seats: Array(35).fill(0).map((_, i) => ({ num: `${139 + i}`, type: Number(139+i) === 200 ? "occupied" : "zone-a" })) },
+      { rowName: "Row 7", seats: Array(34).fill(0).map((_, i) => ({ num: `${174 + i}`, type: Number(174+i) === 200 ? "occupied" : "zone-a" })) },
       { rowName: "Row 8", seats: Array(35).fill(0).map((_, i) => ({ num: `${1 + i}`, type: [166, 167].includes(Number(1+i)) ? "occupied" : "zone-b" })) },
       { rowName: "Row 9", seats: Array(34).fill(0).map((_, i) => ({ num: `${36 + i}`, type: [166, 167].includes(Number(36+i)) ? "occupied" : "zone-b" })) },
       { rowName: "Row 10", seats: Array(35).fill(0).map((_, i) => ({ num: `${70 + i}`, type: [166, 167].includes(Number(70+i)) ? "occupied" : "zone-b" })) },
       { rowName: "Row 11", seats: Array(34).fill(0).map((_, i) => ({ num: `${105 + i}`, type: [166, 167].includes(Number(105+i)) ? "occupied" : "zone-b" })) },
       { rowName: "Row 12", seats: Array(35).fill(0).map((_, i) => ({ num: `${139 + i}`, type: [166, 167].includes(Number(139+i)) ? "occupied" : "zone-b" })) },
-      { rowName: "Row 13", seats: Array(34).fill(0).map((_, i) => ({ num: `${1 + i}`, type: "occupied" })) },
-      { rowName: "Row 14", seats: Array(35).fill(0).map((_, i) => ({ num: `${35 + i}`, type: "occupied" })) },
+      { rowName: "Row 13", seats: Array(34).fill(0).map((_, i) => ({ num: `${1 + i}`, type: ([16, 17, 18, 19].includes(1 + i) || [59, 60, 61].includes(Number(1+i))) ? "occupied" : "zone-c" })) },
+      { rowName: "Row 14", seats: Array(35).fill(0).map((_, i) => ({ num: `${35 + i}`, type: [59, 60, 61].includes(Number(35+i)) ? "occupied" : "zone-c" })) },
       { rowName: "Row 15", seats: Array(34).fill(0).map((_, i) => ({ num: `${70 + i}`, type: "occupied" })) },
       { rowName: "Row 16", seats: Array(35).fill(0).map((_, i) => ({ num: `${104 + i}`, type: "occupied" })) },
       { rowName: "Row 17", seats: Array(30).fill(0).map((_, i) => ({ num: `${139 + i}`, type: "occupied" })) }
@@ -838,11 +831,10 @@
       if (db) {
         try {
           const batch = db.batch();
-          // Save seats as occupied
           selectedSeats.forEach(s => {
             batch.set(db.collection("concert_seats").doc(s.id), { status: "occupied", bookedBy: name, ticketId: ticketId });
           });
-          // Save ticket record for verification/door scanner
+          // Save ticket record for door crew verification & duplicate checking
           batch.set(db.collection("tickets").doc(ticketId), {
             ticketId: ticketId,
             name: name,
@@ -875,70 +867,43 @@
       }
     }
 
-    // Door Crew Verification Script
-    async function verifyScannedTicket() {
-      const ticketIdInput = document.getElementById("scan-ticket-id").value.trim().toUpperCase();
-      const resultBox = document.getElementById("scan-result-box");
-      resultBox.style.display = "block";
-
-      if (!ticketIdInput) {
-        resultBox.style.background = "#331f24";
-        resultBox.style.color = "#ff8585";
-        resultBox.innerHTML = "<strong>❌ Error:</strong> Please enter or scan a Ticket ID.";
-        return;
-      }
-
-      if (!db) {
-        resultBox.style.background = "#331f24";
-        resultBox.style.color = "#ff8585";
-        resultBox.innerHTML = "<strong>❌ Error:</strong> Database connection unavailable.";
-        return;
-      }
-
-      resultBox.style.background = "#1f1f1f";
-      resultBox.style.color = "#ccc";
-      resultBox.innerHTML = "Checking database...";
-
+    // Door Crew Verification Logic (for your standalone scanner app)
+    async function verifyTicketAtDoor(ticketIdInput) {
+      if (!db) return { status: 'error', message: 'Database unavailable' };
       try {
         const docRef = db.collection("tickets").doc(ticketIdInput);
         const docSnap = await docRef.get();
 
         if (!docSnap.exists) {
-          resultBox.style.background = "#331f24";
-          resultBox.style.color = "#ff8585";
-          resultBox.innerHTML = `<strong>❌ INVALID TICKET</strong><br>Ticket ID <code>${ticketIdInput}</code> was not found in the system.`;
-          return;
+          return { status: 'invalid', message: 'Ticket ID not found in system.' };
         }
 
         const data = docSnap.data();
 
         if (data.scanned) {
           let scannedTime = data.scannedAt ? new Date(data.scannedAt.toMillis()).toLocaleTimeString() : "earlier";
-          resultBox.style.background = "#332a14";
-          resultBox.style.color = "#ff9f1c";
-          resultBox.innerHTML = `<strong>⚠️ DUPLICATE / ALREADY SCANNED!</strong><br>` +
-                                `This ticket was already verified and admitted at <strong>${scannedTime}</strong>.<br><br>` +
-                                `<strong>Name:</strong> ${data.name}<br>` +
-                                `<strong>Seats:</strong> ${data.seats}`;
+          return { 
+            status: 'duplicate', 
+            message: `⚠️ DUPLICATE / ALREADY SCANNED at ${scannedTime}!`,
+            name: data.name,
+            seats: data.seats
+          };
         } else {
-          // Mark as scanned
+          // First scan - mark as scanned
           await docRef.update({
             scanned: true,
             scannedAt: firebase.firestore.FieldValue.serverTimestamp()
           });
-
-          resultBox.style.background = "#14331c";
-          resultBox.style.color = "#95d5b2";
-          resultBox.innerHTML = `<strong>✅ VALID TICKET - ENTRY GRANTED</strong><br><br>` +
-                                `<strong>Name:</strong> ${data.name}<br>` +
-                                `<strong>Student ID:</strong> ${data.studentId}<br>` +
-                                `<strong>Package:</strong> ${data.ticketType}<br>` +
-                                `<strong>Seat(s):</strong> ${data.seats}`;
+          return { 
+            status: 'valid', 
+            message: '✅ VALID TICKET - ENTRY GRANTED',
+            name: data.name,
+            studentId: data.studentId,
+            seats: data.seats
+          };
         }
       } catch (err) {
-        resultBox.style.background = "#331f24";
-        resultBox.style.color = "#ff8585";
-        resultBox.innerHTML = `<strong>❌ Error:</strong> Failed to verify ticket. (${err.message})`;
+        return { status: 'error', message: err.message };
       }
     }
 
@@ -947,7 +912,7 @@
         clearInterval(holdTimerInterval);
       }
 
-      for (let i = 1; i <= 6; i++) {
+      for (let i = 1; i <= 5; i++) {
         const p = document.getElementById(`page-${i}`);
         if (p) p.style.display = "none";
       }
