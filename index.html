@@ -1242,14 +1242,16 @@ window.addEventListener("load", () => {
 // START QR CAMERA
 // =====================================================
 
+
+// START QR CAMERA
+// =====================================================
+
 async function startCamera() {
 
   try {
 
     if (typeof Html5Qrcode === "undefined") {
-      throw new Error(
-        "QR scanner library not loaded. Please refresh the page."
-      );
+      throw new Error("QR scanner library not loaded. Please refresh the page.");
     }
 
     if (doorScanner) {
@@ -1258,23 +1260,46 @@ async function startCamera() {
 
     doorScanner = new Html5Qrcode("qr-reader");
 
+    const cameras = await Html5Qrcode.getCameras();
+
+    if (!cameras || cameras.length === 0) {
+      throw new Error("No camera detected on this device.");
+    }
+
+    // Prefer the rear camera on phones
+    const rearCamera = cameras.find(camera =>
+      /back|rear|environment|world/i.test(camera.label)
+    );
+
+    const selectedCamera = rearCamera || cameras[cameras.length - 1];
+
     await doorScanner.start(
 
-      { facingMode: "environment" },
+      selectedCamera.id,
 
       {
-        fps: 10,
-        qrbox: {
-          width: 250,
-          height: 250
-        }
+        fps: 15,
+
+        qrbox: function(viewWidth, viewHeight) {
+          const boxSize = Math.floor(
+            Math.min(viewWidth, viewHeight) * 0.85
+          );
+
+          return {
+            width: boxSize,
+            height: boxSize
+          };
+        },
+
+        aspectRatio: 1.0,
+        disableFlip: false
+
       },
 
       async function(decodedText) {
 
         if (checkinInProgress) return;
 
-        // Existing QR codes contain the Ticket ID
         const input = document.getElementById("manual-ticket-id");
 
         if (input) {
@@ -1288,7 +1313,7 @@ async function startCamera() {
       },
 
       function() {
-        // Ignore normal camera scanning frames
+        // Ignore normal scanning frames
       }
 
     );
@@ -1300,6 +1325,14 @@ async function startCamera() {
     );
 
   } catch (error) {
+
+    console.error("Camera error:", error);
+
+    if (doorScanner) {
+      try {
+        await doorScanner.stop();
+      } catch (e) {}
+    }
 
     doorScanner = null;
 
