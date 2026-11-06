@@ -13,60 +13,13 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
   <style>
-    /* General Setup */
-    html {
-      scroll-behavior: smooth;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background-color: #0d0d0d; color: #ffffff; text-align: center; min-height: 100vh; scroll-behavior: smooth; }
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-
-    body {
-      background-color: #0a0a0a;
-      color: #ffffff;
-      text-align: center;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      overflow-x: hidden;
-    }
-
-    /* Navbar */
-    .navbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 15px 30px;
-      background-color: rgba(0, 0, 0, 0.9);
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-      backdrop-filter: blur(8px);
-      border-bottom: 1px solid #1a1a1a;
-    }
-
-    .nav-brand {
-      font-weight: bold;
-      letter-spacing: 1px;
-      color: #ffb6c1;
-      font-size: 0.9rem;
-    }
-
-    .nav-links a {
-      color: #cccccc;
-      text-decoration: none;
-      margin-left: 18px;
-      font-size: 0.9rem;
-      transition: color 0.3s;
-    }
-
-    .nav-links a:hover {
-      color: #ffb6c1;
-    }
+    .navbar { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background-color: rgba(0, 0, 0, 0.9); position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid #1f1f1f; }
+    .nav-brand { font-weight: bold; letter-spacing: 1px; color: #ffb6c1; font-size: 0.9rem; }
+    .nav-links a { color: #cccccc; text-decoration: none; margin-left: 15px; font-size: 0.85rem; }
+    .nav-links a:hover { color: #ffb6c1; }
 
     /* Scroll Animation */
     .animate-on-scroll { opacity: 0; transform: translateY(20px); transition: opacity 0.8s ease-out, transform 0.8s ease-out; }
@@ -78,11 +31,11 @@
     .modal-poster { width: 100%; max-height: 420px; object-fit: contain; border-radius: 12px; display: block; margin: 0 auto; background: #1b1214; }
 
     /* Hero Section */
-    .hero { padding: 20px; max-width: 900px; margin: 0 auto; }
+    .hero { padding: 15px; max-width: 900px; margin: 0 auto; }
     .hero-image-overlay { position: relative; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8); background: linear-gradient(135deg, #1f1418 0%, #0d0d0d 100%); min-height: 440px; display: flex; align-items: center; justify-content: center; border: 1px solid #222; }
     .hero-text-overlay { width: 95%; padding: 30px 15px; }
-    .subtitle { font-size: 0.85rem; letter-spacing: 3px; color: #ffb6c1; }
-    .main-title { font-size: 2.4rem; letter-spacing: 2px; margin: 10px 0; color: #ffffff; font-weight: 800; }
+    .subtitle { font-size: 0.75rem; letter-spacing: 2px; color: #ffb6c1; }
+    .main-title { font-size: 2.1rem; letter-spacing: 2px; margin: 10px 0; font-weight: 800; }
     
     .event-meta-pills { display: flex; justify-content: center; gap: 8px; margin-bottom: 15px; font-size: 0.75rem; color: #cccccc; flex-wrap: wrap; }
     .event-meta-pills span { background: rgba(255, 255, 255, 0.1); padding: 5px 10px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.15); }
@@ -98,8 +51,8 @@
     .btn-pink:disabled { background-color: #555; color: #888; cursor: not-allowed; transform: none; }
 
     /* Pricing Section */
-    .section { padding: 60px 20px; border-top: 1px solid #1a1a1a; max-width: 900px; margin: 0 auto; }
-    .section h2 { font-size: 1.4rem; letter-spacing: 2.5px; color: #ffb6c1; margin-bottom: 15px; }
+    .section { padding: 40px 15px; border-top: 1px solid #1a1a1a; max-width: 900px; margin: 0 auto; }
+    .section h2 { font-size: 1.25rem; letter-spacing: 2px; color: #ffb6c1; margin-bottom: 15px; }
     
     .pricing-cards-container { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; margin-bottom: 25px; }
     .price-tier-card { background: #141414; border: 1px solid #2a2a2a; border-radius: 12px; padding: 20px; width: 270px; text-align: left; }
@@ -118,7 +71,7 @@
     .pricing-card-img { width: 100%; border-radius: 12px; border: 1px solid #333; }
     .sold-out-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); color: #ff4d4d; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: bold; letter-spacing: 2px; }
 
-    /* T-Shirt Design Grid */
+    /* 4 Side-by-Side T-Shirt/Poster Boxes */
     .tshirt-design-grid { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
     .tshirt-poster-slot { width: 100%; max-width: 210px; background: #141414; border: 1px solid #222; border-radius: 12px; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 5px; }
     .tshirt-poster-slot img { width: 100%; height: auto; max-height: 380px; object-fit: contain; border-radius: 8px; display: block; }
@@ -132,37 +85,9 @@
     .contact-links a:hover { color: #ffb6c1; }
     .contact-links i { font-size: 1.5rem; }
 
-    /* Page Containers & Fixed Header Alignment */
-    .page-container { padding: 25px 15px; max-width: 1000px; margin: 0 auto; flex: 1; }
-    
-    .page-header { 
-      display: flex; 
-      align-items: center; 
-      justify-content: center; 
-      position: relative; 
-      margin-bottom: 25px; 
-      min-height: 40px; 
-    }
-    .btn-back { 
-      position: absolute; 
-      left: 0; 
-      top: 50%; 
-      transform: translateY(-50%); 
-      background: transparent; 
-      border: 1px solid #444; 
-      color: #ccc; 
-      padding: 6px 14px; 
-      border-radius: 20px; 
-      cursor: pointer; 
-      font-size: 0.85rem; 
-      z-index: 10;
-    }
-    .page-header h2 { 
-      font-size: 1.3rem; 
-      color: #ffffff; 
-      letter-spacing: 1px; 
-      margin: 0; 
-    }
+    .page-container { padding: 25px 15px; max-width: 1000px; margin: 0 auto; }
+    .page-header { margin-bottom: 20px; position: relative; }
+    .btn-back { position: absolute; left: 0; top: 0; background: transparent; border: 1px solid #444; color: #ccc; padding: 6px 12px; border-radius: 20px; cursor: pointer; font-size: 0.85rem; }
 
     .stage-banner { background-color: #87CEEB; color: #000000; padding: 8px; margin: 15px auto 20px auto; max-width: 800px; letter-spacing: 3px; font-weight: bold; font-size: 0.9rem; border-radius: 6px; text-transform: uppercase; }
 
@@ -225,7 +150,8 @@
     .ticket-body p strong { color: #ffffff; }
     .ticket-qr { text-align: center; margin-top: 20px; padding-top: 15px; border-top: 1px dashed #444; }
 
-    footer { padding: 25px; font-size: 0.8rem; color: #555555; border-top: 1px solid #141414; margin-top: auto; width: 100%; }
+    footer { padding: 20px; font-size: 0.8rem; color: #777; border-top: 1px solid #141414; }
+    .page-footer-copy { padding: 20px; font-size: 0.8rem; color: #777; border-top: 1px solid #141414; margin-top: 30px; text-align: center; }
   </style>
 </head>
 <body>
@@ -322,7 +248,7 @@
       </div>
     </section>
 
-    <!-- T-Shirt Design Section -->
+    <!-- T-Shirt Design Section (4 Slots Side-by-Side) -->
     <section id="tshirt-design" class="section animate-on-scroll">
       <h2>T-SHIRT DESIGN</h2>
       <div class="tshirt-design-grid">
@@ -351,6 +277,10 @@
         <a href="https://instagram.com/xmum_danceconcert" target="_blank"><i class="fab fa-instagram" style="color: #E1306C;"></i> @xmum_danceconcert</a>
       </div>
     </div>
+
+    <footer>
+      <p>&copy; 2026 XMUM Dance Club. J40 All Rights Reserved.</p>
+    </footer>
   </div>
 
   <!-- PAGE 2: SEAT SELECTION -->
@@ -388,6 +318,10 @@
         <p><strong>Total:</strong> RM <span id="total-price">0</span></p>
       </div>
       <button type="button" id="btn-to-page3" onclick="goToPage(3)" class="btn-pink" disabled>Next →</button>
+    </div>
+
+    <div class="page-footer-copy">
+      <p>&copy; 2026 XMUM Dance Club. J40 All Rights Reserved.</p>
     </div>
   </div>
 
@@ -454,6 +388,10 @@
 
     <br>
     <button type="button" id="btn-to-page4" onclick="goToPage(4)" class="btn-pink" disabled>Next →</button>
+
+    <div class="page-footer-copy">
+      <p>&copy; 2026 XMUM Dance Club. J40 All Rights Reserved.</p>
+    </div>
   </div>
 
   <!-- PAGE 4: ATTENDEE FORM -->
@@ -494,6 +432,10 @@
         <button type="submit" class="btn-pink" style="width:100%;">Confirm & Generate E-Ticket</button>
       </form>
     </div>
+
+    <div class="page-footer-copy">
+      <p>&copy; 2026 XMUM Dance Club. J40 All Rights Reserved.</p>
+    </div>
   </div>
 
   <!-- PAGE 5: DIGITAL E-TICKET -->
@@ -525,11 +467,11 @@
 
     <br>
     <button type="button" onclick="window.print()" class="btn-pink"><i class="fas fa-print"></i> Print E-Ticket</button>
-  </div>
 
-  <footer>
-    <p>&copy; 2026 XMUM Dance Club. All Rights Reserved.</p>
-  </footer>
+    <div class="page-footer-copy">
+      <p>&copy; 2026 XMUM Dance Club. J40 All Rights Reserved.</p>
+    </div>
+  </div>
 
   <!-- Firebase Compat Libraries & App Logic -->
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
@@ -583,8 +525,7 @@
       "PR1", "PR2", "PR3", "PR4", "PR5", "PR6", "PR7", "PR8", "PR9", "PR10",
       "DG1", "DG2", "DG3", "DG4", "DG5",
       "PGVG1", "PGVG2", "PGVG3", "PGVG4", "PGVG5", "PGVG6", "PGVG7",
-      "PT1", "PT2", "PT3", "PT4", "PT5",
-      "TECH1"
+      "PT1", "PT2", "PT3", "PT4", "PT5", "TECH1"
     ];
 
     function setTicketTier(tier) {
@@ -1143,52 +1084,147 @@
       window.scrollTo(0, 0);
     }
 
-    // Door Crew Scanner & Router logic
+    // =====================================================
+    // UNITED IN MOTION 2026 - DOOR CREW SCANNER
+    // QR CAMERA + MANUAL ENTRY + FIRESTORE + GOOGLE SHEETS
+    // =====================================================
+
     let doorScanner = null;
     let checkinInProgress = false;
     let pendingSheetSyncTicketId = null;
     let jsonpCounter = 0;
 
+    // =====================================================
+    // PAGE ROUTER
+    // =====================================================
+
     window.addEventListener("load", () => {
       if (window.location.hash === "#scanner") {
         document.body.innerHTML = `
-          <div style="box-sizing:border-box;background:#0d0d0d;color:#fff;font-family:sans-serif;text-align:center;padding:30px 20px;min-height:100vh;">
-            <div style="max-width:450px;margin:0 auto;background:#181818;border:1px solid #333;padding:25px;border-radius:15px;">
+          <div style="
+            box-sizing:border-box;
+            background:#0d0d0d;
+            color:#fff;
+            font-family:sans-serif;
+            text-align:center;
+            padding:30px 20px;
+            min-height:100vh;
+          ">
+            <div style="
+              max-width:450px;
+              margin:0 auto;
+              background:#181818;
+              border:1px solid #333;
+              padding:25px;
+              border-radius:15px;
+            ">
               <h2 style="margin-top:5px;">Door Crew Check-In</h2>
-              <p style="color:#aaa;font-size:0.9rem;margin-bottom:20px;">Scan the attendee's QR code or enter their Ticket ID</p>
+              <p style="color:#aaa;font-size:0.9rem;margin-bottom:20px;">
+                Scan the attendee's QR code or enter their Ticket ID
+              </p>
               <div id="qr-reader" style="width:100%;margin:0 auto 15px;"></div>
-              <button type="button" onclick="startCamera()" style="background:#f3b0c3;color:#000;padding:13px;border-radius:30px;font-weight:bold;border:none;cursor:pointer;width:100%;margin-bottom:10px;font-size:1rem;">Start QR Camera</button>
-              <button type="button" onclick="stopCamera()" style="background:#333;color:#fff;padding:10px;border-radius:30px;border:1px solid #555;cursor:pointer;width:100%;margin-bottom:20px;">Stop Camera</button>
+              <button type="button" onclick="startCamera()" style="
+                background:#f3b0c3;
+                color:#000;
+                padding:13px;
+                border-radius:30px;
+                font-weight:bold;
+                border:none;
+                cursor:pointer;
+                width:100%;
+                margin-bottom:10px;
+                font-size:1rem;
+              ">Start QR Camera</button>
+              <button type="button" onclick="stopCamera()" style="
+                background:#333;
+                color:#fff;
+                padding:10px;
+                border-radius:30px;
+                border:1px solid #555;
+                cursor:pointer;
+                width:100%;
+                margin-bottom:20px;
+              ">Stop Camera</button>
               <div style="border-top:1px solid #333;padding-top:20px;">
-                <input type="text" id="manual-ticket-id" placeholder="Enter Ticket ID" autocomplete="off" style="box-sizing:border-box;width:100%;padding:13px;background:#111;border:1px solid #444;border-radius:25px;color:#fff;font-size:1rem;margin-bottom:12px;text-align:center;outline:none;">
-                <button type="button" onclick="quickVerify()" style="background:#f3b0c3;color:#000;padding:13px;border-radius:30px;font-weight:bold;border:none;cursor:pointer;width:100%;font-size:1rem;">Verify Ticket</button>
+                <input type="text" id="manual-ticket-id" placeholder="Enter Ticket ID" autocomplete="off" style="
+                  box-sizing:border-box;
+                  width:100%;
+                  padding:13px;
+                  background:#111;
+                  border:1px solid #444;
+                  border-radius:25px;
+                  color:#fff;
+                  font-size:1rem;
+                  margin-bottom:12px;
+                  text-align:center;
+                  outline:none;
+                ">
+                <button type="button" onclick="quickVerify()" style="
+                  background:#f3b0c3;
+                  color:#000;
+                  padding:13px;
+                  border-radius:30px;
+                  font-weight:bold;
+                  border:none;
+                  cursor:pointer;
+                  width:100%;
+                  font-size:1rem;
+                ">Verify Ticket</button>
               </div>
-              <div id="quick-res" style="display:none;margin-top:20px;padding:15px;border-radius:10px;font-size:0.95rem;text-align:left;white-space:pre-line;line-height:1.6;overflow-wrap:anywhere;"></div>
-              <p style="color:#666;font-size:0.75rem;margin-top:25px;">UNITED IN MOTION | XMUM DANCE CONCERT 2026</p>
+              <div id="quick-res" style="
+                display:none;
+                margin-top:20px;
+                padding:15px;
+                border-radius:10px;
+                font-size:0.95rem;
+                text-align:left;
+                white-space:pre-line;
+                line-height:1.6;
+                overflow-wrap:anywhere;
+              "></div>
+              <p style="
+                color:#666;
+                font-size:0.75rem;
+                margin-top:25px;
+              ">UNITED IN MOTION | XMUM DANCE CONCERT 2026</p>
             </div>
           </div>
         `;
-        document.getElementById("manual-ticket-id").addEventListener("keydown", function(event) {
-          if (event.key === "Enter") quickVerify();
-        });
+
+        document.getElementById("manual-ticket-id")
+          .addEventListener("keydown", function(event) {
+            if (event.key === "Enter") {
+              quickVerify();
+            }
+          });
       } else {
         updatePricingUI();
         renderSeatingGrid();
 
         const observer = new IntersectionObserver((entries) => {
           entries.forEach(entry => {
-            if (entry.isIntersecting) entry.target.classList.add("visible");
+            if (entry.isIntersecting) {
+              entry.target.classList.add("visible");
+            }
           });
         }, { threshold: 0.1 });
 
-        document.querySelectorAll(".animate-on-scroll").forEach(section => observer.observe(section));
+        document.querySelectorAll(".animate-on-scroll")
+          .forEach(section => observer.observe(section));
       }
     });
 
+    // =====================================================
+    // START QR CAMERA
+    // =====================================================
     async function startCamera() {
       try {
-        if (typeof Html5Qrcode === "undefined") throw new Error("QR scanner library not loaded.");
-        if (doorScanner) await stopCamera();
+        if (typeof Html5Qrcode === "undefined") {
+          throw new Error("QR scanner library not loaded. Please refresh the page.");
+        }
+        if (doorScanner) {
+          await stopCamera();
+        }
         doorScanner = new Html5Qrcode("qr-reader");
         await doorScanner.start(
           { facingMode: "environment" },
@@ -1196,7 +1232,9 @@
           async function(decodedText) {
             if (checkinInProgress) return;
             const input = document.getElementById("manual-ticket-id");
-            if (input) input.value = decodedText.trim();
+            if (input) {
+              input.value = decodedText.trim();
+            }
             await stopCamera();
             await quickVerify();
           },
@@ -1205,19 +1243,29 @@
         showCheckinMessage("📷 Camera ready.\nPosition the attendee's QR code inside the scanning area.", true, false);
       } catch (error) {
         doorScanner = null;
-        showCheckinMessage("CAMERA ERROR\n" + error.message, false);
+        showCheckinMessage("CAMERA ERROR\n" + error.message + "\n\nPlease allow camera permission or use manual entry.", false);
       }
     }
 
+    // =====================================================
+    // STOP QR CAMERA
+    // =====================================================
     async function stopCamera() {
       if (!doorScanner) return;
       try {
-        if (doorScanner.isScanning) await doorScanner.stop();
+        if (doorScanner.isScanning) {
+          await doorScanner.stop();
+        }
         await doorScanner.clear();
-      } catch (error) {}
+      } catch (error) {
+        console.log("Camera stop:", error.message);
+      }
       doorScanner = null;
     }
 
+    // =====================================================
+    // MAIN CHECK-IN FUNCTION
+    // =====================================================
     async function quickVerify() {
       if (checkinInProgress) return;
       const input = document.getElementById("manual-ticket-id");
@@ -1232,44 +1280,67 @@
 
       try {
         const ticketRef = db.collection("tickets").doc(ticketId);
+
         const result = await db.runTransaction(async function(transaction) {
           const ticketDoc = await transaction.get(ticketRef);
-          if (!ticketDoc.exists) return { status: "NOT_FOUND" };
+          if (!ticketDoc.exists) {
+            return { status: "NOT_FOUND" };
+          }
           const ticket = ticketDoc.data();
           if (ticket.scanned === true) {
-            return { status: "DUPLICATE", name: ticket.name || "Unknown", seats: ticket.seats || "N/A" };
+            return {
+              status: "DUPLICATE",
+              name: ticket.name || "Unknown",
+              seats: ticket.seats || "N/A"
+            };
           }
-          transaction.update(ticketRef, { scanned: true, scannedAt: firebase.firestore.FieldValue.serverTimestamp() });
-          return { status: "SUCCESS", name: ticket.name || "Unknown", seats: ticket.seats || "N/A" };
+          transaction.update(ticketRef, {
+            scanned: true,
+            scannedAt: firebase.firestore.FieldValue.serverTimestamp()
+          });
+          return {
+            status: "SUCCESS",
+            name: ticket.name || "Unknown",
+            seats: ticket.seats || "N/A"
+          };
         });
 
         if (result.status === "NOT_FOUND") {
           showCheckinMessage("❌ INVALID TICKET\n\nTicket ID:\n" + ticketId + "\n\nNo booking record found.", false);
           return;
         }
+
         if (result.status === "DUPLICATE") {
-          showCheckinMessage("🚫 DUPLICATE ENTRY DETECTED\n\nName: " + result.name + "\nSeats: " + result.seats + "\nENTRY BLOCKED.", false);
+          showCheckinMessage("🚫 DUPLICATE ENTRY DETECTED\n\nName: " + result.name + "\nSeats: " + result.seats + "\nTicket ID: " + ticketId + "\n\nENTRY BLOCKED.", false);
           return;
         }
 
         pendingSheetSyncTicketId = ticketId;
-        showCheckinMessage("✅ VALID - ENTRY GRANTED\n\nName: " + result.name + "\nSeats: " + result.seats + "\nUpdating Google Sheets...", true, false);
+        showCheckinMessage("✅ VALID - ENTRY GRANTED\n\nName: " + result.name + "\nSeats: " + result.seats + "\nTicket ID: " + ticketId + "\n\nUpdating Google Sheets...", true, false);
 
         try {
           const sheetResult = await syncSheetCheckin(ticketId);
-          if (!sheetResult.success) throw new Error(sheetResult.message || "Google Sheets rejected update.");
+          if (!sheetResult.success) {
+            throw new Error(sheetResult.message || "Google Sheets rejected the update.");
+          }
           pendingSheetSyncTicketId = null;
-          showCheckinMessage("✅ VALID - ENTRY GRANTED\n\nName: " + result.name + "\nSeats: " + result.seats + "\n✅ Google Sheets updated successfully.", true, false);
+          showCheckinMessage("✅ VALID - ENTRY GRANTED\n\nName: " + result.name + "\nSeats: " + result.seats + "\nTicket ID: " + ticketId + "\n\n✅ Google Sheets updated successfully.", true, false);
         } catch (syncError) {
-          showCheckinMessage("✅ VALID - ENTRY GRANTED\n\nName: " + result.name + "\nSeats: " + result.seats + "\n⚠️ Google Sheets sync failed. Recorded in Firestore.", true, true);
+          showCheckinMessage("✅ VALID - ENTRY GRANTED\n\nName: " + result.name + "\nSeats: " + result.seats + "\nTicket ID: " + ticketId + "\n\n⚠️ Google Sheets sync failed.\nEntry is already recorded in Firestore.\nPlease retry the Sheet update.", true, true);
+          console.error("Google Sheets sync:", syncError);
         }
+
       } catch (error) {
-        showCheckinMessage("❌ CHECK-IN ERROR\n\n" + error.message, false);
+        showCheckinMessage("❌ CHECK-IN ERROR\n\n" + error.message + "\n\nPlease ask the administrator to check the system.", false);
+        console.error("Firestore check-in:", error);
       } finally {
         checkinInProgress = false;
       }
     }
 
+    // =====================================================
+    // GOOGLE SHEETS JSONP SYNC
+    // =====================================================
     function syncSheetCheckin(ticketId) {
       return new Promise(function(resolve, reject) {
         if (!GOOGLE_SCRIPT_URL) {
@@ -1281,31 +1352,47 @@
         const script = document.createElement("script");
         let finished = false;
 
-        const timeout = setTimeout(function() { finish(new Error("Response timed out.")); }, 15000);
+        const timeout = setTimeout(function() {
+          finish(new Error("Google Sheets response timed out."));
+        }, 15000);
 
         function cleanup() {
           clearTimeout(timeout);
-          if (script.parentNode) script.parentNode.removeChild(script);
-          try { delete window[callbackName]; } catch (e) { window[callbackName] = undefined; }
+          if (script.parentNode) {
+            script.parentNode.removeChild(script);
+          }
+          try {
+            delete window[callbackName];
+          } catch (error) {
+            window[callbackName] = undefined;
+          }
         }
 
         function finish(error, result) {
           if (finished) return;
           finished = true;
           cleanup();
-          if (error) reject(error); else resolve(result);
+          if (error) {
+            reject(error);
+          } else {
+            resolve(result);
+          }
         }
 
         window[callbackName] = function(result) {
           if (!result || result.success !== true) {
-            finish(new Error(result && result.message ? result.message : "Unsuccessful."));
+            finish(new Error(result && result.message ? result.message : "Google Sheets update unsuccessful."));
             return;
           }
           finish(null, result);
         };
 
-        script.onerror = function() { finish(new Error("Unable to connect.")); };
-        script.src = GOOGLE_SCRIPT_URL + "?action=checkin&ticketId=" + encodeURIComponent(ticketId) + "&callback=" + encodeURIComponent(callbackName);
+        script.onerror = function() {
+          finish(new Error("Unable to connect to Google Apps Script."));
+        };
+
+        const requestUrl = GOOGLE_SCRIPT_URL + "?action=checkin" + "&ticketId=" + encodeURIComponent(ticketId) + "&callback=" + encodeURIComponent(callbackName);
+        script.src = requestUrl;
         document.body.appendChild(script);
       });
     }
@@ -1313,14 +1400,17 @@
     async function retrySheetSync() {
       if (!pendingSheetSyncTicketId) return;
       const ticketId = pendingSheetSyncTicketId;
-      showCheckinMessage("Retrying Google Sheets update...", true, false);
+      showCheckinMessage("Retrying Google Sheets update...\nPlease wait.", true, false);
+
       try {
         const result = await syncSheetCheckin(ticketId);
-        if (!result.success) throw new Error(result.message);
+        if (!result.success) {
+          throw new Error(result.message || "Sheet update failed.");
+        }
         pendingSheetSyncTicketId = null;
-        showCheckinMessage("✅ GOOGLE SHEETS UPDATED\n\nTicket ID: " + ticketId, true, false);
+        showCheckinMessage("✅ GOOGLE SHEETS UPDATED\n\nTicket ID: " + ticketId + "\n\nThe attendee's check-in is recorded in both systems.", true, false);
       } catch (error) {
-        showCheckinMessage("⚠️ GOOGLE SHEETS SYNC FAILED\n\n" + error.message, false, true);
+        showCheckinMessage("⚠️ GOOGLE SHEETS SYNC FAILED\n\nTicket ID: " + ticketId + "\n\n" + error.message + "\n\nPlease try again or inform the administrator.", false, true);
       }
     }
 
@@ -1333,14 +1423,27 @@
       box.textContent = message;
 
       const oldButton = document.getElementById("retry-sheet-button");
-      if (oldButton) oldButton.remove();
+      if (oldButton) {
+        oldButton.remove();
+      }
 
       if (showRetry && pendingSheetSyncTicketId) {
         const retryButton = document.createElement("button");
         retryButton.id = "retry-sheet-button";
         retryButton.type = "button";
         retryButton.textContent = "Retry Google Sheets Update";
-        retryButton.style.cssText = "display:block;width:100%;margin-top:15px;padding:12px;border:0;border-radius:25px;background:#f3b0c3;color:#000;font-weight:bold;cursor:pointer;";
+        retryButton.style.cssText = `
+          display:block;
+          width:100%;
+          margin-top:15px;
+          padding:12px;
+          border:0;
+          border-radius:25px;
+          background:#f3b0c3;
+          color:#000;
+          font-weight:bold;
+          cursor:pointer;
+        `;
         retryButton.onclick = retrySheetSync;
         box.appendChild(retryButton);
       }
