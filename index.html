@@ -14,7 +14,7 @@
 
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    body { background-color: #0d0d0d; color: #ffffff; text-align: center; min-height: 100vh; scroll-behavior: smooth; }
+    body { background-color: #0d0d0d; color: #ffffff; text-align: center; min-height: 100vh; scroll-behavior: smooth; display: flex; flex-direction: column; }
 
     .navbar { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background-color: rgba(0, 0, 0, 0.9); position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid #1f1f1f; }
     .nav-brand { font-weight: bold; letter-spacing: 1px; color: #ffb6c1; font-size: 0.9rem; }
@@ -85,7 +85,7 @@
     .contact-links a:hover { color: #ffb6c1; }
     .contact-links i { font-size: 1.5rem; }
 
-    .page-container { padding: 25px 15px; max-width: 1000px; margin: 0 auto; }
+    .page-container { padding: 25px 15px; max-width: 1000px; margin: 0 auto; flex: 1; }
     .page-header { margin-bottom: 20px; position: relative; }
     .btn-back { position: absolute; left: 0; top: 0; background: transparent; border: 1px solid #444; color: #ccc; padding: 6px 12px; border-radius: 20px; cursor: pointer; font-size: 0.85rem; }
 
@@ -150,7 +150,7 @@
     .ticket-body p strong { color: #ffffff; }
     .ticket-qr { text-align: center; margin-top: 20px; padding-top: 15px; border-top: 1px dashed #444; }
 
-    footer { padding: 20px; font-size: 0.8rem; color: #777; border-top: 1px solid #141414; }
+    footer { padding: 20px; font-size: 0.8rem; color: #777; border-top: 1px solid #141414; margin-top: auto; width: 100%; }
   </style>
 </head>
 <body>
@@ -276,10 +276,6 @@
         <a href="https://instagram.com/xmum_danceconcert" target="_blank"><i class="fab fa-instagram" style="color: #E1306C;"></i> @xmum_danceconcert</a>
       </div>
     </div>
-
-    <footer>
-      <p>&copy; 2026 XMUM Dance Club. J40 All Rights Reserved.</p>
-    </footer>
   </div>
 
   <!-- PAGE 2: SEAT SELECTION -->
@@ -455,6 +451,10 @@
     <br>
     <button type="button" onclick="window.print()" class="btn-pink"><i class="fas fa-print"></i> Print E-Ticket</button>
   </div>
+
+  <footer>
+    <p>&copy; 2026 XMUM Dance Club. J40 All Rights Reserved.</p>
+  </footer>
 
   <!-- Firebase Compat Libraries & App Logic -->
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
