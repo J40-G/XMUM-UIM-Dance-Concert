@@ -1258,47 +1258,46 @@ async function startCamera() {
       await stopCamera();
     }
 
-    doorScanner = new Html5Qrcode("qr-reader");
+    doorScanner = new Html5Qrcode("qr-reader", {
+      formatsToSupport: [
+        Html5QrcodeSupportedFormats.QR_CODE
+      ],
+      verbose: false
+    });
 
-    const cameras = await Html5Qrcode.getCameras();
-
-    if (!cameras || cameras.length === 0) {
-      throw new Error("No camera detected on this device.");
-    }
-
-    // Prefer the rear camera on phones
-    const rearCamera = cameras.find(camera =>
-      /back|rear|environment|world/i.test(camera.label)
-    );
-
-    const selectedCamera = rearCamera || cameras[cameras.length - 1];
+    let qrDetected = false;
 
     await doorScanner.start(
 
-      selectedCamera.id,
+      { facingMode: "environment" },
 
       {
-        fps: 15,
+        fps: 20,
 
         qrbox: function(viewWidth, viewHeight) {
-          const boxSize = Math.floor(
-            Math.min(viewWidth, viewHeight) * 0.85
+          const size = Math.floor(
+            Math.min(viewWidth, viewHeight) * 0.9
           );
 
           return {
-            width: boxSize,
-            height: boxSize
+            width: size,
+            height: size
           };
         },
 
         aspectRatio: 1.0,
-        disableFlip: false
+        disableFlip: false,
 
+        experimentalFeatures: {
+          useBarCodeDetectorIfSupported: true
+        }
       },
 
       async function(decodedText) {
 
-        if (checkinInProgress) return;
+        if (qrDetected || checkinInProgress) return;
+
+        qrDetected = true;
 
         const input = document.getElementById("manual-ticket-id");
 
@@ -1313,13 +1312,13 @@ async function startCamera() {
       },
 
       function() {
-        // Ignore normal scanning frames
+        // Ignore unsuccessful scanning frames
       }
 
     );
 
     showCheckinMessage(
-      "📷 Camera ready.\nPosition the attendee's QR code inside the scanning area.",
+      "📷 Camera ready. Move the QR code slowly into the scanning area.",
       true,
       false
     );
@@ -1343,8 +1342,6 @@ async function startCamera() {
     );
 
   }
-
-}
 
 
 // =====================================================
