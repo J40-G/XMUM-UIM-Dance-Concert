@@ -86,8 +86,11 @@
     .contact-links i { font-size: 1.5rem; }
 
     .page-container { padding: 25px 15px; max-width: 1000px; margin: 0 auto; flex: 1; }
-    .page-header { margin-bottom: 20px; position: relative; }
-    .btn-back { position: absolute; left: 0; top: 0; background: transparent; border: 1px solid #444; color: #ccc; padding: 6px 12px; border-radius: 20px; cursor: pointer; font-size: 0.85rem; }
+    
+    /* Fixed Page Header Alignment */
+    .page-header { display: flex; align-items: center; justify-content: center; position: relative; margin-bottom: 25px; min-height: 40px; }
+    .btn-back { position: absolute; left: 0; background: transparent; border: 1px solid #444; color: #ccc; padding: 6px 14px; border-radius: 20px; cursor: pointer; font-size: 0.85rem; }
+    .page-header h2 { font-size: 1.3rem; color: #ffffff; letter-spacing: 1px; margin: 0; }
 
     .stage-banner { background-color: #87CEEB; color: #000000; padding: 8px; margin: 15px auto 20px auto; max-width: 800px; letter-spacing: 3px; font-weight: bold; font-size: 0.9rem; border-radius: 6px; text-transform: uppercase; }
 
