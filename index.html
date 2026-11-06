@@ -564,7 +564,8 @@
       // STRICT ENFORCEMENT: If selected seats exceed 2, force-clear referral code immediately
       if (selectedSeats.length > 2 && appliedReferralCode !== "") {
         appliedReferralCode = "";
-        document.getElementById("promo-code-input").value = "";
+        const inputElem = document.getElementById("promo-code-input");
+        if (inputElem) inputElem.value = "";
         if (messageElem) {
           messageElem.style.display = "block";
           messageElem.style.color = "#ff8585";
@@ -631,7 +632,7 @@
       { rowName: "Row 8", seats: Array(35).fill(0).map((_, i) => ({ num: `${1 + i}`, type: [166, 167].includes(Number(1+i)) ? "occupied" : "zone-b" })) },
       { rowName: "Row 9", seats: Array(34).fill(0).map((_, i) => ({ num: `${36 + i}`, type: [166, 167].includes(Number(36+i)) ? "occupied" : "zone-b" })) },
       { rowName: "Row 10", seats: Array(35).fill(0).map((_, i) => ({ num: `${70 + i}`, type: [166, 167].includes(Number(70+i)) ? "occupied" : "zone-b" })) },
-      { rowName: "Row 11", seats: Array(34).fill(0).map((_, i) => ({ num: `${105 + i}`, type: [166, 167].includes(Number(105+i)) ? "occupied" : "zone-b" })) },
+      { rowName: "Row 11", seats: Array(34).fill(0).map((_, i) => ({ num: `${105 + i}`, type: [105+i] === 200 ? "occupied" : "zone-b" })) },
       { rowName: "Row 12", seats: Array(35).fill(0).map((_, i) => ({ num: `${139 + i}`, type: [166, 167].includes(Number(139+i)) ? "occupied" : "zone-b" })) },
       { rowName: "Row 13", seats: Array(34).fill(0).map((_, i) => ({ num: `${1 + i}`, type: [59, 60, 61].includes(Number(1+i)) ? "occupied" : "zone-c" })) },
       { rowName: "Row 14", seats: Array(35).fill(0).map((_, i) => ({ num: `${35 + i}`, type: [59, 60, 61].includes(Number(35+i)) ? "occupied" : "zone-c" })) },
