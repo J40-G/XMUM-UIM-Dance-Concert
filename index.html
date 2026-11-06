@@ -69,8 +69,8 @@
     .sold-out-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); color: #ff4d4d; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: bold; letter-spacing: 2px; }
 
     .tshirt-design-grid { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; margin-top: 20px; }
-    .tshirt-poster-slot { width: 100%; max-width: 270px; background: #141414; border: 1px solid #222; border-radius: 12px; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 5px; }
-    .tshirt-poster-slot img { width: 100%; height: auto; max-height: 480px; object-fit: contain; border-radius: 8px; display: block; }
+    .tshirt-poster-slot { width: 100%; max-width: 210px; background: #141414; border: 1px solid #222; border-radius: 12px; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 5px; }
+    .tshirt-poster-slot img { width: 100%; height: auto; max-height: 400px; object-fit: contain; border-radius: 8px; display: block; }
 
     .seating-img { max-width: 100% !important; width: 100%; border-radius: 12px; border: 1px solid #333; }
 
@@ -243,13 +243,14 @@
       </div>
     </section>
 
-    <!-- T-Shirt Design Section -->
+    <!-- T-Shirt Design Section (4 Slots) -->
     <section id="tshirt-design" class="section animate-on-scroll">
       <h2>T-SHIRT DESIGN</h2>
       <div class="tshirt-design-grid">
         <div class="tshirt-poster-slot"><img src="tshirt-poster-1.png" alt="T-Shirt Design 1" onerror="this.style.display='none'"></div>
         <div class="tshirt-poster-slot"><img src="tshirt-poster-2.png" alt="T-Shirt Design 2" onerror="this.style.display='none'"></div>
         <div class="tshirt-poster-slot"><img src="tshirt-poster-3.png" alt="T-Shirt Design 3" onerror="this.style.display='none'"></div>
+        <div class="tshirt-poster-slot"><img src="tshirt-poster-4.png" alt="T-Shirt Design 4" onerror="this.style.display='none'"></div>
       </div>
     </section>
 
@@ -406,17 +407,6 @@
           <input type="tel" id="input-phone" class="form-control" required placeholder="0123456789">
         </div>
 
-        <!-- NEW: T-Shirt Design Preference Box -->
-        <div class="form-group" id="tshirt-design-group">
-          <label>Preferred T-Shirt Design <span>(For Bundle Tiers / Optional)</span></label>
-          <select id="input-tshirt-design" class="form-control">
-            <option value="No T-Shirt / Standard Ticket">Standard Ticket (No T-shirt)</option>
-            <option value="Design 1">Design 1</option>
-            <option value="Design 2">Design 2</option>
-            <option value="Design 3">Design 3</option>
-          </select>
-        </div>
-
         <div class="form-group">
           <label>Payment Receipt<span>*</span></label>
           <div class="upload-btn-wrapper">
@@ -446,7 +436,6 @@
         <p><strong>Student ID:</strong> <span id="ticket-student-id">N/A</span></p>
         <p><strong>Contact No:</strong> <span id="ticket-phone">-</span></p>
         <p><strong>Package:</strong> <span id="ticket-tier-label" style="color:#ffb6c1; font-weight:bold;">Standard Ticket</span></p>
-        <p><strong>T-Shirt Design:</strong> <span id="ticket-tshirt-choice" style="color:#ffb6c1;">N/A</span></p>
         <p><strong>Seat(s):</strong> <span id="ticket-seats" style="color:#ffb6c1; font-weight:bold;">-</span></p>
         <p><strong>Total Paid:</strong> RM <span id="ticket-price">0</span></p>
         <p><strong>Date & Time:</strong> 11th Dec 2026 | 7:00 PM - 10:00 PM</p>
@@ -525,16 +514,6 @@
       
       const tierName = tier === 'bundle' ? '⭐ T-Shirt Bundle (+T-shirt)' : 'Standard Ticket';
       document.getElementById("selected-tier-text").innerText = tierName;
-
-      // Automatically set default value in the T-shirt dropdown based on tier
-      const tshirtSelect = document.getElementById("input-tshirt-design");
-      if (tshirtSelect) {
-        if (tier === 'standard') {
-          tshirtSelect.value = "No T-Shirt / Standard Ticket";
-        } else {
-          tshirtSelect.value = "Design 1";
-        }
-      }
 
       const currentActivePrices = tier === 'bundle' ? bundlePrices : standardPrices;
       document.getElementById("price-tag-a").innerText = `RM${currentActivePrices['zone-a']}`;
@@ -697,7 +676,7 @@
       { rowName: "Row 10", seats: Array(35).fill(0).map((_, i) => ({ num: `${70 + i}`, type: [166, 167].includes(Number(70+i)) ? "occupied" : "zone-b" })) },
       { rowName: "Row 11", seats: Array(34).fill(0).map((_, i) => ({ num: `${105 + i}`, type: [166, 167].includes(Number(105+i)) ? "occupied" : "zone-b" })) },
       { rowName: "Row 12", seats: Array(35).fill(0).map((_, i) => ({ num: `${139 + i}`, type: [166, 167].includes(Number(139+i)) ? "occupied" : "zone-b" })) },
-     { rowName: "Row 13", seats: Array(34).fill(0).map((_, i) => ({ num: `${1 + i}`, type: [16, 17, 18, 19, 59, 60, 61].includes(Number(1+i)) ? "occupied" : "zone-c" })) },
+      { rowName: "Row 13", seats: Array(34).fill(0).map((_, i) => ({ num: `${1 + i}`, type: [16, 17, 18, 19, 59, 60, 61].includes(Number(1+i)) ? "occupied" : "zone-c" })) },
       { rowName: "Row 14", seats: Array(35).fill(0).map((_, i) => ({ num: `${35 + i}`, type: [59, 60, 61].includes(Number(35+i)) ? "occupied" : "zone-c" })) },
       { rowName: "Row 15", seats: Array(34).fill(0).map((_, i) => ({ num: `${70 + i}`, type: "occupied" })) },
       { rowName: "Row 16", seats: Array(35).fill(0).map((_, i) => ({ num: `${104 + i}`, type: "occupied" })) },
@@ -899,10 +878,9 @@
       const studentId = document.getElementById("input-student-id").value.trim();
       const email = document.getElementById("input-email").value.trim();
       const phone = document.getElementById("input-phone").value.trim();
-      const tshirtDesignChoice = document.getElementById("input-tshirt-design").value;
       const seatsText = selectedSeats.map(s => formatSeatLabel(s)).join(", ");
       const totalPaid = selectedSeats.reduce((sum, s) => sum + s.price, 0);
-      const ticketTypeStr = selectedTier === 'bundle' ? `Bundle + T-Shirt (${tshirtDesignChoice})` : "Standard Ticket";
+      const ticketTypeStr = selectedTier === 'bundle' ? "Bundle + T-Shirt" : "Standard Ticket";
 
       try {
         let legacyUsedSeats = 0;
@@ -961,7 +939,6 @@
             phone: phone,
             seats: seatsText,
             ticketType: ticketTypeStr,
-            tshirtDesign: tshirtDesignChoice,
             totalPaid: totalPaid,
             paymentMethod: selectedPaymentMethod,
             referralUsed: referralUsed,
@@ -996,7 +973,6 @@
         document.getElementById("ticket-price").innerText = totalPaid;
         document.getElementById("ticket-id").innerText = ticketId;
         document.getElementById("ticket-tier-label").innerText = ticketTypeStr;
-        document.getElementById("ticket-tshirt-choice").innerText = tshirtDesignChoice;
 
         const qrContainer = document.getElementById("ticket-qr-container");
         qrContainer.innerHTML = "";
@@ -1022,7 +998,6 @@
             body: JSON.stringify({
               ticketId, name, studentId, email, phone,
               ticketType: ticketTypeStr,
-              tshirtDesign: tshirtDesignChoice,
               seats: seatsText,
               totalPaid,
               paymentMethod: selectedPaymentMethod,
