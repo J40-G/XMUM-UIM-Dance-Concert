@@ -1060,55 +1060,708 @@
       window.scrollTo(0, 0);
     }
 
-    // INSTANT HASH ROUTER FOR #scanner
-    window.addEventListener('load', () => {
-      if (window.location.hash === '#scanner') {
-        document.body.innerHTML = `
-          <div style="background:#0d0d0d; color:#fff; font-family:sans-serif; text-align:center; padding:50px 20px; min-height:100vh;">
-            <div style="max-width:450px; margin:0 auto; background:#181818; border:1px solid #333; padding:30px; border-radius:12px;">
-              <h2>Door Crew Check-In</h2>
-              <p style="color:#aaa; font-size:0.85rem; margin-bottom:20px;">Scan or enter Ticket ID</p>
-              <input type="text" id="manual-ticket-id" placeholder="#UIM-2026-XXXXXX" style="width:100%; padding:12px 15px; background:#111; border:1px solid #444; border-radius:25px; color:#fff; font-size:1rem; margin-bottom:15px; outline:none; text-align:center;">
-              <button type="button" onclick="quickVerify()" style="background-color:#f3b0c3; color:#000; padding:12px 30px; border-radius:30px; font-weight:bold; border:none; cursor:pointer; width:100%; font-size:1rem;">Verify Ticket</button>
-              <div id="quick-res" style="margin-top:20px; padding:15px; border-radius:8px; font-size:1rem; text-align:left; display:none;"></div>
-            </div>
-          </div>
-        `;
-      } else {
-        updatePricingUI();
-        renderSeatingGrid();
+    
+// =====================================================
+// UNITED IN MOTION 2026 - DOOR CREW SCANNER
+// QR CAMERA + MANUAL ENTRY + FIRESTORE + GOOGLE SHEETS
+// =====================================================
 
-        const observer = new IntersectionObserver((entries) => {
-          entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add("visible"); });
-        }, { threshold: 0.1 });
-        document.querySelectorAll('.animate-on-scroll').forEach(section => observer.observe(section));
+let doorScanner = null;
+let checkinInProgress = false;
+let pendingSheetSyncTicketId = null;
+let jsonpCounter = 0;
+
+
+// =====================================================
+// PAGE ROUTER
+// =====================================================
+
+window.addEventListener("load", () => {
+
+  if (window.location.hash === "#scanner") {
+
+    document.body.innerHTML = `
+      <div style="
+        box-sizing:border-box;
+        background:#0d0d0d;
+        color:#fff;
+        font-family:sans-serif;
+        text-align:center;
+        padding:30px 20px;
+        min-height:100vh;
+      ">
+
+        <div style="
+          max-width:450px;
+          margin:0 auto;
+          background:#181818;
+          border:1px solid #333;
+          padding:25px;
+          border-radius:15px;
+        ">
+
+          <h2 style="margin-top:5px;">Door Crew Check-In</h2>
+
+          <p style="color:#aaa;font-size:0.9rem;margin-bottom:20px;">
+            Scan the attendee's QR code or enter their Ticket ID
+          </p>
+
+          <div id="qr-reader"
+            style="width:100%;margin:0 auto 15px;">
+          </div>
+
+          <button type="button"
+            onclick="startCamera()"
+            style="
+              background:#f3b0c3;
+              color:#000;
+              padding:13px;
+              border-radius:30px;
+              font-weight:bold;
+              border:none;
+              cursor:pointer;
+              width:100%;
+              margin-bottom:10px;
+              font-size:1rem;
+            ">
+            Start QR Camera
+          </button>
+
+          <button type="button"
+            onclick="stopCamera()"
+            style="
+              background:#333;
+              color:#fff;
+              padding:10px;
+              border-radius:30px;
+              border:1px solid #555;
+              cursor:pointer;
+              width:100%;
+              margin-bottom:20px;
+            ">
+            Stop Camera
+          </button>
+
+          <div style="border-top:1px solid #333;padding-top:20px;">
+
+            <input
+              type="text"
+              id="manual-ticket-id"
+              placeholder="Enter Ticket ID"
+              autocomplete="off"
+              style="
+                box-sizing:border-box;
+                width:100%;
+                padding:13px;
+                background:#111;
+                border:1px solid #444;
+                border-radius:25px;
+                color:#fff;
+                font-size:1rem;
+                margin-bottom:12px;
+                text-align:center;
+                outline:none;
+              "
+            >
+
+            <button type="button"
+              onclick="quickVerify()"
+              style="
+                background:#f3b0c3;
+                color:#000;
+                padding:13px;
+                border-radius:30px;
+                font-weight:bold;
+                border:none;
+                cursor:pointer;
+                width:100%;
+                font-size:1rem;
+              ">
+              Verify Ticket
+            </button>
+
+          </div>
+
+          <div id="quick-res"
+            style="
+              display:none;
+              margin-top:20px;
+              padding:15px;
+              border-radius:10px;
+              font-size:0.95rem;
+              text-align:left;
+              white-space:pre-line;
+              line-height:1.6;
+              overflow-wrap:anywhere;
+            ">
+          </div>
+
+          <p style="
+            color:#666;
+            font-size:0.75rem;
+            margin-top:25px;
+          ">
+            UNITED IN MOTION | XMUM DANCE CONCERT 2026
+          </p>
+
+        </div>
+      </div>
+    `;
+
+    // Allow pressing Enter for manual verification
+    document.getElementById("manual-ticket-id")
+      .addEventListener("keydown", function(event) {
+        if (event.key === "Enter") {
+          quickVerify();
+        }
+      });
+
+  } else {
+
+    // NORMAL WEBSITE
+    updatePricingUI();
+    renderSeatingGrid();
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("visible");
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll(".animate-on-scroll")
+      .forEach(section => observer.observe(section));
+
+  }
+
+});
+
+
+// =====================================================
+// START QR CAMERA
+// =====================================================
+
+async function startCamera() {
+
+  try {
+
+    if (typeof Html5Qrcode === "undefined") {
+      throw new Error(
+        "QR scanner library not loaded. Please refresh the page."
+      );
+    }
+
+    if (doorScanner) {
+      await stopCamera();
+    }
+
+    doorScanner = new Html5Qrcode("qr-reader");
+
+    await doorScanner.start(
+
+      { facingMode: "environment" },
+
+      {
+        fps: 10,
+        qrbox: {
+          width: 250,
+          height: 250
+        }
+      },
+
+      async function(decodedText) {
+
+        if (checkinInProgress) return;
+
+        // Existing QR codes contain the Ticket ID
+        const input = document.getElementById("manual-ticket-id");
+
+        if (input) {
+          input.value = decodedText.trim();
+        }
+
+        await stopCamera();
+
+        await quickVerify();
+
+      },
+
+      function() {
+        // Ignore normal camera scanning frames
       }
+
+    );
+
+    showCheckinMessage(
+      "📷 Camera ready.\nPosition the attendee's QR code inside the scanning area.",
+      true,
+      false
+    );
+
+  } catch (error) {
+
+    doorScanner = null;
+
+    showCheckinMessage(
+      "CAMERA ERROR\n" + error.message +
+      "\n\nPlease allow camera permission or use manual entry.",
+      false
+    );
+
+  }
+
+}
+
+
+// =====================================================
+// STOP QR CAMERA
+// =====================================================
+
+async function stopCamera() {
+
+  if (!doorScanner) return;
+
+  try {
+
+    if (doorScanner.isScanning) {
+      await doorScanner.stop();
+    }
+
+    await doorScanner.clear();
+
+  } catch (error) {
+    console.log("Camera stop:", error.message);
+  }
+
+  doorScanner = null;
+
+}
+
+
+// =====================================================
+// MAIN CHECK-IN FUNCTION
+// QR AND MANUAL ENTRY USE THE SAME FUNCTION
+// =====================================================
+
+async function quickVerify() {
+
+  if (checkinInProgress) return;
+
+  const input = document.getElementById("manual-ticket-id");
+
+  if (!input) return;
+
+  const ticketId = input.value.trim();
+
+  if (!ticketId) {
+
+    showCheckinMessage(
+      "⚠️ Please scan or enter a Ticket ID.",
+      false
+    );
+
+    return;
+  }
+
+  checkinInProgress = true;
+
+  showCheckinMessage(
+    "Checking ticket...\nPlease wait.",
+    true,
+    false
+  );
+
+  try {
+
+    const ticketRef = db.collection("tickets").doc(ticketId);
+
+
+    // -------------------------------------------------
+    // ATOMIC FIRESTORE TRANSACTION
+    // -------------------------------------------------
+
+    const result = await db.runTransaction(async function(transaction) {
+
+      const ticketDoc = await transaction.get(ticketRef);
+
+      if (!ticketDoc.exists) {
+        return {
+          status: "NOT_FOUND"
+        };
+      }
+
+      const ticket = ticketDoc.data();
+
+      // BLOCK PREVIOUSLY SCANNED TICKETS
+      if (ticket.scanned === true) {
+
+        return {
+          status: "DUPLICATE",
+          name: ticket.name || "Unknown",
+          seats: ticket.seats || "N/A"
+        };
+
+      }
+
+      // MARK AS SCANNED ATOMICALLY
+      transaction.update(ticketRef, {
+        scanned: true,
+        scannedAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+
+      return {
+        status: "SUCCESS",
+        name: ticket.name || "Unknown",
+        seats: ticket.seats || "N/A"
+      };
+
     });
 
-    async function quickVerify() {
-      const tid = document.getElementById("manual-ticket-id").value.trim();
-      const box = document.getElementById("quick-res");
-      box.style.display = "block";
-      if (!tid) {
-        box.style.background = "#531d1d"; box.style.color = "#ff8585"; box.innerText = "⚠️ Enter Ticket ID."; return;
-      }
-      try {
-        const ref = db.collection("tickets").doc(tid);
-        const doc = await ref.get();
-        if (!doc.exists) {
-          box.style.background = "#531d1d"; box.style.color = "#ff8585"; box.innerText = `❌ ID '${tid}' not found.`; return;
-        }
-        const d = doc.data();
-        if (d.scanned) {
-          box.style.background = "#531d1d"; box.style.color = "#ff8585"; box.innerHTML = `<strong>⚠️ ALREADY SCANNED!</strong><br>Name: ${d.name}<br>Seats: ${d.seats}`;
-        } else {
-          await ref.update({ scanned: true, scannedAt: firebase.firestore.FieldValue.serverTimestamp() });
-          box.style.background = "#1b4332"; box.style.color = "#95d5b2"; box.innerHTML = `<strong>✅ VALID - ENTRY GRANTED</strong><br>Name: ${d.name}<br>Seats: ${d.seats}`;
-        }
-      } catch (err) {
-        box.style.background = "#531d1d"; box.style.color = "#ff8585"; box.innerText = `❌ Error: ${err.message}`;
-      }
+
+    // -------------------------------------------------
+    // INVALID TICKET
+    // -------------------------------------------------
+
+    if (result.status === "NOT_FOUND") {
+
+      showCheckinMessage(
+        "❌ INVALID TICKET\n\nTicket ID:\n" +
+        ticketId +
+        "\n\nNo booking record found.",
+        false
+      );
+
+      return;
     }
+
+
+    // -------------------------------------------------
+    // DUPLICATE ENTRY
+    // -------------------------------------------------
+
+    if (result.status === "DUPLICATE") {
+
+      showCheckinMessage(
+        "🚫 DUPLICATE ENTRY DETECTED\n\n" +
+        "Name: " + result.name + "\n" +
+        "Seats: " + result.seats + "\n" +
+        "Ticket ID: " + ticketId +
+        "\n\nENTRY BLOCKED.",
+        false
+      );
+
+      return;
+    }
+
+
+    // -------------------------------------------------
+    // FIRESTORE SUCCESS
+    // ENTRY IS GRANTED
+    // -------------------------------------------------
+
+    pendingSheetSyncTicketId = ticketId;
+
+    showCheckinMessage(
+      "✅ VALID - ENTRY GRANTED\n\n" +
+      "Name: " + result.name + "\n" +
+      "Seats: " + result.seats + "\n" +
+      "Ticket ID: " + ticketId +
+      "\n\nUpdating Google Sheets...",
+      true,
+      false
+    );
+
+
+    // -------------------------------------------------
+    // GOOGLE SHEETS SYNC
+    // -------------------------------------------------
+
+    try {
+
+      const sheetResult = await syncSheetCheckin(ticketId);
+
+      if (!sheetResult.success) {
+
+        throw new Error(
+          sheetResult.message || "Google Sheets rejected the update."
+        );
+
+      }
+
+      pendingSheetSyncTicketId = null;
+
+      showCheckinMessage(
+        "✅ VALID - ENTRY GRANTED\n\n" +
+        "Name: " + result.name + "\n" +
+        "Seats: " + result.seats + "\n" +
+        "Ticket ID: " + ticketId +
+        "\n\n✅ Google Sheets updated successfully.",
+        true,
+        false
+      );
+
+    } catch (syncError) {
+
+      // FIRESTORE CHECK-IN IS STILL SUCCESSFUL
+      showCheckinMessage(
+        "✅ VALID - ENTRY GRANTED\n\n" +
+        "Name: " + result.name + "\n" +
+        "Seats: " + result.seats + "\n" +
+        "Ticket ID: " + ticketId +
+        "\n\n⚠️ Google Sheets sync failed.\n" +
+        "Entry is already recorded in Firestore.\n" +
+        "Please retry the Sheet update.",
+        true,
+        true
+      );
+
+      console.error("Google Sheets sync:", syncError);
+
+    }
+
+  } catch (error) {
+
+    showCheckinMessage(
+      "❌ CHECK-IN ERROR\n\n" +
+      error.message +
+      "\n\nPlease ask the administrator to check the system.",
+      false
+    );
+
+    console.error("Firestore check-in:", error);
+
+  } finally {
+
+    checkinInProgress = false;
+
+  }
+
+}
+
+
+// =====================================================
+// GOOGLE SHEETS JSONP SYNC
+// RECEIVES A CONFIRMED RESPONSE FROM APPS SCRIPT
+// =====================================================
+
+function syncSheetCheckin(ticketId) {
+
+  return new Promise(function(resolve, reject) {
+
+    if (!GOOGLE_SCRIPT_URL) {
+      reject(new Error("Google Apps Script URL is missing."));
+      return;
+    }
+
+    jsonpCounter++;
+
+    const callbackName =
+      "uimCheckinCallback_" + Date.now() + "_" + jsonpCounter;
+
+    const script = document.createElement("script");
+
+    let finished = false;
+
+    const timeout = setTimeout(function() {
+
+      finish(
+        new Error("Google Sheets response timed out.")
+      );
+
+    }, 15000);
+
+
+    function cleanup() {
+
+      clearTimeout(timeout);
+
+      if (script.parentNode) {
+        script.parentNode.removeChild(script);
+      }
+
+      try {
+        delete window[callbackName];
+      } catch (error) {
+        window[callbackName] = undefined;
+      }
+
+    }
+
+
+    function finish(error, result) {
+
+      if (finished) return;
+
+      finished = true;
+
+      cleanup();
+
+      if (error) {
+        reject(error);
+      } else {
+        resolve(result);
+      }
+
+    }
+
+
+    // GOOGLE APPS SCRIPT CALLS THIS CALLBACK
+    window[callbackName] = function(result) {
+
+      if (!result || result.success !== true) {
+
+        finish(
+          new Error(
+            result && result.message
+              ? result.message
+              : "Google Sheets update unsuccessful."
+          )
+        );
+
+        return;
+      }
+
+      finish(null, result);
+
+    };
+
+
+    script.onerror = function() {
+
+      finish(
+        new Error("Unable to connect to Google Apps Script.")
+      );
+
+    };
+
+
+    const requestUrl =
+      GOOGLE_SCRIPT_URL +
+      "?action=checkin" +
+      "&ticketId=" + encodeURIComponent(ticketId) +
+      "&callback=" + encodeURIComponent(callbackName);
+
+
+    script.src = requestUrl;
+
+    document.body.appendChild(script);
+
+  });
+
+}
+
+
+// =====================================================
+// RETRY GOOGLE SHEETS SYNC
+// DOES NOT REPEAT FIRESTORE CHECK-IN
+// =====================================================
+
+async function retrySheetSync() {
+
+  if (!pendingSheetSyncTicketId) return;
+
+  const ticketId = pendingSheetSyncTicketId;
+
+  showCheckinMessage(
+    "Retrying Google Sheets update...\nPlease wait.",
+    true,
+    false
+  );
+
+  try {
+
+    const result = await syncSheetCheckin(ticketId);
+
+    if (!result.success) {
+      throw new Error(result.message || "Sheet update failed.");
+    }
+
+    pendingSheetSyncTicketId = null;
+
+    showCheckinMessage(
+      "✅ GOOGLE SHEETS UPDATED\n\n" +
+      "Ticket ID: " + ticketId +
+      "\n\nThe attendee's check-in is recorded in both systems.",
+      true,
+      false
+    );
+
+  } catch (error) {
+
+    showCheckinMessage(
+      "⚠️ GOOGLE SHEETS SYNC FAILED\n\n" +
+      "Ticket ID: " + ticketId +
+      "\n\n" + error.message +
+      "\n\nPlease try again or inform the administrator.",
+      false,
+      true
+    );
+
+  }
+
+}
+
+
+// =====================================================
+// DISPLAY RESULT
+// =====================================================
+
+function showCheckinMessage(message, success, showRetry) {
+
+  const box = document.getElementById("quick-res");
+
+  if (!box) return;
+
+  box.style.display = "block";
+
+  box.style.background = success
+    ? "#1b4332"
+    : "#531d1d";
+
+  box.style.color = success
+    ? "#95d5b2"
+    : "#ff8585";
+
+  box.textContent = message;
+
+  // REMOVE OLD RETRY BUTTON
+  const oldButton = document.getElementById("retry-sheet-button");
+
+  if (oldButton) {
+    oldButton.remove();
+  }
+
+  // ADD RETRY BUTTON IF SHEET SYNC FAILED
+  if (showRetry && pendingSheetSyncTicketId) {
+
+    const retryButton = document.createElement("button");
+
+    retryButton.id = "retry-sheet-button";
+    retryButton.type = "button";
+    retryButton.textContent = "Retry Google Sheets Update";
+
+    retryButton.style.cssText = `
+      display:block;
+      width:100%;
+      margin-top:15px;
+      padding:12px;
+      border:0;
+      border-radius:25px;
+      background:#f3b0c3;
+      color:#000;
+      font-weight:bold;
+      cursor:pointer;
+    `;
+
+    retryButton.onclick = retrySheetSync;
+
+    box.appendChild(retryButton);
+
+  }
+
+}
+
   </script>
 </body>
 </html>
