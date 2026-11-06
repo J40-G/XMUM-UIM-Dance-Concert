@@ -329,7 +329,7 @@
       <p style="font-size:0.75rem; color:#ff9f1c; margin-top:5px;">⚠️ Seats locked for 10 minutes. Time remaining: <span id="hold-timer" style="font-weight:bold;">10:00</span></p>
     </div>
 
-    <!-- Committee Referral Code Box (Max 2 seats per transaction) -->
+    <!-- Committee Referral Code Box -->
     <div class="payment-summary-box" style="border-color: #ffb6c1; background: #1a1416;">
       <h4 style="color: #ffb6c1; margin-bottom: 8px;"><i class="fas fa-tag"></i> Committee Referral Code <span style="font-weight: normal; color: #aaa; font-size: 0.85rem;">(Max 2 seats)</span></h4>
       <div style="display: flex; gap: 10px;">
@@ -533,7 +533,6 @@
         return;
       }
 
-      // STRICT HARD BLOCK: Max 2 seats per single transaction cart
       if (selectedSeats.length > 2) {
         messageElem.style.color = "#ff8585";
         messageElem.innerText = "❌ Referral code is only valid for a maximum of 2 seats per transaction!";
@@ -568,7 +567,7 @@
         if (messageElem) {
           messageElem.style.display = "block";
           messageElem.style.color = "#ff8585";
-          messageElem.innerText = "❌ Referral code removed because more than 2 seats were selected (max 2 allowed per transaction).";
+          messageElem.innerText = "❌ Referral code removed because more than 2 seats were selected (max 2 allowed).";
         }
       }
 
@@ -794,7 +793,7 @@
       const phone = document.getElementById("input-phone").value;
       const seatsText = selectedSeats.map(s => formatSeatLabel(s)).join(", ");
       const totalPaid = selectedSeats.reduce((sum, s) => sum + s.price, 0);
-      const referralUsed = appliedReferralCode || "None";
+      const referralUsed = appliedReferralCode && appliedReferralCode.trim() !== "" ? appliedReferralCode : "None";
       const ticketTypeStr = selectedTier === 'bundle' ? "Bundle + T-Shirt" : "Standard Ticket";
 
       document.getElementById("ticket-name").innerText = name;
@@ -820,14 +819,8 @@
             batch.set(db.collection("concert_seats").doc(s.id), { status: "occupied", bookedBy: name, ticketId: ticketId });
           });
           batch.set(db.collection("tickets").doc(ticketId), {
-            ticketId: ticketId,
-            name: name,
-            studentId: studentId || "N/A",
-            phone: phone,
-            seats: seatsText,
-            ticketType: ticketTypeStr,
-            totalPaid: totalPaid,
-            scanned: false,
+            ticketId: ticketId, name: name, studentId: studentId || "N/A", phone: phone,
+            seats: seatsText, ticketType: ticketTypeStr, totalPaid: totalPaid, scanned: false,
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
           });
           batch.commit().catch(() => {});
