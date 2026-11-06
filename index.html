@@ -1242,63 +1242,39 @@ window.addEventListener("load", () => {
 // START QR CAMERA
 // =====================================================
 
-
-// START QR CAMERA
-// =====================================================
-
 async function startCamera() {
 
   try {
 
     if (typeof Html5Qrcode === "undefined") {
-      throw new Error("QR scanner library not loaded. Please refresh the page.");
+      throw new Error(
+        "QR scanner library not loaded. Please refresh the page."
+      );
     }
 
     if (doorScanner) {
       await stopCamera();
     }
 
-    doorScanner = new Html5Qrcode("qr-reader", {
-      formatsToSupport: [
-        Html5QrcodeSupportedFormats.QR_CODE
-      ],
-      verbose: false
-    });
-
-    let qrDetected = false;
+    doorScanner = new Html5Qrcode("qr-reader");
 
     await doorScanner.start(
 
       { facingMode: "environment" },
 
       {
-        fps: 20,
-
-        qrbox: function(viewWidth, viewHeight) {
-          const size = Math.floor(
-            Math.min(viewWidth, viewHeight) * 0.9
-          );
-
-          return {
-            width: size,
-            height: size
-          };
-        },
-
-        aspectRatio: 1.0,
-        disableFlip: false,
-
-        experimentalFeatures: {
-          useBarCodeDetectorIfSupported: true
+        fps: 10,
+        qrbox: {
+          width: 250,
+          height: 250
         }
       },
 
       async function(decodedText) {
 
-        if (qrDetected || checkinInProgress) return;
+        if (checkinInProgress) return;
 
-        qrDetected = true;
-
+        // Existing QR codes contain the Ticket ID
         const input = document.getElementById("manual-ticket-id");
 
         if (input) {
@@ -1312,26 +1288,18 @@ async function startCamera() {
       },
 
       function() {
-        // Ignore unsuccessful scanning frames
+        // Ignore normal camera scanning frames
       }
 
     );
 
     showCheckinMessage(
-      "📷 Camera ready. Move the QR code slowly into the scanning area.",
+      "📷 Camera ready.\nPosition the attendee's QR code inside the scanning area.",
       true,
       false
     );
 
   } catch (error) {
-
-    console.error("Camera error:", error);
-
-    if (doorScanner) {
-      try {
-        await doorScanner.stop();
-      } catch (e) {}
-    }
 
     doorScanner = null;
 
@@ -1342,6 +1310,8 @@ async function startCamera() {
     );
 
   }
+
+}
 
 
 // =====================================================
