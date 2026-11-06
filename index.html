@@ -331,7 +331,7 @@
 
     <!-- Committee Referral Code Box -->
     <div class="payment-summary-box" style="border-color: #ffb6c1; background: #1a1416;">
-      <h4 style="color: #ffb6c1; margin-bottom: 8px;"><i class="fas fa-tag"></i> Committee Referral Code <span style="font-weight: normal; color: #aaa; font-size: 0.85rem;">(Max 2 seats per transaction)</span></h4>
+      <h4 style="color: #ffb6c1; margin-bottom: 8px;"><i class="fas fa-tag"></i> Committee Referral Code <span style="font-weight: normal; color: #aaa; font-size: 0.85rem;">(Max 2 seats total per code, across all bookings)</span></h4>
       <div style="display: flex; gap: 10px;">
         <input type="text" id="promo-code-input" class="form-control" placeholder="Enter code if applicable" style="text-transform: uppercase;">
         <button type="button" onclick="applyCommitteeCode()" class="btn-pink" style="padding: 10px 20px; font-size: 0.85rem;">Apply</button>
@@ -470,11 +470,13 @@
 
     let db = null;
     try {
-      if (typeof firebase !== "undefined" && !firebase.apps.length) {
-        firebase.initializeApp(firebaseConfig);
+      if (typeof firebase !== "undefined") {
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
         db = firebase.firestore();
       }
-    } catch (err) {}
+    } catch (err) {
+      console.error("Firebase initialization failed:", err);
+    }
 
     setTimeout(() => {
       const modal = document.getElementById('welcome-modal');
@@ -520,24 +522,35 @@
       recalculateSeatPrices();
     }
 
-    async function checkGlobalReferralLimit(code) {
-      if (!db || !code || code === "None") return true;
-      try {
-        const snapshot = await db.collection("tickets").get();
-        let totalTicketsWithCode = 0;
-        
-        snapshot.forEach(doc => {
-          const d = doc.data();
-          if (d.referralUsed && d.referralUsed.toUpperCase() === code.toUpperCase()) {
-            const seatCount = d.seats ? d.seats.split(",").length : 1;
-            totalTicketsWithCode += seatCount;
-          }
-        });
+    async function getReferralSeatsUsed(code) {
+      if (!db || !code || code.toUpperCase() === "NONE") {
+        throw new Error("Database connection is unavailable. Please refresh and try again.");
+      }
 
-        // Global rule: Max 2 tickets total across all buyers combined
-        return totalTicketsWithCode < 2;
+      const usageRef = db.collection("referral_code_usage").doc(code.toUpperCase());
+      const usageDoc = await usageRef.get();
+
+      if (usageDoc.exists) return Number(usageDoc.data().usedSeats || 0);
+
+      // Count older bookings created before referral usage counters existed.
+      const oldBookings = await db.collection("tickets").get();
+      let usedSeats = 0;
+      oldBookings.forEach(doc => {
+        const booking = doc.data();
+        if ((booking.referralUsed || "").toString().trim().toUpperCase() === code.toUpperCase()) {
+          usedSeats += booking.seats ? booking.seats.split(",").length : 1;
+        }
+      });
+      return usedSeats;
+    }
+
+    async function checkGlobalReferralLimit(code, seatsRequested = selectedSeats.length) {
+      try {
+        const usedSeats = await getReferralSeatsUsed(code);
+        return seatsRequested === 0 ? usedSeats < 2 : usedSeats + seatsRequested <= 2;
       } catch (err) {
-        return true; 
+        console.error("Referral validation failed:", err);
+        return false;
       }
     }
 
@@ -554,10 +567,10 @@
         return;
       }
 
-      // Rule 1: Max 2 seats per single transaction
+      // A single booking may use at most 2 seats with a referral code.
       if (selectedSeats.length > 2) {
         messageElem.style.color = "#ff8585";
-        messageElem.innerText = "❌ Referral code is only valid for a maximum of 2 seats per transaction!";
+        messageElem.innerText = "❌ A referral code can be used for a maximum of 2 seats per booking!";
         appliedReferralCode = "";
         document.getElementById("promo-code-input").value = "";
         recalculateSeatPrices();
@@ -572,11 +585,11 @@
         return;
       }
 
-      // Rule 2: Check global limit across previous transactions in Firebase
-      const canUse = await checkGlobalReferralLimit(codeInput);
+      // Check the remaining global seat allowance across all previous bookings.
+      const canUse = await checkGlobalReferralLimit(codeInput, selectedSeats.length);
       if (!canUse) {
         messageElem.style.color = "#ff8585";
-        messageElem.innerText = "❌ This referral code has already reached its global limit of 2 tickets across all purchases!";
+        messageElem.innerText = "❌ This code has insufficient seats remaining. Each code is limited to 2 seats total across all bookings, including this booking.";
         appliedReferralCode = "";
         document.getElementById("promo-code-input").value = "";
         recalculateSeatPrices();
@@ -587,7 +600,8 @@
       recalculateSeatPrices();
 
       messageElem.style.color = "#95d5b2";
-      messageElem.innerText = `✅ Committee Code '${codeInput}' applied successfully for ${selectedSeats.length} seat(s)!`;
+      const usedSeats = await getReferralSeatsUsed(codeInput);
+      messageElem.innerText = `✅ Code '${codeInput}' applied. ${2 - usedSeats} seat(s) were available before this booking.`;
     }
 
     function recalculateSeatPrices() {
@@ -600,7 +614,7 @@
         if (messageElem) {
           messageElem.style.display = "block";
           messageElem.style.color = "#ff8585";
-          messageElem.innerText = "❌ Referral code removed because more than 2 seats were selected (max 2 allowed).";
+          messageElem.innerText = "❌ Referral code removed because a maximum of 2 seats can be selected per booking.";
         }
       }
 
@@ -673,6 +687,7 @@
 
     let selectedSeats = [];
     let selectedPaymentMethod = "";
+    let isSubmittingBooking = false;
 
     function listenToSeatUpdates() {
       if (!db) return;
@@ -737,13 +752,23 @@
       listenToSeatUpdates();
     }
 
-    function toggleSeat(btn, seatId, zoneType, rowName, num) {
+    async function toggleSeat(btn, seatId, zoneType, rowName, num) {
       if (btn.classList.contains("occupied") || btn.classList.contains("holding")) return;
 
       if (btn.classList.contains("selected")) {
         btn.classList.remove("selected");
         selectedSeats = selectedSeats.filter(s => s.id !== seatId);
       } else {
+        if (appliedReferralCode) {
+          const usedSeats = await getReferralSeatsUsed(appliedReferralCode);
+          if (usedSeats + selectedSeats.length + 1 > 2) {
+            const messageElem = document.getElementById("promo-message");
+            messageElem.style.display = "block";
+            messageElem.style.color = "#ff8585";
+            messageElem.innerText = `❌ This code has only ${Math.max(0, 2 - usedSeats - selectedSeats.length)} seat(s) remaining across all bookings.`;
+            return;
+          }
+        }
         selectedSeats.push({ id: seatId, price: 0, zone: getZoneLabel(zoneType), zoneKey: zoneType, rowName: rowName, num: num });
         btn.classList.add("selected");
       }
@@ -817,77 +842,203 @@
 
     async function handleFinalSubmit(e) {
       if (e) e.preventDefault();
+      if (isSubmittingBooking) return;
 
-      const referralUsed = appliedReferralCode && appliedReferralCode.trim() !== "" ? appliedReferralCode.toUpperCase() : "None";
+      const submitButton = document.querySelector('#checkout-form button[type="submit"]');
+      const file = document.getElementById("receipt-file").files[0];
 
-      // Final security check before saving
-      if (referralUsed !== "None") {
-        const canUse = await checkGlobalReferralLimit(referralUsed);
-        if (!canUse) {
-          alert("❌ This referral code has already reached its global limit of 2 tickets across all purchases!");
-          goToPage(3);
-          return;
-        }
+      if (!db) {
+        alert("Database connection is unavailable. Please refresh the page and try again.");
+        return;
+      }
+      if (!file) {
+        alert("Please upload your payment receipt.");
+        return;
+      }
+      if (file.size > 5 * 1024 * 1024) {
+        alert("Receipt file must be 5 MB or smaller.");
+        return;
+      }
+      if (selectedSeats.length === 0) {
+        alert("Please select at least one seat.");
+        goToPage(2);
+        return;
       }
 
-      if (holdTimerInterval) clearInterval(holdTimerInterval);
+      isSubmittingBooking = true;
+      if (submitButton) {
+        submitButton.disabled = true;
+        submitButton.innerText = "Processing booking...";
+      }
+
+      const referralUsed = appliedReferralCode && appliedReferralCode.trim() !== ""
+        ? appliedReferralCode.toUpperCase()
+        : "NONE";
 
       const ticketId = `#UIM-2026-${Date.now().toString().slice(-6)}-${Math.floor(1000 + Math.random() * 9000)}`;
-      const name = document.getElementById("input-name").value;
-      const studentId = document.getElementById("input-student-id").value;
-      const email = document.getElementById("input-email").value;
-      const phone = document.getElementById("input-phone").value;
+      const name = document.getElementById("input-name").value.trim();
+      const studentId = document.getElementById("input-student-id").value.trim();
+      const email = document.getElementById("input-email").value.trim();
+      const phone = document.getElementById("input-phone").value.trim();
       const seatsText = selectedSeats.map(s => formatSeatLabel(s)).join(", ");
       const totalPaid = selectedSeats.reduce((sum, s) => sum + s.price, 0);
       const ticketTypeStr = selectedTier === 'bundle' ? "Bundle + T-Shirt" : "Standard Ticket";
 
-      document.getElementById("ticket-name").innerText = name;
-      document.getElementById("ticket-student-id").innerText = studentId || "N/A";
-      document.getElementById("ticket-phone").innerText = phone || "-";
-      document.getElementById("ticket-seats").innerText = seatsText;
-      document.getElementById("ticket-price").innerText = totalPaid;
-      document.getElementById("ticket-id").innerText = ticketId;
-      document.getElementById("ticket-tier-label").innerText = ticketTypeStr;
+      try {
+        // Count legacy bookings before the transaction if this code has no usage counter yet.
+        // The transaction then serializes competing bookings on the same referral counter document.
+        let legacyUsedSeats = 0;
+        if (referralUsed !== "NONE") {
+          const usageRef = db.collection("referral_code_usage").doc(referralUsed);
+          const usageDoc = await usageRef.get();
 
-      const qrContainer = document.getElementById("ticket-qr-container");
-      qrContainer.innerHTML = "";
-      if (typeof QRCode !== "undefined") {
-        new QRCode(qrContainer, { text: ticketId, width: 130, height: 130, colorDark: "#000000", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.H });
-      }
+          if (!usageDoc.exists) {
+            const oldBookings = await db.collection("tickets").get();
+            oldBookings.forEach(doc => {
+              const booking = doc.data();
+              if ((booking.referralUsed || "").toString().trim().toUpperCase() === referralUsed) {
+                legacyUsedSeats += booking.seats ? booking.seats.split(",").length : 1;
+              }
+            });
+          }
+        }
 
-      goToPage(5);
+        const ticketRef = db.collection("tickets").doc(ticketId);
+        const usageRef = referralUsed !== "NONE"
+          ? db.collection("referral_code_usage").doc(referralUsed)
+          : null;
+        const seatRefs = selectedSeats.map(s => db.collection("concert_seats").doc(s.id));
 
-      if (db) {
-        try {
-          const batch = db.batch();
-          selectedSeats.forEach(s => {
-            batch.set(db.collection("concert_seats").doc(s.id), { status: "occupied", bookedBy: name, ticketId: ticketId });
-          });
-          batch.set(db.collection("tickets").doc(ticketId), {
-            ticketId: ticketId, name: name, studentId: studentId || "N/A", phone: phone,
-            seats: seatsText, ticketType: ticketTypeStr, totalPaid: totalPaid, referralUsed: referralUsed, scanned: false,
+        await db.runTransaction(async transaction => {
+          // All transaction reads are completed before any writes.
+          const seatSnapshots = [];
+          for (const seatRef of seatRefs) {
+            seatSnapshots.push(await transaction.get(seatRef));
+          }
+
+          let usedSeats = 0;
+          let usageSnapshot = null;
+          if (usageRef) {
+            usageSnapshot = await transaction.get(usageRef);
+            usedSeats = usageSnapshot.exists
+              ? Number(usageSnapshot.data().usedSeats || 0)
+              : legacyUsedSeats;
+
+            if (usedSeats + selectedSeats.length > 2) {
+              throw new Error("REFERRAL_EXHAUSTED");
+            }
+          }
+
+          for (let i = 0; i < seatSnapshots.length; i++) {
+            const seatData = seatSnapshots[i].exists ? seatSnapshots[i].data() : {};
+            if (seatData.status === "occupied") {
+              throw new Error("SEAT_ALREADY_BOOKED");
+            }
+          }
+
+          transaction.set(ticketRef, {
+            ticketId: ticketId,
+            name: name,
+            studentId: studentId || "N/A",
+            email: email,
+            phone: phone,
+            seats: seatsText,
+            ticketType: ticketTypeStr,
+            totalPaid: totalPaid,
+            paymentMethod: selectedPaymentMethod,
+            referralUsed: referralUsed,
+            scanned: false,
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
           });
-          await batch.commit();
-        } catch (err) {}
-      }
 
-      const file = document.getElementById("receipt-file").files[0];
-      const sendData = (fileData, fileName, fileType) => {
-        fetch(GOOGLE_SCRIPT_URL, {
-          method: "POST", 
-          mode: "no-cors", 
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ ticketId, name, studentId, email, phone, ticketType: ticketTypeStr, seats: seatsText, totalPaid, paymentMethod: selectedPaymentMethod, referralUsed, fileData, fileName, fileType })
-        }).catch(() => {});
-      };
+          selectedSeats.forEach((seat, index) => {
+            transaction.set(seatRefs[index], {
+              status: "occupied",
+              bookedBy: name,
+              ticketId: ticketId,
+              updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            }, { merge: true });
+          });
 
-      if (file) {
+          if (usageRef) {
+            transaction.set(usageRef, {
+              code: referralUsed,
+              usedSeats: usedSeats + selectedSeats.length,
+              updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            }, { merge: true });
+          }
+        });
+
+        if (holdTimerInterval) clearInterval(holdTimerInterval);
+
+        document.getElementById("ticket-name").innerText = name;
+        document.getElementById("ticket-student-id").innerText = studentId || "N/A";
+        document.getElementById("ticket-phone").innerText = phone || "-";
+        document.getElementById("ticket-seats").innerText = seatsText;
+        document.getElementById("ticket-price").innerText = totalPaid;
+        document.getElementById("ticket-id").innerText = ticketId;
+        document.getElementById("ticket-tier-label").innerText = ticketTypeStr;
+
+        const qrContainer = document.getElementById("ticket-qr-container");
+        qrContainer.innerHTML = "";
+        if (typeof QRCode !== "undefined") {
+          new QRCode(qrContainer, {
+            text: ticketId,
+            width: 130,
+            height: 130,
+            colorDark: "#000000",
+            colorLight: "#ffffff",
+            correctLevel: QRCode.CorrectLevel.H
+          });
+        }
+
+        goToPage(5);
+
+        // Send the booking and receipt to Google Apps Script for the spreadsheet/Drive record.
         const reader = new FileReader();
-        reader.onload = e => sendData(e.target.result, file.name, file.type);
+        reader.onload = () => {
+          fetch(GOOGLE_SCRIPT_URL, {
+            method: "POST",
+            mode: "no-cors",
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
+            body: JSON.stringify({
+              ticketId, name, studentId, email, phone,
+              ticketType: ticketTypeStr,
+              seats: seatsText,
+              totalPaid,
+              paymentMethod: selectedPaymentMethod,
+              referralUsed,
+              fileData: reader.result,
+              fileName: file.name,
+              fileType: file.type
+            })
+          }).catch(error => console.error("Apps Script submission failed:", error));
+        };
+        reader.onerror = () => console.error("Could not read payment receipt.");
         reader.readAsDataURL(file);
-      } else {
-        sendData("", "", "");
+
+      } catch (err) {
+        console.error("Booking submission failed:", err);
+        if (err.message === "REFERRAL_EXHAUSTED") {
+          alert("❌ This referral code has reached its limit. Each code can be used for 2 seats total across all bookings.");
+          appliedReferralCode = "";
+          document.getElementById("promo-code-input").value = "";
+          goToPage(3);
+        } else if (err.message === "SEAT_ALREADY_BOOKED") {
+          alert("❌ One or more selected seats have just been booked by someone else. Please select different seats.");
+          selectedSeats = [];
+          renderSeatingGrid();
+          goToPage(2);
+        } else {
+          alert("Booking could not be completed. Please try again. Your ticket has not been generated.");
+          goToPage(4);
+        }
+
+        isSubmittingBooking = false;
+        if (submitButton) {
+          submitButton.disabled = false;
+          submitButton.innerText = "Confirm & Generate E-Ticket";
+        }
       }
     }
 
