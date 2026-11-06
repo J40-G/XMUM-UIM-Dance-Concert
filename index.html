@@ -406,6 +406,17 @@
           <input type="tel" id="input-phone" class="form-control" required placeholder="0123456789">
         </div>
 
+        <!-- NEW: T-Shirt Design Preference Box -->
+        <div class="form-group" id="tshirt-design-group">
+          <label>Preferred T-Shirt Design <span>(For Bundle Tiers / Optional)</span></label>
+          <select id="input-tshirt-design" class="form-control">
+            <option value="No T-Shirt / Standard Ticket">Standard Ticket (No T-shirt)</option>
+            <option value="Design 1">Design 1</option>
+            <option value="Design 2">Design 2</option>
+            <option value="Design 3">Design 3</option>
+          </select>
+        </div>
+
         <div class="form-group">
           <label>Payment Receipt<span>*</span></label>
           <div class="upload-btn-wrapper">
@@ -435,6 +446,7 @@
         <p><strong>Student ID:</strong> <span id="ticket-student-id">N/A</span></p>
         <p><strong>Contact No:</strong> <span id="ticket-phone">-</span></p>
         <p><strong>Package:</strong> <span id="ticket-tier-label" style="color:#ffb6c1; font-weight:bold;">Standard Ticket</span></p>
+        <p><strong>T-Shirt Design:</strong> <span id="ticket-tshirt-choice" style="color:#ffb6c1;">N/A</span></p>
         <p><strong>Seat(s):</strong> <span id="ticket-seats" style="color:#ffb6c1; font-weight:bold;">-</span></p>
         <p><strong>Total Paid:</strong> RM <span id="ticket-price">0</span></p>
         <p><strong>Date & Time:</strong> 11th Dec 2026 | 7:00 PM - 10:00 PM</p>
@@ -514,6 +526,16 @@
       const tierName = tier === 'bundle' ? '⭐ T-Shirt Bundle (+T-shirt)' : 'Standard Ticket';
       document.getElementById("selected-tier-text").innerText = tierName;
 
+      // Automatically set default value in the T-shirt dropdown based on tier
+      const tshirtSelect = document.getElementById("input-tshirt-design");
+      if (tshirtSelect) {
+        if (tier === 'standard') {
+          tshirtSelect.value = "No T-Shirt / Standard Ticket";
+        } else {
+          tshirtSelect.value = "Design 1";
+        }
+      }
+
       const currentActivePrices = tier === 'bundle' ? bundlePrices : standardPrices;
       document.getElementById("price-tag-a").innerText = `RM${currentActivePrices['zone-a']}`;
       document.getElementById("price-tag-b").innerText = `RM${currentActivePrices['zone-b']}`;
@@ -532,7 +554,6 @@
 
       if (usageDoc.exists) return Number(usageDoc.data().usedSeats || 0);
 
-      // Count older bookings created before referral usage counters existed.
       const oldBookings = await db.collection("tickets").get();
       let usedSeats = 0;
       oldBookings.forEach(doc => {
@@ -567,7 +588,6 @@
         return;
       }
 
-      // A single booking may use at most 2 seats with a referral code.
       if (selectedSeats.length > 2) {
         messageElem.style.color = "#ff8585";
         messageElem.innerText = "❌ A referral code can be used for a maximum of 2 seats per booking!";
@@ -585,7 +605,6 @@
         return;
       }
 
-      // Check the remaining global seat allowance across all previous bookings.
       const canUse = await checkGlobalReferralLimit(codeInput, selectedSeats.length);
       if (!canUse) {
         messageElem.style.color = "#ff8585";
@@ -880,13 +899,12 @@
       const studentId = document.getElementById("input-student-id").value.trim();
       const email = document.getElementById("input-email").value.trim();
       const phone = document.getElementById("input-phone").value.trim();
+      const tshirtDesignChoice = document.getElementById("input-tshirt-design").value;
       const seatsText = selectedSeats.map(s => formatSeatLabel(s)).join(", ");
       const totalPaid = selectedSeats.reduce((sum, s) => sum + s.price, 0);
-      const ticketTypeStr = selectedTier === 'bundle' ? "Bundle + T-Shirt" : "Standard Ticket";
+      const ticketTypeStr = selectedTier === 'bundle' ? `Bundle + T-Shirt (${tshirtDesignChoice})` : "Standard Ticket";
 
       try {
-        // Count legacy bookings before the transaction if this code has no usage counter yet.
-        // The transaction then serializes competing bookings on the same referral counter document.
         let legacyUsedSeats = 0;
         if (referralUsed !== "NONE") {
           const usageRef = db.collection("referral_code_usage").doc(referralUsed);
@@ -910,7 +928,6 @@
         const seatRefs = selectedSeats.map(s => db.collection("concert_seats").doc(s.id));
 
         await db.runTransaction(async transaction => {
-          // All transaction reads are completed before any writes.
           const seatSnapshots = [];
           for (const seatRef of seatRefs) {
             seatSnapshots.push(await transaction.get(seatRef));
@@ -944,6 +961,7 @@
             phone: phone,
             seats: seatsText,
             ticketType: ticketTypeStr,
+            tshirtDesign: tshirtDesignChoice,
             totalPaid: totalPaid,
             paymentMethod: selectedPaymentMethod,
             referralUsed: referralUsed,
@@ -978,6 +996,7 @@
         document.getElementById("ticket-price").innerText = totalPaid;
         document.getElementById("ticket-id").innerText = ticketId;
         document.getElementById("ticket-tier-label").innerText = ticketTypeStr;
+        document.getElementById("ticket-tshirt-choice").innerText = tshirtDesignChoice;
 
         const qrContainer = document.getElementById("ticket-qr-container");
         qrContainer.innerHTML = "";
@@ -994,7 +1013,6 @@
 
         goToPage(5);
 
-        // Send the booking and receipt to Google Apps Script for the spreadsheet/Drive record.
         const reader = new FileReader();
         reader.onload = () => {
           fetch(GOOGLE_SCRIPT_URL, {
@@ -1004,6 +1022,7 @@
             body: JSON.stringify({
               ticketId, name, studentId, email, phone,
               ticketType: ticketTypeStr,
+              tshirtDesign: tshirtDesignChoice,
               seats: seatsText,
               totalPaid,
               paymentMethod: selectedPaymentMethod,
