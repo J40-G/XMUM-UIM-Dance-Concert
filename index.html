@@ -329,7 +329,7 @@
       <p style="font-size:0.75rem; color:#ff9f1c; margin-top:5px;">⚠️ Seats locked for 10 minutes. Time remaining: <span id="hold-timer" style="font-weight:bold;">10:00</span></p>
     </div>
 
-    <!-- Committee Referral Code Box (Strict Max 2 Seats) -->
+    <!-- Committee Referral Code Box (Max 2 seats per transaction) -->
     <div class="payment-summary-box" style="border-color: #ffb6c1; background: #1a1416;">
       <h4 style="color: #ffb6c1; margin-bottom: 8px;"><i class="fas fa-tag"></i> Committee Referral Code <span style="font-weight: normal; color: #aaa; font-size: 0.85rem;">(Max 2 seats)</span></h4>
       <div style="display: flex; gap: 10px;">
@@ -533,10 +533,10 @@
         return;
       }
 
-      // STRICT CHECK: Maximum 2 seats allowed for committee discount
+      // STRICT HARD BLOCK: Max 2 seats per single transaction cart
       if (selectedSeats.length > 2) {
         messageElem.style.color = "#ff8585";
-        messageElem.innerText = "❌ Committee code is valid for a maximum of 2 seats only. Discount denied.";
+        messageElem.innerText = "❌ Referral code is only valid for a maximum of 2 seats per transaction!";
         appliedReferralCode = "";
         document.getElementById("promo-code-input").value = "";
         recalculateSeatPrices();
@@ -555,13 +555,12 @@
       recalculateSeatPrices();
 
       messageElem.style.color = "#95d5b2";
-      messageElem.innerText = `✅ Committee Code '${codeInput}' applied successfully! Special pricing activated for ${selectedSeats.length} seat(s).`;
+      messageElem.innerText = `✅ Committee Code '${codeInput}' applied successfully for ${selectedSeats.length} seat(s)!`;
     }
 
     function recalculateSeatPrices() {
       const messageElem = document.getElementById("promo-message");
 
-      // STRICT ENFORCEMENT: If selected seats exceed 2, force-clear referral code immediately
       if (selectedSeats.length > 2 && appliedReferralCode !== "") {
         appliedReferralCode = "";
         const inputElem = document.getElementById("promo-code-input");
@@ -569,7 +568,7 @@
         if (messageElem) {
           messageElem.style.display = "block";
           messageElem.style.color = "#ff8585";
-          messageElem.innerText = "❌ Referral code removed because more than 2 seats were selected (max 2 seats allowed).";
+          messageElem.innerText = "❌ Referral code removed because more than 2 seats were selected (max 2 allowed per transaction).";
         }
       }
 
@@ -578,7 +577,6 @@
         let baseTable = selectedTier === 'bundle' ? bundlePrices : standardPrices;
         let seatPrice = baseTable[s.zoneKey];
 
-        // Apply discount ONLY if a valid code is active AND selected seats are 2 or fewer
         if (appliedReferralCode !== "" && selectedSeats.length <= 2) {
           if (s.zone === "Zone A") seatPrice = selectedTier === 'bundle' ? 55 : 25;
           if (s.zone === "Zone B") seatPrice = selectedTier === 'bundle' ? 45 : 15;
@@ -632,7 +630,7 @@
       { rowName: "Row 8", seats: Array(35).fill(0).map((_, i) => ({ num: `${1 + i}`, type: [166, 167].includes(Number(1+i)) ? "occupied" : "zone-b" })) },
       { rowName: "Row 9", seats: Array(34).fill(0).map((_, i) => ({ num: `${36 + i}`, type: [166, 167].includes(Number(36+i)) ? "occupied" : "zone-b" })) },
       { rowName: "Row 10", seats: Array(35).fill(0).map((_, i) => ({ num: `${70 + i}`, type: [166, 167].includes(Number(70+i)) ? "occupied" : "zone-b" })) },
-      { rowName: "Row 11", seats: Array(34).fill(0).map((_, i) => ({ num: `${105 + i}`, type: [105+i] === 200 ? "occupied" : "zone-b" })) },
+      { rowName: "Row 11", seats: Array(34).fill(0).map((_, i) => ({ num: `${105 + i}`, type: [166, 167].includes(Number(105+i)) ? "occupied" : "zone-b" })) },
       { rowName: "Row 12", seats: Array(35).fill(0).map((_, i) => ({ num: `${139 + i}`, type: [166, 167].includes(Number(139+i)) ? "occupied" : "zone-b" })) },
       { rowName: "Row 13", seats: Array(34).fill(0).map((_, i) => ({ num: `${1 + i}`, type: [59, 60, 61].includes(Number(1+i)) ? "occupied" : "zone-c" })) },
       { rowName: "Row 14", seats: Array(35).fill(0).map((_, i) => ({ num: `${35 + i}`, type: [59, 60, 61].includes(Number(35+i)) ? "occupied" : "zone-c" })) },
