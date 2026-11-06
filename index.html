@@ -978,18 +978,24 @@
         document.getElementById("ticket-id").innerText = ticketId;
         document.getElementById("ticket-tier-label").innerText = ticketTypeStr;
 
-        const qrContainer = document.getElementById("ticket-qr-container");
-        qrContainer.innerHTML = "";
-        if (typeof QRCode !== "undefined") {
-          new QRCode(qrContainer, {
-            text: ticketId,
-            width: 130,
-            height: 130,
-            colorDark: "#000000",
-            colorLight: "#ffffff",
-            correctLevel: QRCode.CorrectLevel.H
-          });
-        }
+      const qrContainer = document.getElementById("ticket-qr-container");
+   qrContainer.innerHTML = "";
+   if (typeof QRCode !== "undefined") {
+     // Add styling wrapper for clean padding and high contrast
+     qrContainer.style.background = "#ffffff";
+     qrContainer.style.padding = "10px";
+     qrContainer.style.borderRadius = "8px";
+     qrContainer.style.display = "inline-block";
+     
+     new QRCode(qrContainer, {
+       text: ticketId,
+       width: 150,
+       height: 150,
+       colorDark: "#000000",
+       colorLight: "#ffffff",
+       correctLevel: QRCode.CorrectLevel.M // Medium level improves camera decoding speed
+     });
+   }
 
         goToPage(5);
 
