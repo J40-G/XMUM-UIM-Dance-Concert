@@ -331,7 +331,7 @@
 
     <!-- Committee Referral Code Box -->
     <div class="payment-summary-box" style="border-color: #ffb6c1; background: #1a1416;">
-      <h4 style="color: #ffb6c1; margin-bottom: 8px;"><i class="fas fa-tag"></i> Committee Referral Code <span style="font-weight: normal; color: #aaa; font-size: 0.85rem;">(Max 2 seats)</span></h4>
+      <h4 style="color: #ffb6c1; margin-bottom: 8px;"><i class="fas fa-tag"></i> Committee Referral Code <span style="font-weight: normal; color: #aaa; font-size: 0.85rem;">(Max 2 seats per transaction)</span></h4>
       <div style="display: flex; gap: 10px;">
         <input type="text" id="promo-code-input" class="form-control" placeholder="Enter code if applicable" style="text-transform: uppercase;">
         <button type="button" onclick="applyCommitteeCode()" class="btn-pink" style="padding: 10px 20px; font-size: 0.85rem;">Apply</button>
@@ -520,7 +520,28 @@
       recalculateSeatPrices();
     }
 
-    function applyCommitteeCode() {
+    async function checkGlobalReferralLimit(code) {
+      if (!db || !code || code === "None") return true;
+      try {
+        const snapshot = await db.collection("tickets").get();
+        let totalTicketsWithCode = 0;
+        
+        snapshot.forEach(doc => {
+          const d = doc.data();
+          if (d.referralUsed && d.referralUsed.toUpperCase() === code.toUpperCase()) {
+            const seatCount = d.seats ? d.seats.split(",").length : 1;
+            totalTicketsWithCode += seatCount;
+          }
+        });
+
+        // Global rule: Max 2 tickets total across all buyers combined
+        return totalTicketsWithCode < 2;
+      } catch (err) {
+        return true; 
+      }
+    }
+
+    async function applyCommitteeCode() {
       const codeInput = document.getElementById("promo-code-input").value.trim().toUpperCase();
       const messageElem = document.getElementById("promo-message");
       messageElem.style.display = "block";
@@ -533,6 +554,7 @@
         return;
       }
 
+      // Rule 1: Max 2 seats per single transaction
       if (selectedSeats.length > 2) {
         messageElem.style.color = "#ff8585";
         messageElem.innerText = "❌ Referral code is only valid for a maximum of 2 seats per transaction!";
@@ -546,6 +568,17 @@
         messageElem.style.color = "#ff8585";
         messageElem.innerText = "❌ Invalid committee referral code.";
         appliedReferralCode = "";
+        recalculateSeatPrices();
+        return;
+      }
+
+      // Rule 2: Check global limit across previous transactions in Firebase
+      const canUse = await checkGlobalReferralLimit(codeInput);
+      if (!canUse) {
+        messageElem.style.color = "#ff8585";
+        messageElem.innerText = "❌ This referral code has already reached its global limit of 2 tickets across all purchases!";
+        appliedReferralCode = "";
+        document.getElementById("promo-code-input").value = "";
         recalculateSeatPrices();
         return;
       }
@@ -782,8 +815,21 @@
       document.getElementById("btn-to-page4").disabled = !(document.getElementById("tc-checkbox").checked && selectedPaymentMethod !== "");
     }
 
-    function handleFinalSubmit(e) {
+    async function handleFinalSubmit(e) {
       if (e) e.preventDefault();
+
+      const referralUsed = appliedReferralCode && appliedReferralCode.trim() !== "" ? appliedReferralCode.toUpperCase() : "None";
+
+      // Final security check before saving
+      if (referralUsed !== "None") {
+        const canUse = await checkGlobalReferralLimit(referralUsed);
+        if (!canUse) {
+          alert("❌ This referral code has already reached its global limit of 2 tickets across all purchases!");
+          goToPage(3);
+          return;
+        }
+      }
+
       if (holdTimerInterval) clearInterval(holdTimerInterval);
 
       const ticketId = `#UIM-2026-${Date.now().toString().slice(-6)}-${Math.floor(1000 + Math.random() * 9000)}`;
@@ -793,7 +839,6 @@
       const phone = document.getElementById("input-phone").value;
       const seatsText = selectedSeats.map(s => formatSeatLabel(s)).join(", ");
       const totalPaid = selectedSeats.reduce((sum, s) => sum + s.price, 0);
-      const referralUsed = appliedReferralCode && appliedReferralCode.trim() !== "" ? appliedReferralCode : "None";
       const ticketTypeStr = selectedTier === 'bundle' ? "Bundle + T-Shirt" : "Standard Ticket";
 
       document.getElementById("ticket-name").innerText = name;
@@ -820,10 +865,10 @@
           });
           batch.set(db.collection("tickets").doc(ticketId), {
             ticketId: ticketId, name: name, studentId: studentId || "N/A", phone: phone,
-            seats: seatsText, ticketType: ticketTypeStr, totalPaid: totalPaid, scanned: false,
+            seats: seatsText, ticketType: ticketTypeStr, totalPaid: totalPaid, referralUsed: referralUsed, scanned: false,
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
           });
-          batch.commit().catch(() => {});
+          await batch.commit();
         } catch (err) {}
       }
 
