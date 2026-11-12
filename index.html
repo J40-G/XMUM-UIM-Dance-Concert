@@ -544,34 +544,7 @@
       recalculateSeatPrices();
     }
 
-    async function getReferralSeatsUsed(code) {
-  if (!db || !code || code.toUpperCase() === "NONE") {
-    return 0;
-  }
-  try {
-    const usageRef = db.collection("referral_code_usage").doc(code.toUpperCase());
-    const usageDoc = await usageRef.get();
-    if (usageDoc.exists) {
-      return Number(usageDoc.data().usedSeats || 0);
-    }
-    return 0;
-  } catch (err) {
-    console.error("Referral check failed:", err);
-    return 0;
-  }
-}
-
-    async function checkGlobalReferralLimit(code, seatsRequested = selectedSeats.length) {
-      try {
-        const usedSeats = await getReferralSeatsUsed(code);
-        return seatsRequested === 0 ? usedSeats < 2 : usedSeats + seatsRequested <= 2;
-      } catch (err) {
-        console.error("Referral validation failed:", err);
-        return false;
-      }
-    }
-
-    async function applyCommitteeCode() {
+   async function applyCommitteeCode() {
       const codeInput = document.getElementById("promo-code-input").value.trim().toUpperCase();
       const messageElem = document.getElementById("promo-message");
       messageElem.style.display = "block";
@@ -580,6 +553,16 @@
         appliedReferralCode = "";
         messageElem.style.color = "#aaa";
         messageElem.innerText = "No code applied (Standard Pricing).";
+        recalculateSeatPrices();
+        return;
+      }
+
+      // Check if user selected a T-Shirt bundle instead of a standard ticket
+      if (selectedTier === 'bundle') {
+        messageElem.style.color = "#ff8585";
+        messageElem.innerText = "❌ Committee referral codes can only be used for Standard Tickets, not T-Shirt Bundles!";
+        appliedReferralCode = "";
+        document.getElementById("promo-code-input").value = "";
         recalculateSeatPrices();
         return;
       }
