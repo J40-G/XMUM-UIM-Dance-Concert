@@ -544,7 +544,7 @@
       recalculateSeatPrices();
     }
 
-   async function applyCommitteeCode() {
+  async function applyCommitteeCode() {
       const codeInput = document.getElementById("promo-code-input").value.trim().toUpperCase();
       const messageElem = document.getElementById("promo-message");
       messageElem.style.display = "block";
@@ -557,10 +557,20 @@
         return;
       }
 
-      // Check if user selected a T-Shirt bundle instead of a standard ticket
+      // 1. Block T-Shirt bundles immediately
       if (selectedTier === 'bundle') {
         messageElem.style.color = "#ff8585";
         messageElem.innerText = "❌ Committee referral codes can only be used for Standard Tickets, not T-Shirt Bundles!";
+        appliedReferralCode = "";
+        document.getElementById("promo-code-input").value = "";
+        recalculateSeatPrices();
+        return;
+      }
+
+      // 2. Block if booking exceeds 2 seats
+      if (selectedSeats.length === 0) {
+        messageElem.style.color = "#ff8585";
+        messageElem.innerText = "❌ Please select your seats first before applying a referral code.";
         appliedReferralCode = "";
         document.getElementById("promo-code-input").value = "";
         recalculateSeatPrices();
@@ -576,6 +586,7 @@
         return;
       }
 
+      // 3. Check if code exists in valid list
       if (!VALID_COMMITTEE_CODES.includes(codeInput)) {
         messageElem.style.color = "#ff8585";
         messageElem.innerText = "❌ Invalid committee referral code.";
@@ -584,27 +595,29 @@
         return;
       }
 
-      const canUse = await checkGlobalReferralLimit(codeInput, selectedSeats.length);
-      if (!canUse) {
+      // 4. Check global database limit (Max 2 total usage across all users)
+      const usedSeats = await getReferralSeatsUsed(codeInput);
+      if (usedSeats + selectedSeats.length > 2) {
         messageElem.style.color = "#ff8585";
-        messageElem.innerText = "❌ This code has insufficient seats remaining. Each code is limited to 2 seats total across all bookings, including this booking.";
+        messageElem.innerText = `❌ Code '${codeInput}' has already used ${usedSeats}/2 seats. You are trying to book ${selectedSeats.length} seat(s).`;
         appliedReferralCode = "";
         document.getElementById("promo-code-input").value = "";
         recalculateSeatPrices();
         return;
       }
 
+      // 5. Success
       appliedReferralCode = codeInput;
       recalculateSeatPrices();
 
       messageElem.style.color = "#95d5b2";
-      const usedSeats = await getReferralSeatsUsed(codeInput);
-      messageElem.innerText = `✅ Code '${codeInput}' applied. ${2 - usedSeats} seat(s) were available before this booking.`;
+      messageElem.innerText = `✅ Code '${codeInput}' applied successfully! (${2 - (usedSeats + selectedSeats.length)} seat quota remaining).`;
     }
 
     function recalculateSeatPrices() {
       const messageElem = document.getElementById("promo-message");
 
+      // Auto-strip code if user changes seat count above 2
       if (selectedSeats.length > 2 && appliedReferralCode !== "") {
         appliedReferralCode = "";
         const inputElem = document.getElementById("promo-code-input");
@@ -621,10 +634,13 @@
         let baseTable = selectedTier === 'bundle' ? bundlePrices : standardPrices;
         let seatPrice = baseTable[s.zoneKey];
 
-        if (appliedReferralCode !== "" && selectedSeats.length <= 2) {
-          if (s.zone === "Zone A") seatPrice = selectedTier === 'bundle' ? 55 : 25;
-          if (s.zone === "Zone B") seatPrice = selectedTier === 'bundle' ? 45 : 15;
+        // Apply standard ticket referral discount if code is active and under limit
+        if (appliedReferralCode !== "" && selectedTier === 'standard' && selectedSeats.length <= 2) {
+          if (s.zoneKey === "zone-a") seatPrice = 25; // Standard Zone A discount price
+          if (s.zoneKey === "zone-b") seatPrice = 15; // Standard Zone B discount price
+          // Zone C keeps its standard pricing or add rule if applicable
         }
+
         s.price = seatPrice;
         total += seatPrice;
       });
