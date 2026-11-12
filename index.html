@@ -545,25 +545,21 @@
     }
 
     async function getReferralSeatsUsed(code) {
-      if (!db || !code || code.toUpperCase() === "NONE") {
-        throw new Error("Database connection is unavailable. Please refresh and try again.");
-      }
-
-      const usageRef = db.collection("referral_code_usage").doc(code.toUpperCase());
-      const usageDoc = await usageRef.get();
-
-      if (usageDoc.exists) return Number(usageDoc.data().usedSeats || 0);
-
-      const oldBookings = await db.collection("tickets").get();
-      let usedSeats = 0;
-      oldBookings.forEach(doc => {
-        const booking = doc.data();
-        if ((booking.referralUsed || "").toString().trim().toUpperCase() === code.toUpperCase()) {
-          usedSeats += booking.seats ? booking.seats.split(",").length : 1;
-        }
-      });
-      return usedSeats;
+  if (!db || !code || code.toUpperCase() === "NONE") {
+    return 0;
+  }
+  try {
+    const usageRef = db.collection("referral_code_usage").doc(code.toUpperCase());
+    const usageDoc = await usageRef.get();
+    if (usageDoc.exists) {
+      return Number(usageDoc.data().usedSeats || 0);
     }
+    return 0;
+  } catch (err) {
+    console.error("Referral check failed:", err);
+    return 0;
+  }
+}
 
     async function checkGlobalReferralLimit(code, seatsRequested = selectedSeats.length) {
       try {
