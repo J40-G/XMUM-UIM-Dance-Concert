@@ -544,9 +544,29 @@
       recalculateSeatPrices();
     }
 
-  async function applyCommitteeCode() {
-      const codeInput = document.getElementById("promo-code-input").value.trim().toUpperCase();
+  async function getReferralSeatsUsed(code) {
+      if (!db || !code || code.toUpperCase() === "NONE") {
+        return 0;
+      }
+      try {
+        const usageRef = db.collection("referral_code_usage").doc(code.toUpperCase());
+        const usageDoc = await usageRef.get();
+        if (usageDoc.exists) {
+          return Number(usageDoc.data().usedSeats || 0);
+        }
+        return 0; // If document doesn't exist yet, 0 seats have been used
+      } catch (err) {
+        console.error("Referral check failed:", err);
+        return 0; // Fallback to 0 so codes aren't blocked by network/permission errors
+      }
+    }
+
+    async function applyCommitteeCode() {
+      const inputElem = document.getElementById("promo-code-input");
       const messageElem = document.getElementById("promo-message");
+      if (!inputElem || !messageElem) return;
+
+      const codeInput = inputElem.value.trim().toUpperCase();
       messageElem.style.display = "block";
 
       if (codeInput === "") {
@@ -557,23 +577,19 @@
         return;
       }
 
-      // 1. Block T-Shirt bundles immediately
       if (selectedTier === 'bundle') {
         messageElem.style.color = "#ff8585";
         messageElem.innerText = "❌ Committee referral codes can only be used for Standard Tickets, not T-Shirt Bundles!";
         appliedReferralCode = "";
-        document.getElementById("promo-code-input").value = "";
+        inputElem.value = "";
         recalculateSeatPrices();
         return;
       }
 
-      // 2. Block if booking exceeds 2 seats
       if (selectedSeats.length === 0) {
         messageElem.style.color = "#ff8585";
-        messageElem.innerText = "❌ Please select your seats first before applying a referral code.";
+        messageElem.innerText = "❌ Please select your seats first before applying a code.";
         appliedReferralCode = "";
-        document.getElementById("promo-code-input").value = "";
-        recalculateSeatPrices();
         return;
       }
 
@@ -581,12 +597,11 @@
         messageElem.style.color = "#ff8585";
         messageElem.innerText = "❌ A referral code can be used for a maximum of 2 seats per booking!";
         appliedReferralCode = "";
-        document.getElementById("promo-code-input").value = "";
+        inputElem.value = "";
         recalculateSeatPrices();
         return;
       }
 
-      // 3. Check if code exists in valid list
       if (!VALID_COMMITTEE_CODES.includes(codeInput)) {
         messageElem.style.color = "#ff8585";
         messageElem.innerText = "❌ Invalid committee referral code.";
@@ -595,25 +610,22 @@
         return;
       }
 
-      // 4. Check global database limit (Max 2 total usage across all users)
       const usedSeats = await getReferralSeatsUsed(codeInput);
       if (usedSeats + selectedSeats.length > 2) {
         messageElem.style.color = "#ff8585";
-        messageElem.innerText = `❌ Code '${codeInput}' has already used ${usedSeats}/2 seats. You are trying to book ${selectedSeats.length} seat(s).`;
+        messageElem.innerText = `❌ Code '${codeInput}' has already used ${usedSeats}/2 seats.`;
         appliedReferralCode = "";
-        document.getElementById("promo-code-input").value = "";
+        inputElem.value = "";
         recalculateSeatPrices();
         return;
       }
 
-      // 5. Success
       appliedReferralCode = codeInput;
       recalculateSeatPrices();
 
       messageElem.style.color = "#95d5b2";
-      messageElem.innerText = `✅ Code '${codeInput}' applied successfully! (${2 - (usedSeats + selectedSeats.length)} seat quota remaining).`;
+      messageElem.innerText = `✅ Code '${codeInput}' applied successfully! Total due updated.`;
     }
-
     function recalculateSeatPrices() {
       const messageElem = document.getElementById("promo-message");
 
