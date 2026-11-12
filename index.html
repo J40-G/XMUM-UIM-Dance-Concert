@@ -624,7 +624,8 @@
       recalculateSeatPrices();
 
       messageElem.style.color = "#95d5b2";
-      messageElem.innerText = `✅ Code '${codeInput}' applied successfully! Total due updated.`;
+      const remainingQuota = 2 - (usedSeats + selectedSeats.length);
+      messageElem.innerText = `✅ Code '${codeInput}' applied! Total due updated. (${remainingQuota} seat(s) remaining for this code).`;
     }
     function recalculateSeatPrices() {
       const messageElem = document.getElementById("promo-message");
