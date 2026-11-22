@@ -910,16 +910,7 @@
       const seatsText = selectedSeats.map(s => formatSeatLabel(s)).join(", ");
       const totalPaid = selectedSeats.reduce((sum, s) => sum + s.price, 0);
       const ticketTypeStr = selectedTier === 'bundle' ? "Bundle + T-Shirt" : "Standard Ticket";
-
-      try {
-       let legacyUsedSeats = 0;
-if (referralUsed !== "NONE") {
-  const usageRef = db.collection("referral_code_usage").doc(referralUsed);
-  const usageDoc = await usageRef.get();
-  if (usageDoc.exists) {
-    legacyUsedSeats = Number(usageDoc.data().usedSeats || 0);
-  }
-}
+try {
         const ticketRef = db.collection("tickets").doc(ticketId);
         const usageRef = referralUsed !== "NONE"
           ? db.collection("referral_code_usage").doc(referralUsed)
@@ -933,12 +924,11 @@ if (referralUsed !== "NONE") {
           }
 
           let usedSeats = 0;
-          let usageSnapshot = null;
           if (usageRef) {
-            usageSnapshot = await transaction.get(usageRef);
+            const usageSnapshot = await transaction.get(usageRef);
             usedSeats = usageSnapshot.exists
               ? Number(usageSnapshot.data().usedSeats || 0)
-              : legacyUsedSeats;
+              : 0;
 
             if (usedSeats + selectedSeats.length > 2) {
               throw new Error("REFERRAL_EXHAUSTED");
@@ -1049,9 +1039,10 @@ if (referralUsed !== "NONE") {
           selectedSeats = [];
           renderSeatingGrid();
           goToPage(2);
-        } else {
-          alert("Booking could not be completed. Please try again. Your ticket has not been generated.");
+     } else {
+          alert("Booking could not be completed: " + (err.message || err) + "\nYour ticket has not been generated.");
           goToPage(4);
+        }
         }
 
         isSubmittingBooking = false;
@@ -1310,13 +1301,23 @@ if (referralUsed !== "NONE") {
           return;
         }
 
+        const seatItems = Array.isArray(result.seats)
+          ? result.seats
+          : (result.seats && result.seats !== "N/A")
+            ? String(result.seats).split(",").map(s => s.trim()).filter(Boolean)
+            : [];
+        const seatCount = seatItems.length;
+        const seatsDisplay = seatCount > 0
+          ? `${seatCount} Seat(s) — ${seatItems.join(", ")}`
+          : "0 Seats (N/A)";
+
         if (result.status === "DUPLICATE") {
-          showCheckinMessage("🚫 DUPLICATE ENTRY DETECTED\n\nName: " + result.name + "\nSeats: " + result.seats + "\nTicket ID: " + ticketId + "\n\nENTRY BLOCKED.", false);
+          showCheckinMessage("🚫 DUPLICATE ENTRY DETECTED\n\nName: " + result.name + "\nSeats: " + seatsDisplay + "\nTicket ID: " + ticketId + "\n\nENTRY BLOCKED.", false);
           return;
         }
 
         pendingSheetSyncTicketId = ticketId;
-        showCheckinMessage("✅ VALID - ENTRY GRANTED\n\nName: " + result.name + "\nSeats: " + result.seats + "\nTicket ID: " + ticketId + "\n\nUpdating Google Sheets...", true, false);
+        showCheckinMessage("✅ VALID - ENTRY GRANTED\n\nName: " + result.name + "\nSeats: " + seatsDisplay + "\nTicket ID: " + ticketId + "\n\nUpdating Google Sheets...", true, false);
 
         try {
           const sheetResult = await syncSheetCheckin(ticketId);
@@ -1324,9 +1325,9 @@ if (referralUsed !== "NONE") {
             throw new Error(sheetResult.message || "Google Sheets rejected the update.");
           }
           pendingSheetSyncTicketId = null;
-          showCheckinMessage("✅ VALID - ENTRY GRANTED\n\nName: " + result.name + "\nSeats: " + result.seats + "\nTicket ID: " + ticketId + "\n\n✅ Google Sheets updated successfully.", true, false);
+          showCheckinMessage("✅ VALID - ENTRY GRANTED\n\nName: " + result.name + "\nSeats: " + seatsDisplay + "\nTicket ID: " + ticketId + "\n\n✅ Google Sheets updated successfully.", true, false);
         } catch (syncError) {
-          showCheckinMessage("✅ VALID - ENTRY GRANTED\n\nName: " + result.name + "\nSeats: " + result.seats + "\nTicket ID: " + ticketId + "\n\n⚠️ Google Sheets sync failed.\nEntry is already recorded in Firestore.\nPlease retry the Sheet update.", true, true);
+          showCheckinMessage("✅ VALID - ENTRY GRANTED\n\nName: " + result.name + "\nSeats: " + seatsDisplay + "\nTicket ID: " + ticketId + "\n\n⚠️ Google Sheets sync failed.\nEntry is already recorded in Firestore.\nPlease retry the Sheet update.", true, true);
           console.error("Google Sheets sync:", syncError);
         }
 
