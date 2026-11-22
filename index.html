@@ -916,15 +916,8 @@
         if (referralUsed !== "NONE") {
           const usageRef = db.collection("referral_code_usage").doc(referralUsed);
           const usageDoc = await usageRef.get();
-
-          if (!usageDoc.exists) {
-            const oldBookings = await db.collection("tickets").get();
-            oldBookings.forEach(doc => {
-              const booking = doc.data();
-              if ((booking.referralUsed || "").toString().trim().toUpperCase() === referralUsed) {
-                legacyUsedSeats += booking.seats ? booking.seats.split(",").length : 1;
-              }
-            });
+          if (usageDoc.exists) {
+            legacyUsedSeats = Number(usageDoc.data().usedSeats || 0);
           }
         }
 
